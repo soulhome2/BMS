@@ -1,0 +1,3017 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Экосистема управления МКД — АРМ оператора | ITV | AxxonSoft</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<style>
+/* ============================================================
+   Экосистема управления МКД — прототип АРМ оператора/диспетчера
+   ITV | AxxonSoft
+   Стилистика — как в Axxon Incident Manager: Inter, светлая/тёмная темы,
+   солнышко, сплиттеры, меню справки.
+   ============================================================ */
+
+:root,
+[data-theme="light"]{
+  --font:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+  --bg:#f1f5f9;
+  --panel:#ffffff;
+  --panel-2:#f8fafc;
+  --tree-bg:#fafbfc;
+  --stroke:#e2e8f0;
+  --stroke-2:#cbd5e1;
+  --text:#1e293b;
+  --muted:#64748b;
+  --faint:#94a3b8;
+  --accent:#1976d2;
+  --accent-hover:#1565c0;
+  --accent-dim:#e3f2fd;
+  --accent-ring:rgba(25,118,210,.1);
+  --on-accent:#ffffff;
+  --ok:#16a34a;
+  --warn:#d97706;
+  --crit:#dc2626;
+  --info:#1976d2;
+  --hover:#f1f5f9;
+  --danger-bg:#fee2e2;
+  --danger-border:#fecaca;
+  --danger-text:#dc2626;
+  --ok-bg:#dcfce7;
+  --ok-border:#bbf7d0;
+  --ok-text:#15803d;
+  --duty-bg:#e3f2fd;
+  --duty-border:#90caf9;
+  --duty-text:#1565c0;
+  --break-bg:#fff7ed;
+  --break-border:#fed7aa;
+  --break-text:#c2410c;
+  --overlay:rgba(15,23,42,.35);
+  --scroll:#e2e8f0;
+  --scroll-hover:#cbd5e1;
+  --input-bg:#ffffff;
+  --input-text:#0f172a;
+  --map-bg:#eef2f7;
+  --map-floor:#ffffff;
+  --map-room:#e2e8f0;
+  --map-room-2:#f1f5f9;
+  --map-label:#64748b;
+  --video-bg:#0f172a;
+  --cam-scan:rgba(0,0,0,.18);
+  --hud:#e2e8f0;
+  --tag-bg:#0f172a;
+  --tag-border:#475569;
+  --radius:12px;
+  --radius-sm:10px;
+  color-scheme:light;
+
+  /* Совместимость со стилями экранов прототипа */
+  --bg-2:var(--panel-2);
+  --panel-3:var(--hover);
+  --line:var(--stroke);
+  --line-2:var(--stroke-2);
+  --txt:var(--text);
+  --txt-2:var(--muted);
+  --txt-3:var(--faint);
+  --brand:var(--accent);
+  --primary:var(--accent);
+  --alarm:var(--crit);
+  --fire:#dc2626;
+  --ext:#d97706;
+  --shadow:0 16px 40px var(--overlay);
+}
+
+[data-theme="dark"]{
+  --bg:#0f172a;
+  --panel:#1e293b;
+  --panel-2:#162032;
+  --tree-bg:#162032;
+  --stroke:#334155;
+  --stroke-2:#475569;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+  --faint:#64748b;
+  --accent:#42a5f5;
+  --accent-hover:#64b5f6;
+  --accent-dim:rgba(25,118,210,.28);
+  --accent-ring:rgba(66,165,245,.16);
+  --on-accent:#0f172a;
+  --ok:#4ade80;
+  --warn:#fbbf24;
+  --crit:#f87171;
+  --info:#42a5f5;
+  --hover:#334155;
+  --danger-bg:rgba(220,38,38,.18);
+  --danger-border:rgba(248,113,113,.4);
+  --danger-text:#fca5a5;
+  --ok-bg:rgba(22,163,74,.18);
+  --ok-border:rgba(74,222,128,.35);
+  --ok-text:#86efac;
+  --duty-bg:rgba(25,118,210,.22);
+  --duty-border:rgba(66,165,245,.45);
+  --duty-text:#90caf9;
+  --break-bg:rgba(194,65,12,.2);
+  --break-border:rgba(251,146,60,.4);
+  --break-text:#fdba74;
+  --overlay:rgba(2,6,23,.62);
+  --scroll:#334155;
+  --scroll-hover:#64748b;
+  --input-bg:#0b1220;
+  --input-text:#f8fafc;
+  --video-bg:#020617;
+  --cam-scan:rgba(0,0,0,.22);
+  --hud:#e2e8f0;
+  --tag-bg:#020617;
+  --tag-border:#475569;
+  --map-bg:#0b1220;
+  --map-floor:#131c2e;
+  --map-room:#1e293b;
+  --map-room-2:#2b384e;
+  --map-label:#94a3b8;
+  --fire:#f87171;
+  --ext:#fbbf24;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+@supports (height:100dvh){html,body{height:100dvh}}
+body{
+  font-family:var(--font);
+  font-size:14px;
+  line-height:1.45;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit}
+button{cursor:pointer;color:inherit;background:none;border:none}
+.material-symbols-outlined{
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20;
+  font-size:20px;line-height:1;user-select:none;
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--scroll-hover)}
+[hidden]{display:none!important}
+
+/* ---------- Каркас ---------- */
+.app{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100%;background:var(--panel)}
+.app.concierge{grid-template-rows:auto minmax(0,1fr)}
+.app.on-break{grid-template-rows:auto auto minmax(0,1fr) auto}
+.app.concierge.on-break{grid-template-rows:auto auto minmax(0,1fr)}
+.mid{
+  display:grid;min-height:0;background:var(--stroke);
+  --w-rail:var(--w-rail-user,224px);
+  --w-side:var(--w-side-user,340px);
+  grid-template-columns:minmax(0,var(--w-rail)) 1px minmax(280px,1fr) 1px minmax(0,var(--w-side));
+}
+.mid.rail-collapsed{--w-rail:56px}
+.mid.side-hidden{--w-side:0px}
+.mid.side-hidden #splitSide,
+.mid.side-hidden #side{display:none}
+.app.concierge .dispatcher-only,
+.app.concierge #toggleRail,
+.app.concierge #toggleSideBtn{display:none}
+
+/* ---------- Верхняя панель ---------- */
+.topbar{
+  display:flex;align-items:center;gap:16px;padding:12px 24px;flex-wrap:wrap;
+  background:var(--panel);border-bottom:1px solid var(--stroke);
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:220px;padding-right:16px;border-right:1px solid var(--stroke)}
+.brand-mark{
+  width:18px;height:18px;flex:0 0 18px;background:var(--accent);border-radius:2px;
+  clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%);
+}
+.brand .names{display:flex;flex-direction:column;line-height:1.2}
+.brand .app-name{font-weight:600;font-size:16px;color:var(--text);white-space:nowrap}
+.brand .vendor{font-size:12px;font-weight:500;color:var(--faint)}
+
+.topbar-cluster{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.obj-picker{
+  display:flex;align-items:center;gap:8px;background:var(--input-bg);
+  border:2px solid var(--stroke-2);border-radius:var(--radius);padding:6px 12px;cursor:pointer;
+  transition:border-color .2s,box-shadow .2s;
+}
+.obj-picker:hover{border-color:var(--accent)}
+.obj-picker .lbl{font-size:11px;font-weight:500;color:var(--faint);text-transform:uppercase;letter-spacing:.4px}
+.obj-picker .val{font-weight:600;font-size:13px}
+
+.search-wrapper{position:relative;flex:1;max-width:420px;min-width:0}
+.search-wrapper > .material-symbols-outlined{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint);pointer-events:none;
+}
+.search-wrapper input,
+.searchbox input{
+  height:36px;padding:8px 12px;background:var(--input-bg);color:var(--input-text);
+  border:2px solid var(--stroke-2);border-radius:var(--radius);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.search-wrapper input{width:100%;padding:8px 64px 8px 40px}
+.searchbox input{flex:1;min-width:0;width:auto}
+.search-wrapper input::placeholder,
+.searchbox input::placeholder{color:var(--faint)}
+.search-wrapper input:focus,
+.searchbox input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-ring)}
+.search-wrapper kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%)}
+.searchbox{display:flex;align-items:center;gap:8px;min-width:0}
+
+.top-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+
+.seg{display:flex;background:var(--panel-2);border-radius:var(--radius-sm);padding:2px}
+.seg button{padding:5px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;transition:.15s}
+.seg button:hover:not(.on):not(.active){color:var(--text)}
+.seg button.on,.seg button.active{background:var(--accent-dim);color:var(--accent)}
+.seg button.on.ext{color:var(--ext)}
+
+.clock{font-size:13px;font-weight:500;min-width:74px;text-align:right;color:var(--muted);line-height:1.2}
+.clock small{display:block;font-size:11px;font-weight:500;color:var(--faint)}
+
+.icon-btn{
+  width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
+  color:var(--faint);position:relative;transition:.15s;
+}
+.icon-btn:hover:not(:disabled){background:var(--hover);color:var(--text)}
+.icon-btn.on{background:var(--accent-dim);color:var(--accent)}
+.icon-btn .dot{
+  position:absolute;top:4px;right:4px;min-width:15px;height:15px;border-radius:8px;
+  background:var(--crit);color:#fff;font:700 9px/15px var(--font);text-align:center;padding:0 3px;
+}
+.theme-btn:hover .theme-icon{color:var(--warn)}
+.theme-icon{width:21px;height:21px;color:inherit;transition:transform .35s ease}
+[data-theme="light"] .theme-icon{transform:rotate(180deg)}
+
+.user-btn{
+  display:flex;align-items:center;gap:10px;padding:4px 8px 4px 12px;margin-left:4px;
+  border-left:1px solid var(--stroke);border-radius:0 var(--radius-sm) var(--radius-sm) 0;text-align:left;
+}
+.user-btn:hover{background:var(--hover)}
+.avatar{width:29px;height:29px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:700;font-size:11px}
+.operator-meta{display:flex;flex-direction:column;line-height:1.2}
+.operator-meta strong{font-size:13px;font-weight:600}
+.operator-meta span{font-size:12px;font-weight:500;color:var(--faint)}
+.duty{
+  font-size:12px;font-weight:500;padding:4px 10px;border-radius:50px;
+  background:var(--duty-bg);color:var(--duty-text);white-space:nowrap;
+}
+.duty.off{background:var(--break-bg);color:var(--break-text)}
+.user-btn .chevron{font-size:18px;color:var(--faint)}
+
+.menu{position:relative}
+.menu-pop{
+  position:absolute;right:0;top:calc(100% + 6px);min-width:260px;background:var(--panel);
+  box-shadow:var(--shadow);border:1px solid var(--stroke);border-radius:14px;z-index:40;
+  display:grid;padding:6px;
+}
+.menu-pop.wide{min-width:300px}
+.menu-item{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);
+  font-size:14px;font-weight:500;text-align:left;color:var(--text);
+}
+.menu-item:hover{background:var(--panel-2)}
+.menu-item kbd{margin-left:auto}
+.menu-sep{height:1px;margin:6px 8px;background:var(--stroke)}
+.menu-label{padding:6px 14px;font-size:12px;font-weight:500;color:var(--faint)}
+kbd{
+  font-family:var(--font);font-size:12px;font-weight:500;border:1px solid var(--stroke-2);
+  padding:2px 6px;border-radius:6px;background:var(--panel-2);color:var(--muted);
+}
+
+.break-banner{
+  display:none;background:var(--break-bg);color:var(--break-text);
+  padding:8px 24px;font-size:13px;font-weight:500;border-bottom:1px solid var(--break-border);
+}
+.app.on-break .break-banner{display:block}
+
+/* Сплиттеры — как в Incident Manager: тонкая граница, захват шире */
+.splitter{position:relative;background:var(--stroke);touch-action:none}
+.splitter.col{cursor:col-resize}
+.splitter::before,.splitter::after{content:"";position:absolute}
+.splitter.col::before{inset:0 -3px}
+.splitter::after{background:var(--accent);opacity:0;transition:opacity .15s ease}
+.splitter.col::after{inset:0 -1px}
+.splitter:hover::after,.splitter.dragging::after{opacity:1}
+.splitter:focus-visible{outline:2px solid var(--accent)}
+body[data-resize]{user-select:none}
+body[data-resize="col"] *{cursor:col-resize!important}
+
+/* ---------- Левое меню ---------- */
+.rail{background:var(--tree-bg);border-right:0;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.rail-scroll{overflow-y:auto;flex:1;padding:8px 0}
+.rail .group-title{
+  font-size:9.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--txt-3);
+  padding:12px 16px 5px;white-space:nowrap;
+}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:8px 14px;margin:1px 8px;border-radius:var(--radius-sm);
+  color:var(--txt-2);cursor:pointer;white-space:nowrap;transition:.13s;position:relative;
+}
+.nav-item:hover{background:var(--panel);color:var(--txt)}
+.nav-item.on{background:var(--panel-2);color:#fff}
+.nav-item.on::before{content:"";position:absolute;left:-8px;top:7px;bottom:7px;width:3px;border-radius:0 3px 3px 0;background:var(--brand)}
+.nav-item svg{flex:0 0 17px;opacity:.85}
+.nav-item .cap{flex:1;overflow:hidden;text-overflow:ellipsis}
+.nav-item .cnt{
+  font:700 10px/1 var(--mono);background:var(--panel-3);color:var(--txt-2);
+  border-radius:9px;padding:3px 6px;min-width:19px;text-align:center;
+}
+.nav-item .cnt.alarm{background:rgba(229,72,77,.18);color:#ff8b8e}
+.nav-item .cnt.live{background:rgba(46,168,101,.16);color:#5fd694}
+.tag-ext{
+  font:700 8.5px/1 "Segoe UI",sans-serif;color:var(--ext);border:1px solid rgba(201,138,43,.45);
+  border-radius:3px;padding:2px 3px;letter-spacing:.3px;
+}
+.rail-collapsed .cap,.rail-collapsed .cnt,.rail-collapsed .group-title,.rail-collapsed .tag-ext,.rail-collapsed .rail-foot-txt{display:none}
+.rail-collapsed .nav-item{justify-content:center;padding:9px 0}
+.rail-foot{border-top:1px solid var(--line);padding:9px 12px;display:flex;align-items:center;gap:9px;color:var(--txt-3);cursor:pointer}
+.rail-foot:hover{color:var(--txt)}
+
+/* ---------- Основная область ---------- */
+.main{overflow-y:auto;background:var(--bg);min-width:0;min-height:0}
+.view{display:none;padding:16px 18px 26px}
+.view.on{display:block}
+.view-head{display:flex;align-items:flex-end;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.view-head h1{margin:0;font-size:19px;font-weight:600;letter-spacing:-.2px}
+.view-head .sub{color:var(--txt-3);font-size:12px;padding-bottom:2px}
+.view-head .spacer{flex:1}
+
+.card{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden;position:relative}
+.card-h{
+  display:flex;align-items:center;gap:9px;padding:10px 13px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.022),transparent);
+}
+.card-h h3{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.1px}
+.card-h .spacer{flex:1}
+.card-h .hint{font-size:11px;color:var(--txt-3)}
+.card-b{padding:13px}
+.card-b.flush{padding:0}
+
+.grid{display:grid;gap:12px}
+.g-4{grid-template-columns:repeat(4,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-2-1{grid-template-columns:2fr 1fr}
+.g-1-2{grid-template-columns:1fr 2fr}
+@media(max-width:1500px){.g-4{grid-template-columns:repeat(2,1fr)}}
+
+/* KPI */
+.kpi{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius);padding:12px 13px;position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line-2)}
+.kpi.ok::after{background:var(--ok)}
+.kpi.warn::after{background:var(--warn)}
+.kpi.alarm::after{background:var(--alarm)}
+.kpi.info::after{background:var(--primary)}
+.kpi .t{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--txt-3);display:flex;align-items:center;gap:6px}
+.kpi .v{font:600 26px/1.15 "Segoe UI",sans-serif;margin-top:7px;letter-spacing:-.5px}
+.kpi .v small{font-size:13px;color:var(--txt-3);font-weight:400}
+.kpi .d{font-size:11px;color:var(--txt-2);margin-top:4px;display:flex;align-items:center;gap:5px}
+
+/* Статус-точки */
+.sd{width:7px;height:7px;border-radius:50%;display:inline-block;flex:0 0 7px}
+.sd.ok{background:var(--ok);box-shadow:0 0 0 3px rgba(46,168,101,.16)}
+.sd.warn{background:var(--warn);box-shadow:0 0 0 3px rgba(232,163,61,.16)}
+.sd.alarm{background:var(--alarm);box-shadow:0 0 0 3px rgba(229,72,77,.16);animation:pulse 1.5s infinite}
+.sd.off{background:#4a5768}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* Кнопки */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  padding:6px 12px;border-radius:var(--radius-sm);border:none;
+  background:transparent;color:var(--muted);font-size:13px;font-weight:500;transition:all .2s ease;white-space:nowrap;
+}
+.btn:hover{background:var(--hover);color:var(--text)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn.primary{background:var(--accent);color:var(--on-accent);font-weight:500}
+.btn.primary:hover{background:var(--accent-hover);color:var(--on-accent)}
+.btn.danger{background:var(--danger-bg);color:var(--danger-text)}
+.btn.danger:hover{background:var(--danger-border)}
+.btn.ok{background:var(--ok-bg);color:var(--ok-text)}
+.btn.ok:hover{background:var(--ok-border)}
+.btn.ghost{background:transparent}
+.btn.outline{border:2px solid var(--stroke-2);background:transparent;color:var(--text)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+
+/* Чипы / бейджи */
+.chip{
+  display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:11px;
+  font-size:10.5px;font-weight:600;letter-spacing:.2px;border:1px solid transparent;
+}
+.chip.ok{background:rgba(46,168,101,.14);color:#57cf90;border-color:rgba(46,168,101,.28)}
+.chip.warn{background:rgba(232,163,61,.14);color:#efbb72;border-color:rgba(232,163,61,.28)}
+.chip.alarm{background:rgba(229,72,77,.15);color:#ff8b8e;border-color:rgba(229,72,77,.3)}
+.chip.fire{background:rgba(255,86,48,.17);color:#ff9273;border-color:rgba(255,86,48,.35)}
+.chip.info{background:rgba(61,139,253,.14);color:#7fb2ff;border-color:rgba(61,139,253,.28)}
+.chip.mut{background:var(--panel-3);color:var(--txt-2);border-color:var(--line-2)}
+.chip.ext{background:rgba(201,138,43,.13);color:#e0ab5e;border-color:rgba(201,138,43,.3)}
+.chip.violet{background:rgba(125,91,214,.15);color:#a98bec;border-color:rgba(125,91,214,.3)}
+
+/* Таблицы */
+table.tbl{width:100%;border-collapse:collapse;font-size:12px}
+table.tbl th{
+  text-align:left;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.45px;
+  color:var(--txt-3);padding:9px 12px;border-bottom:1px solid var(--line);background:var(--bg-2);
+  position:sticky;top:0;z-index:2;
+}
+table.tbl td{padding:9px 12px;border-bottom:1px solid rgba(38,48,63,.6);vertical-align:middle}
+table.tbl tbody tr{transition:background .12s}
+table.tbl tbody tr:hover{background:rgba(61,139,253,.05)}
+table.tbl tbody tr.sel{background:rgba(61,139,253,.1)}
+.t-mono{font:12px/1.4 var(--mono);color:var(--txt-2)}
+.t-mut{color:var(--txt-3)}
+
+/* ---------- Правая колонка: тревоги + лента ---------- */
+.side{
+  background:var(--tree-bg);border-left:0;
+  display:flex;flex-direction:column;overflow:hidden;min-width:0;
+}
+.side-tabs{display:flex;border-bottom:1px solid var(--line);flex:0 0 auto}
+.side-tabs button{
+  flex:1;padding:10px 6px;font-size:11.5px;color:var(--txt-3);
+  border-bottom:2px solid transparent;transition:.14s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.side-tabs button:hover{color:var(--txt)}
+.side-tabs button.on{color:var(--txt);border-bottom-color:var(--brand);background:rgba(232,72,42,.05)}
+.side-tabs .n{font:700 9.5px/1 var(--mono);background:var(--panel-3);border-radius:8px;padding:2.5px 5px}
+.side-tabs .n.alarm{background:rgba(229,72,77,.2);color:#ff8b8e}
+.side-pane{display:none;flex:1;overflow-y:auto;min-height:0}
+.side-pane.on{display:block}
+
+.alarm-item{padding:11px 13px;border-bottom:1px solid var(--line);border-left:3px solid transparent;cursor:pointer;transition:.13s}
+.alarm-item:hover{background:var(--panel)}
+.alarm-item.fire{border-left-color:var(--fire);background:rgba(255,86,48,.06)}
+.alarm-item.alarm{border-left-color:var(--alarm)}
+.alarm-item.warn{border-left-color:var(--warn)}
+.alarm-item .r1{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.alarm-item .ttl{font-weight:600;font-size:12.5px;flex:1}
+.alarm-item .tm{font:10.5px var(--mono);color:var(--txt-3)}
+.alarm-item .src{font-size:11.5px;color:var(--txt-2);margin-bottom:8px}
+.alarm-item .acts{display:flex;gap:6px;flex-wrap:wrap}
+
+.ev{display:flex;gap:9px;padding:8px 13px;border-bottom:1px solid rgba(38,48,63,.5);font-size:12px;animation:slideIn .3s ease}
+.ev:hover{background:var(--panel)}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.ev .ic{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;flex:0 0 22px;margin-top:1px}
+.ev .bd{flex:1;min-width:0}
+.ev .bd .l1{display:flex;gap:7px;align-items:baseline}
+.ev .bd .l1 b{font-weight:600;font-size:12px}
+.ev .bd .l1 .tm{font:10.5px var(--mono);color:var(--txt-3);margin-left:auto;flex:0 0 auto}
+.ev .bd .l2{color:var(--txt-2);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ic.sip{background:rgba(61,139,253,.16);color:#7fb2ff}
+.ic.acc{background:rgba(46,168,101,.16);color:#5fd694}
+.ic.fire{background:rgba(255,86,48,.18);color:#ff9273}
+.ic.scada{background:rgba(125,91,214,.16);color:#a98bec}
+.ic.video{background:rgba(201,138,43,.16);color:#e0ab5e}
+.ic.park{background:rgba(90,169,199,.16);color:#7cc4dd}
+
+.side-filter{display:flex;gap:5px;padding:9px 11px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:var(--bg-2)}
+.fchip{padding:3px 8px;border-radius:11px;font-size:10.5px;border:1px solid var(--line-2);color:var(--txt-3);transition:.13s}
+.fchip:hover{border-color:#485668;color:var(--txt-2)}
+.fchip.on{background:var(--panel-3);color:var(--txt);border-color:#4a5768}
+
+/* ---------- Нижняя строка состояния ---------- */
+.statusbar{
+  display:flex;align-items:center;gap:18px;padding:0 24px;height:36px;font-size:12px;font-weight:500;color:var(--muted);
+  background:var(--panel-2);border-top:1px solid var(--stroke);
+}
+.statusbar .s{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.statusbar .spacer{flex:1}
+.statusbar b{color:var(--txt-2);font-weight:600}
+.statusbar .demo{display:flex;align-items:center;gap:7px;color:var(--txt-3)}
+.statusbar .demo button{
+  border:1px solid var(--line-2);border-radius:4px;padding:1px 8px;font-size:10.5px;color:var(--txt-2);
+}
+.statusbar .demo button:hover{background:var(--panel-2);color:var(--txt)}
+
+/* ---------- Видеотайлы (векторные сцены, как в Incident Manager) ---------- */
+.vtile,.cam{
+  position:relative;overflow:hidden;border-radius:var(--radius-sm);
+  background:var(--video-bg);border:1px solid var(--stroke);cursor:pointer;
+}
+.vtile{aspect-ratio:16/9}
+.cam{width:100%;height:100%;min-height:0}
+.cam-scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cam::after,.vtile::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,var(--cam-scan) 2px,var(--cam-scan) 4px),
+    radial-gradient(ellipse at 50% 45%,transparent 42%,rgba(2,6,23,.5) 100%);
+}
+.cam-hud,.vtile .ov{
+  position:absolute;inset:0;z-index:2;padding:10px 12px;
+  display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;
+}
+.cam-hud b,.vtile .name{
+  font-size:12px;font-weight:600;color:var(--hud);padding:2px 6px;border-radius:6px;background:rgba(2,6,23,.55);
+}
+.cam-hud span,.vtile .ov .bot span{
+  font-size:11px;font-weight:500;color:var(--hud);padding:2px 6px;border-radius:6px;background:rgba(2,6,23,.55);
+}
+.cam-hud > div,.vtile .ov .top{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.mode-tag{
+  display:inline-flex;font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;
+  padding:2px 6px;border-radius:6px;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--hud);
+}
+.mode-tag.live{color:var(--crit);border-color:var(--crit)}
+.vtile .rec,.cam .rec{display:flex;align-items:center;gap:4px;color:#ff7d7d;font-size:10px;font-weight:600}
+.vtile .rec i,.cam .rec i{width:6px;height:6px;border-radius:50%;background:var(--alarm);animation:pulse 1.6s infinite}
+.vtile:hover,.cam:hover{border-color:var(--accent)}
+.vtile .bbox{position:absolute;z-index:2;border:1.5px solid #4ade80;border-radius:2px}
+.vtile .bbox span{position:absolute;top:-16px;left:-1px;background:#16a34a;color:#04150c;font:700 9px/1 var(--font);padding:3px 4px;border-radius:2px;white-space:nowrap}
+
+.cam-stage{position:relative;display:grid;place-items:stretch;min-height:160px;height:100%}
+.video-wall .cam-stage{min-height:360px}
+.call-video .cam-stage{min-height:0;height:100%}
+.cam-nav{
+  position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;background:rgba(2,6,23,.55);color:#f8fafc;z-index:3;
+}
+.cam-nav:hover{background:rgba(2,6,23,.8)}
+.cam-nav.prev{left:10px}
+.cam-nav.next{right:10px}
+.cam-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 4px 0}
+.call-video .cam-strip{position:absolute;left:10px;right:10px;bottom:8px;z-index:4;padding:0}
+.cam-ticks{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cam-tick{width:28px;height:4px;padding:0;border:0;border-radius:50px;background:var(--stroke-2)}
+.cam-tick:hover{background:var(--faint)}
+.cam-tick.active{background:var(--accent)}
+.cam-counter{font-size:12px;font-weight:500;color:var(--faint)}
+#dashCams .cam,#alarmCam .cam,#parkCam .cam,#cCam .cam{aspect-ratio:16/9;height:auto;min-height:140px}
+
+.layout-bar{display:flex;align-items:center;gap:4px;background:var(--panel-2);border-radius:var(--radius-sm);padding:3px}
+.layout-btn{
+  width:36px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
+  color:var(--muted);padding:0 8px;font-size:12px;font-weight:600;
+}
+.layout-btn:hover{color:var(--text);background:var(--hover)}
+.layout-btn.on{background:var(--accent-dim);color:var(--accent)}
+.layout-btn svg{width:20px;height:16px;display:block}
+.layout-btn[data-lay="all"]{width:auto;min-width:36px;padding:0 10px}
+.video-wall{display:grid;gap:8px;min-height:380px}
+.video-wall.lay-1x1{grid-template-columns:1fr;min-height:460px}
+.video-wall.lay-2x2{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.video-wall.lay-3x3{grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr}
+.video-wall.lay-15{
+  grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;min-height:480px;
+}
+.video-wall.lay-15 .cam-cell:first-child{grid-column:1 / span 2;grid-row:1 / span 2}
+.video-wall.lay-all{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.cam-cell{min-height:0;position:relative}
+.video-wall.lay-1x1 .cam-cell,.video-wall.lay-2x2 .cam-cell,.video-wall.lay-3x3 .cam-cell,.video-wall.lay-15 .cam-cell{height:100%}
+.video-wall.lay-all .cam-cell{aspect-ratio:16/9}
+.alarm-item.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.map-svg{display:block;width:100%;height:auto}
+
+.vtile .scene{display:none}
+
+/* ---------- Блокировка [Р] ---------- */
+.ext-lock{position:absolute;inset:0;background:rgba(10,14,20,.86);backdrop-filter:blur(2.5px);display:none;place-items:center;z-index:5;padding:16px;text-align:center}
+body.basic .ext-lock{display:grid}
+.ext-lock .in{max-width:290px}
+.ext-lock .in .ic{width:38px;height:38px;border-radius:9px;background:rgba(201,138,43,.15);border:1px solid rgba(201,138,43,.32);display:grid;place-items:center;margin:0 auto 9px;color:var(--ext)}
+.ext-lock .in b{display:block;font-size:12.5px;margin-bottom:4px}
+.ext-lock .in p{margin:0 0 10px;font-size:11.5px;color:var(--txt-2);line-height:1.5}
+body.basic .ext-hide{display:none !important}
+body.ext .basic-only{display:none !important}
+
+/* ---------- Модальное окно вызова ---------- */
+.overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(3px);display:none;place-items:center;z-index:200;padding:24px}
+.overlay.on{display:grid;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{width:min(940px,96vw);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--stroke);border-radius:20px;box-shadow:var(--shadow)}
+.modal-h{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.modal-h h2{margin:0;font-size:15px;font-weight:600}
+.modal-h .spacer{flex:1}
+.modal-b{padding:16px}
+
+.call-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}
+@media(max-width:820px){.call-grid{grid-template-columns:1fr}}
+.call-video{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:var(--video-bg);border:1px solid var(--stroke)}
+.call-video .cam{border:0;border-radius:0}
+.call-meta .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(38,48,63,.7);font-size:12.5px}
+.call-meta .row span{color:var(--txt-3)}
+.call-meta .row b{font-weight:600}
+.call-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.call-actions .btn{padding:11px 10px;font-size:12.5px;font-weight:600}
+.call-actions .wide{grid-column:1/-1}
+.ring{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--radius-sm);background:rgba(61,139,253,.1);border:1px solid rgba(61,139,253,.28);margin-bottom:13px}
+.ring .w{width:9px;height:9px;border-radius:50%;background:var(--primary);animation:pulse 1s infinite}
+.ring .t{font-weight:600;font-size:12.5px}
+.ring .timer{margin-left:auto;font:600 14px var(--mono);color:#9dc2ff}
+
+/* ---------- План этажа ---------- */
+.plan-wrap{position:relative;background:var(--map-bg);border-radius:var(--radius);overflow:hidden;border:1px solid var(--stroke)}
+.plan-wrap svg{display:block;width:100%;height:auto}
+.mk{cursor:pointer;transition:.15s}
+.mk:hover{filter:brightness(1.35)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;padding:10px 13px;border-top:1px solid var(--line);font-size:11.5px;color:var(--txt-2);background:var(--bg-2)}
+.legend .i{display:flex;align-items:center;gap:6px}
+.legend .sw{width:11px;height:11px;border-radius:3px}
+
+/* ---------- Прочее ---------- */
+.spark{display:block;width:100%;height:38px}
+.gauge-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(38,48,63,.6)}
+.gauge-row:last-child{border-bottom:none}
+.gauge-row .nm{flex:1;font-size:12px}
+.gauge-row .vl{font:600 13px var(--mono);min-width:74px;text-align:right}
+.bar{height:5px;border-radius:3px;background:var(--panel-3);overflow:hidden;flex:0 0 92px}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--ok)}
+.bar i.warn{background:var(--warn)}
+.bar i.alarm{background:var(--alarm)}
+
+.rule{display:flex;align-items:stretch;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel);margin-bottom:10px}
+.rule .part{padding:11px 13px;flex:1;min-width:0}
+.rule .part.if{border-right:1px solid var(--line);background:rgba(61,139,253,.045)}
+.rule .part .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--txt-3);margin-bottom:5px}
+.rule .part .v{font-size:12.5px}
+.rule .part .v .sub{color:var(--txt-2);font-size:11.5px;margin-top:3px}
+.rule .ctl{display:flex;align-items:center;gap:9px;padding:0 13px;border-left:1px solid var(--line);background:var(--bg-2)}
+.sw-t{width:34px;height:19px;border-radius:11px;background:var(--panel-3);position:relative;transition:.18s;flex:0 0 34px;cursor:pointer}
+.sw-t i{position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#7d8b9c;transition:.18s}
+.sw-t.on{background:rgba(46,168,101,.35)}
+.sw-t.on i{left:17px;background:var(--ok)}
+
+.tree{font-size:12.5px}
+.tree .nd{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-sm);cursor:pointer}
+.tree .nd:hover{background:var(--panel-2)}
+.tree .nd.on{background:var(--panel-3)}
+.tree .lvl1{padding-left:10px;font-weight:600}
+.tree .lvl2{padding-left:26px}
+.tree .lvl3{padding-left:42px;color:var(--txt-2)}
+
+.toasts{position:fixed;right:16px;bottom:48px;display:grid;gap:8px;z-index:300;pointer-events:none}
+.toast{
+  background:var(--panel);border:1px solid var(--stroke);border-left:3px solid var(--ok);
+  border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);
+  animation:toastIn .25s ease;min-width:260px;max-width:400px;font-size:13px;font-weight:500;
+}
+.toast.err{border-left-color:var(--crit)}
+.toast.warn{border-left-color:var(--warn)}
+.toast.info{border-left-color:var(--accent)}
+.toast b{font-size:13px;font-weight:600;display:block}
+.toast span{font-size:12px;color:var(--muted);font-weight:500}
+@keyframes toastIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+
+.wan-banner{
+  display:none;align-items:center;gap:11px;padding:8px 24px;
+  background:var(--break-bg);border-bottom:1px solid var(--break-border);
+  font-size:13px;font-weight:500;color:var(--break-text);
+}
+body.wan-down .wan-banner{display:flex}
+.wan-banner b{color:var(--break-text)}
+
+.empty{padding:34px 20px;text-align:center;color:var(--txt-3);font-size:12.5px}
+.hr{height:1px;background:var(--line);margin:13px 0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:12px}
+.kv .k{color:var(--txt-3)}
+.mini-note{
+  font-size:11px;color:var(--txt-3);line-height:1.55;padding:9px 11px;
+  background:var(--accent-dim);border:1px solid var(--accent-ring);border-radius:var(--radius-sm);
+}
+
+/* ---------- Справка (как в Incident Manager) ---------- */
+.help-overlay{
+  position:fixed;inset:0;background:var(--overlay);display:grid;place-items:center;z-index:50;padding:16px;
+}
+.help-card{
+  width:min(440px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;
+  background:var(--panel);border-radius:20px;padding:24px;
+}
+.help-card.wide{width:min(720px,calc(100% - 32px))}
+.help-card h3{margin:0 0 8px;font-size:18px;font-weight:600}
+.help-card .muted{color:var(--muted);font-size:13px}
+.help-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.keys{width:100%;border-collapse:collapse;margin:12px 0}
+.keys td{padding:8px 0;border-bottom:1px solid var(--stroke);font-size:14px}
+.keys td:first-child{width:110px}
+.doc-table{width:100%;border-collapse:collapse;margin:14px 0 4px;font-size:13px}
+.doc-table th{text-align:left;padding:8px 10px;color:var(--faint);font-size:12px;font-weight:500;border-bottom:1px solid var(--stroke-2)}
+.doc-table td{padding:9px 10px;border-bottom:1px solid var(--stroke);vertical-align:top}
+.doc-table tbody tr:hover{background:var(--panel-2)}
+.doc-table b{color:var(--accent);font-weight:600;white-space:nowrap}
+.doc{margin:14px 0 4px;font-size:13px;line-height:1.55}
+.doc h4{margin:16px 0 6px;font-size:13px;font-weight:600;color:var(--accent)}
+.doc h4:first-child{margin-top:0}
+.doc ol,.doc ul{margin:0;padding-left:20px}
+.doc li{margin:4px 0}
+.doc-figure{margin:14px 0 10px;border:1px solid var(--stroke-2);border-radius:var(--radius);overflow:hidden;background:#f8fafc}
+.doc-figure svg{display:block;width:100%;height:auto}
+.doc-legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12px;color:var(--muted)}
+.doc-legend span{display:inline-flex;align-items:center;gap:7px}
+.doc-legend .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.doc-legend .sw.green{background:#16a34a}
+.doc-legend .sw.red{background:#dc2626}
+.doc-legend .sw.blue{background:#1976d2}
+
+/* ---------- АРМ консьержа (планшет / телефон) ---------- */
+.concierge-shell{
+  display:none;align-items:center;justify-content:center;padding:24px 16px;
+  background:var(--bg);min-height:0;overflow:auto;
+}
+.app.concierge .concierge-shell{display:flex}
+.phone{
+  width:min(420px,100%);height:min(820px,100%);max-height:100%;
+  background:var(--panel);border:1px solid var(--stroke);border-radius:28px;
+  box-shadow:var(--shadow);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden;
+}
+.phone-h{
+  display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--stroke);
+}
+.phone-h .who{flex:1;min-width:0;line-height:1.2}
+.phone-h .who strong{display:block;font-size:14px}
+.phone-h .who span{font-size:12px;color:var(--faint);font-weight:500}
+.phone-b{overflow-y:auto;padding:14px 16px 18px;background:var(--bg)}
+.c-nav{
+  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+  background:var(--panel);border-top:1px solid var(--stroke);
+}
+.c-nav button{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  min-height:56px;padding:6px 4px;border-radius:var(--radius-sm);color:var(--faint);font-size:11px;font-weight:500;
+}
+.c-nav button .material-symbols-outlined{font-size:22px;color:inherit}
+.c-nav button.on{background:var(--accent-dim);color:var(--accent)}
+.c-call{
+  background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:14px;margin-bottom:12px;
+}
+.c-call.ringing{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-ring)}
+.c-door{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--panel);
+  border:1px solid var(--stroke);border-radius:14px;margin-bottom:8px;
+}
+.c-door b{flex:1}
+.c-log{display:flex;flex-direction:column;gap:8px}
+.c-log .item{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:10px 12px}
+.c-log .item .tm{font-size:11px;color:var(--faint);font-weight:500}
+
+@media (max-width:720px){
+  .topbar{flex-wrap:nowrap;gap:8px;padding:8px 12px}
+  .brand{min-width:0;padding-right:8px}
+  .brand .names,.clock,.search-wrapper,.obj-picker,.seg,.duty{display:none}
+  .topbar-cluster{padding:0;flex:0}
+  .user-btn{padding:4px 4px 4px 8px;margin:0}
+  .operator-meta{display:none}
+  .mid{grid-template-columns:minmax(0,1fr)}
+  .rail,#splitRail,#splitSide,.side,.statusbar .demo{display:none}
+  .icon-btn{width:44px;height:44px}
+  .phone{width:100%;height:100%;max-height:none;border:0;border-radius:0;box-shadow:none}
+  .concierge-shell{padding:0}
+  .help-card,.help-card.wide{width:calc(100% - 16px);border-radius:16px;padding:18px}
+}
+</style>
+</head>
+<body class="ext">
+
+<div class="app" id="app">
+
+  <!-- ======================= ВЕРХНЯЯ ПАНЕЛЬ ======================= -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div class="names">
+        <div class="app-name">Экосистема управления МКД</div>
+        <div class="vendor">ITV | AxxonSoft</div>
+      </div>
+    </div>
+
+    <div class="topbar-cluster">
+      <button type="button" class="icon-btn on" id="toggleRail" title="Меню разделов" aria-pressed="true" onclick="toggleRail()">
+        <span class="material-symbols-outlined">left_panel_close</span>
+      </button>
+      <button type="button" class="icon-btn on" id="toggleSideBtn" title="Панель тревог и событий" aria-pressed="true" onclick="toggleSide()">
+        <span class="material-symbols-outlined">right_panel_close</span>
+      </button>
+
+      <div class="obj-picker" onclick="toast('info','Выбор объекта','В прототипе доступен один объект: ЖК «Северный парк»')">
+        <span class="material-symbols-outlined" style="font-size:18px;color:var(--faint)">apartment</span>
+        <div>
+          <div class="lbl">Объект</div>
+          <div class="val">ЖК «Северный парк» · корпус 3</div>
+        </div>
+        <span class="material-symbols-outlined" style="font-size:18px;color:var(--faint)">expand_more</span>
+      </div>
+
+      <div class="search-wrapper">
+        <span class="material-symbols-outlined">search</span>
+        <input id="globalSearch" placeholder="Поиск: квартира, панель, автономер, событие…">
+        <kbd>Ctrl K</kbd>
+      </div>
+    </div>
+
+    <div class="top-right">
+      <div class="seg dispatcher-only" title="Конфигурация поставки согласно §0 концепции">
+        <button type="button" id="cfgBasic" onclick="setConfig('basic')">Базовая</button>
+        <button type="button" id="cfgExt" class="on ext" onclick="setConfig('ext')">Расширенная [Р]</button>
+      </div>
+
+      <button type="button" class="icon-btn dispatcher-only" title="Тревоги" onclick="openSide('alarms')">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="dot" id="alarmDot">3</span>
+      </button>
+
+      <button type="button" class="icon-btn theme-btn" id="themeToggle" title="Тёмная тема" aria-label="Тёмная тема" aria-pressed="false">
+        <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <path d="M12 1.4v2.4M12 20.2v2.4M1.4 12h2.4M20.2 12h2.4M4.4 4.4l1.7 1.7M17.9 17.9l1.7 1.7M19.6 4.4l-1.7 1.7M6.1 17.9l-1.7 1.7"/>
+          </g>
+          <circle cx="12" cy="12" r="5.7" fill="none" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M12 6.3a5.7 5.7 0 0 0 0 11.4z" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <div class="menu" id="helpMenu">
+        <button type="button" class="icon-btn" id="helpBtn" aria-haspopup="menu" aria-expanded="false" title="Справка и полезные ссылки">
+          <span class="material-symbols-outlined">help</span>
+        </button>
+        <div class="menu-pop" role="menu" hidden>
+          <button type="button" class="menu-item" id="hotkeysBtn" role="menuitem">
+            <span class="material-symbols-outlined">keyboard</span>
+            Горячие клавиши
+            <kbd>?</kbd>
+          </button>
+          <div class="menu-sep"></div>
+          <div class="menu-label">Регламенты и контакты</div>
+          <button type="button" class="menu-item" role="menuitem" data-doc="modalContacts">
+            <span class="material-symbols-outlined">contact_phone</span>
+            Телефоны ответственных
+          </button>
+          <button type="button" class="menu-item" role="menuitem" data-doc="modalRegulation">
+            <span class="material-symbols-outlined">description</span>
+            Регламент диспетчера УК
+          </button>
+          <button type="button" class="menu-item" role="menuitem" data-doc="modalEvacuation">
+            <span class="material-symbols-outlined">map</span>
+            Схема эвакуации корпуса 3
+          </button>
+          <button type="button" class="menu-item" role="menuitem" data-doc="modalEmergency">
+            <span class="material-symbols-outlined">local_police</span>
+            Контакты МЧС и полиции
+          </button>
+        </div>
+      </div>
+
+      <div class="clock">
+        <span id="clockTime">00:00:00</span>
+        <small id="clockDate">—</small>
+      </div>
+
+      <div class="menu" id="userMenu">
+        <button type="button" class="user-btn" id="userBtn" aria-haspopup="menu" aria-expanded="false">
+          <div class="avatar" id="userAvatar">ИП</div>
+          <span class="operator-meta">
+            <strong id="userName">Ирина Полякова</strong>
+            <span id="userRole">Диспетчер УК · смена 08:00–20:00</span>
+          </span>
+          <span class="duty" id="dutyBadge">На смене</span>
+          <span class="material-symbols-outlined chevron">expand_more</span>
+        </button>
+        <div class="menu-pop wide" role="menu" hidden>
+          <button type="button" class="menu-item" id="roleBtn" role="menuitem">
+            <span class="material-symbols-outlined">smartphone</span>
+            <span id="roleBtnLabel">Перейти в АРМ консьержа</span>
+            <kbd>⇧C</kbd>
+          </button>
+          <button type="button" class="menu-item" id="breakBtn" role="menuitem">
+            <span class="material-symbols-outlined">coffee</span>
+            <span id="breakBtnLabel">Уйти на перерыв</span>
+            <kbd>B</kbd>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="break-banner" id="breakBanner">
+    События удерживаются в очереди диспетчера. Статус смены: перерыв. Новые вызовы на это рабочее место не назначаются.
+  </div>
+
+  <div class="mid" id="mid">
+
+    <!-- ======================= ЛЕВОЕ МЕНЮ ======================= -->
+    <nav class="rail" id="rail">
+      <div class="rail-scroll">
+        <div class="group-title">Оперативная работа</div>
+        <div class="nav-item on" data-view="dash" onclick="go('dash')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          <span class="cap">Оперативная обстановка</span>
+        </div>
+        <div class="nav-item" data-view="calls" onclick="go('calls')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
+          <span class="cap">Вызовы и домофония</span>
+          <span class="cnt live" id="navCalls">1</span>
+        </div>
+        <div class="nav-item" data-view="alarms" onclick="go('alarms')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h16.9a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          <span class="cap">Тревоги и ОПС</span>
+          <span class="cnt alarm" id="navAlarms">3</span>
+        </div>
+        <div class="nav-item" data-view="plan" onclick="go('plan')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 20l-6-3V4l6 3m0 13l6-3m-6 3V7m6 10l6 3V7l-6-3m0 13V4"/></svg>
+          <span class="cap">Планы этажей</span>
+        </div>
+        <div class="nav-item" data-view="log" onclick="go('log')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+          <span class="cap">Журнал событий</span>
+        </div>
+
+        <div class="group-title">Подсистемы</div>
+        <div class="nav-item" data-view="video" onclick="go('video')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <span class="cap">Видеонаблюдение</span>
+          <span class="tag-ext">Р</span>
+        </div>
+        <div class="nav-item" data-view="access" onclick="go('access')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+          <span class="cap">Доступ и СКУД</span>
+        </div>
+        <div class="nav-item" data-view="scada" onclick="go('scada')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l5-6 4 4 4-7 5 9"/><path d="M3 21h18"/></svg>
+          <span class="cap">Инженерия (SCADA)</span>
+          <span class="cnt" id="navScada">1</span>
+        </div>
+        <div class="nav-item" data-view="parking" onclick="go('parking')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M9 16V8h3.5a2.5 2.5 0 010 5H9"/></svg>
+          <span class="cap">Паркинг и въезд</span>
+        </div>
+
+        <div class="group-title">Администрирование</div>
+        <div class="nav-item" data-view="devices" onclick="go('devices')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+          <span class="cap">Устройства и плагины</span>
+        </div>
+        <div class="nav-item" data-view="rules" onclick="go('rules')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6a3 3 0 003 3h6"/></svg>
+          <span class="cap">Сценарии ЕСЛИ → ТО</span>
+        </div>
+        <div class="nav-item" data-view="residents" onclick="go('residents')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9"/></svg>
+          <span class="cap">Жильцы и аккаунты</span>
+        </div>
+      </div>
+      <div class="rail-foot" onclick="toggleRail()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="rail-foot-txt">Свернуть меню</span>
+      </div>
+    </nav>
+
+    <div class="splitter col" id="splitRail" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Ширина меню" title="Потяните, чтобы изменить ширину. Двойной щелчок — вернуть по умолчанию"></div>
+
+    <!-- ======================= ОСНОВНАЯ ОБЛАСТЬ ======================= -->
+    <main class="main" id="main">
+
+      <div class="wan-banner">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f0c274" stroke-width="1.8"><path d="M1 1l22 22M16.7 12.7A6 6 0 0012 11M5 12.5a10 10 0 015.2-2.4M2 8.8a15 15 0 014.5-2.6M20.9 8.7a15 15 0 00-6-3.5M12 20h.01"/></svg>
+        <div><b>Локальный резервный SIP-контур активен.</b> Связь с облаком потеряна 00:00:41 назад. Домофония «панель ↔ квартира» и открытие двери работают локально. Push на устройства вне сети дома, гостевые коды и журнал в облаке — недоступны, события буферизуются.</div>
+      </div>
+
+      <!-- ============ ОПЕРАТИВНАЯ ОБСТАНОВКА ============ -->
+      <section class="view on" id="view-dash">
+        <div class="view-head">
+          <h1>Оперативная обстановка</h1>
+          <div class="sub">Обзорный экран смены · обновление в реальном времени</div>
+          <div class="spacer"></div>
+          <button class="btn sm" onclick="simulateCall()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Демо: входящий вызов
+          </button>
+          <button class="btn sm" onclick="simulateFire()">Демо: тревога ОПС</button>
+        </div>
+
+        <div class="grid g-4" style="margin-bottom:12px">
+          <div class="kpi ok">
+            <div class="t"><span class="sd ok"></span>SIP-устройства онлайн</div>
+            <div class="v">248 <small>/ 254</small></div>
+            <div class="d">6 офлайн · 2 панели, 4 абонента</div>
+          </div>
+          <div class="kpi info">
+            <div class="t"><span class="sd ok"></span>Активные вызовы</div>
+            <div class="v" id="kpiCalls">1</div>
+            <div class="d">за сутки: 87 · среднее соединение 2.1 с</div>
+          </div>
+          <div class="kpi alarm">
+            <div class="t"><span class="sd alarm"></span>Активные тревоги</div>
+            <div class="v" id="kpiAlarms">3</div>
+            <div class="d">1 пожар · 1 неисправность · 1 связь</div>
+          </div>
+          <div class="kpi warn">
+            <div class="t"><span class="sd warn"></span>Заявки в работе</div>
+            <div class="v">12 <small>/ 4 просрочено</small></div>
+            <div class="d">лифт П2 · ИТП · освещение двора</div>
+          </div>
+        </div>
+
+        <div class="grid g-2-1" style="margin-bottom:12px">
+          <div class="card">
+            <div class="card-h">
+              <span class="sd alarm"></span>
+              <h3>Активные вызовы и последние обращения</h3>
+              <div class="spacer"></div>
+              <span class="hint">источник: события ядра (WebSocket/SSE)</span>
+            </div>
+            <div class="card-b flush">
+              <table class="tbl">
+                <thead><tr><th style="width:96px">Время</th><th>Панель</th><th>Абонент</th><th>Состояние</th><th style="width:150px">Действия</th></tr></thead>
+                <tbody id="callsTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h">
+              <h3>Состояние облачного ядра</h3>
+              <div class="spacer"></div>
+              <span class="chip ok">Норма</span>
+            </div>
+            <div class="card-b">
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Kamailio · регистрации</span><span class="vl">254</span></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Успешных INVITE</span><span class="vl" style="color:#57cf90">99.2 %</span></div>
+              <div class="gauge-row"><span class="sd warn"></span><span class="nm">RTP-порты RTPEngine</span><div class="bar"><i class="warn" style="width:74%"></i></div><span class="vl">74 / 100</span></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Доставка push APNS/FCM</span><span class="vl">98.7 %</span></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Расхождений провижининга</span><span class="vl">0</span></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Локальный резерв объекта</span><span class="vl" style="font-size:11.5px;color:#57cf90">Готов</span></div>
+              <div class="hr"></div>
+              <div class="mini-note">Показатели соответствуют минимальному набору метрик мониторинга из §7.5: регистрации, доля неуспешных INVITE, недоставленные push, свободные RTP-порты, расхождения провижининга.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid g-2" style="margin-bottom:12px">
+          <div class="card">
+            <div class="card-h">
+              <h3>Камеры объекта</h3>
+              <span class="chip ext">Р</span>
+              <div class="spacer"></div>
+              <button class="btn sm ghost" onclick="openVideo(null,'all')">Все камеры →</button>
+            </div>
+            <div class="card-b">
+              <div class="grid g-2" id="dashCams"></div>
+            </div>
+            <div class="ext-lock">
+              <div class="in">
+                <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+                <b>Требуется расширенная конфигурация</b>
+                <p>Live-видео, архив и аналитика доступны при подключённом видеомодуле (VMS). В базовой конфигурации оператору доступно превью панели по RTSP/snapshot в карточке устройства.</p>
+                <button class="btn sm" onclick="setConfig('ext')">Включить расширенную (демо)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h">
+              <h3>Инженерные системы · критические параметры</h3>
+              <div class="spacer"></div>
+              <span class="chip warn">1 отклонение</span>
+            </div>
+            <div class="card-b">
+              <div class="grid g-2" style="gap:10px">
+                <div>
+                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">ИТП · подача Т1</div>
+                  <div style="font:600 19px var(--mono);color:#57cf90">72.4 <span style="font-size:12px;color:var(--txt-3)">°C</span></div>
+                  <svg class="spark" id="sp1"></svg>
+                </div>
+                <div>
+                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Давление ХВС</div>
+                  <div style="font:600 19px var(--mono);color:#efbb72">3.1 <span style="font-size:12px;color:var(--txt-3)">бар</span></div>
+                  <svg class="spark" id="sp2"></svg>
+                </div>
+                <div>
+                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Потребление э/э</div>
+                  <div style="font:600 19px var(--mono)">184 <span style="font-size:12px;color:var(--txt-3)">кВт·ч</span></div>
+                  <svg class="spark" id="sp3"></svg>
+                </div>
+                <div>
+                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Расход ХВС</div>
+                  <div style="font:600 19px var(--mono)">2.7 <span style="font-size:12px;color:var(--txt-3)">м³/ч</span></div>
+                  <svg class="spark" id="sp4"></svg>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Лифт П1 · этаж 7, движение вниз</span><span class="chip ok">Норма</span></div>
+              <div class="gauge-row"><span class="sd alarm"></span><span class="nm">Лифт П2 · останов между этажами 4–5</span><span class="chip alarm">Авария</span></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Насос ХВС №1 · в работе</span><span class="chip ok">Норма</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid g-3">
+          <div class="card">
+            <div class="card-h"><h3>Доступ за последний час</h3></div>
+            <div class="card-b">
+              <div class="gauge-row"><span class="nm">Открытий из приложения</span><span class="vl">34</span></div>
+              <div class="gauge-row"><span class="nm">По коду / QR (гости)</span><span class="vl">7</span></div>
+              <div class="gauge-row"><span class="nm">Из вызова (DTMF)</span><span class="vl">11</span></div>
+              <div class="gauge-row"><span class="nm">Оператором вручную</span><span class="vl">3</span></div>
+              <div class="gauge-row"><span class="nm">Отказов в доступе</span><span class="vl" style="color:#ff8b8e">2</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3>Паркинг</h3><div class="spacer"></div><span class="chip info">42 / 60 занято</span></div>
+            <div class="card-b">
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Шлагбаум въезд</span><span class="chip mut">Закрыт</span></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Шлагбаум выезд</span><span class="chip mut">Закрыт</span></div>
+              <div class="gauge-row"><span class="sd ok"></span><span class="nm">LPR-камера въезда <span class="chip ext" style="margin-left:4px">Р</span></span><span class="chip ok">Активна</span></div>
+              <div class="hr"></div>
+              <div class="t-mono" style="font-size:11.5px">
+                <div>10:12:04 · <b style="color:#7cc4dd">А123ВС 77</b> · белый список · кв. 214</div>
+                <div>10:08:47 · <b style="color:#7cc4dd">Е777КХ 77</b> · гостевой QR · кв. 106</div>
+                <div>09:55:12 · <b style="color:#ff8b8e">Х004ММ 50</b> · нет в списках · отказ</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3>Смена и регламент</h3></div>
+            <div class="card-b">
+              <div class="kv">
+                <div class="k">Оператор</div><div>Полякова И. · Диспетчер УК</div>
+                <div class="k">Смена</div><div>08:00 – 20:00 (осталось 9 ч 22 м)</div>
+                <div class="k">Обработано тревог</div><div>7 из 10</div>
+                <div class="k">Среднее время реакции</div><div>00:41</div>
+                <div class="k">Не подтверждено</div><div style="color:#ff8b8e">3 тревоги</div>
+              </div>
+              <div class="hr"></div>
+              <button class="btn sm" style="width:100%" onclick="toast('info','Передача смены','Форма передачи смены — вне объёма прототипа')">Передать смену</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ВЫЗОВЫ ============ -->
+      <section class="view" id="view-calls">
+        <div class="view-head">
+          <h1>Вызовы и домофония</h1>
+          <div class="sub">Активные вызовы, история, SIP-дерево объекта</div>
+          <div class="spacer"></div>
+          <button class="btn sm" onclick="simulateCall()">Демо: входящий вызов</button>
+          <button class="btn sm primary" onclick="toast('warn','Исходящий вызов','Call control из UI (POST /calls/outgoing) — доработка этапа 6 согласно §2.3')">Позвонить в квартиру</button>
+        </div>
+
+        <div class="grid g-1-2" style="margin-bottom:12px">
+          <div class="card">
+            <div class="card-h"><h3>Дерево адресов объекта</h3></div>
+            <div class="card-b flush">
+              <div class="tree" style="padding:7px 5px" id="sipTree"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h">
+              <span class="sd alarm"></span><h3>Активные вызовы</h3>
+              <div class="spacer"></div>
+              <span class="hint">канал событий: WebSocket · correlation ID = SIP Call-ID</span>
+            </div>
+            <div class="card-b flush">
+              <table class="tbl">
+                <thead><tr><th style="width:92px">Начало</th><th>Панель</th><th>Абонент</th><th>Состояние</th><th style="width:74px">Длит.</th><th style="width:132px">Действия</th></tr></thead>
+                <tbody id="activeCallsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h">
+            <h3>История вызовов</h3>
+            <div class="spacer"></div>
+            <span class="chip ext ext-hide">Р — привязка к видеофрагменту</span>
+            <button class="btn sm ghost">Экспорт CSV</button>
+          </div>
+          <div class="card-b flush">
+            <table class="tbl">
+              <thead><tr><th style="width:132px">Время</th><th>Панель</th><th>Квартира / абонент</th><th>Устройство ответа</th><th>Результат</th><th>Длит.</th><th style="width:180px">Действия</th></tr></thead>
+              <tbody id="callHistory"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ТРЕВОГИ ============ -->
+      <section class="view" id="view-alarms">
+        <div class="view-head">
+          <h1>Тревоги и пожарная сигнализация</h1>
+          <div class="sub">Обработка по регламенту · подтверждение и сброс</div>
+          <div class="spacer"></div>
+          <button class="btn sm" onclick="ackAll()">Подтвердить все</button>
+        </div>
+
+        <div class="grid g-4" style="margin-bottom:12px">
+          <div class="kpi alarm"><div class="t">Пожар</div><div class="v" id="cntFire">1</div><div class="d">Подъезд 2 · 7 этаж</div></div>
+          <div class="kpi warn"><div class="t">Неисправность</div><div class="v">1</div><div class="d">ШС-9 · обрыв линии</div></div>
+          <div class="kpi warn"><div class="t">Связь / устройства</div><div class="v">1</div><div class="d">Панель П3 офлайн 14 мин</div></div>
+          <div class="kpi ok"><div class="t">Подтверждено за смену</div><div class="v">7</div><div class="d">среднее время реакции 41 с</div></div>
+        </div>
+
+        <div class="grid g-2-1">
+          <div class="card">
+            <div class="card-h"><h3>Очередь тревог</h3><div class="spacer"></div><span class="hint">сортировка: приоритет → время</span></div>
+            <div class="card-b flush">
+              <table class="tbl">
+                <thead><tr><th style="width:80px">Время</th><th style="width:110px">Приоритет</th><th>Событие</th><th>Источник</th><th style="width:250px">Реагирование</th></tr></thead>
+                <tbody id="alarmTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><h3>Карточка реагирования</h3></div>
+            <div class="card-b" id="alarmCard"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ПЛАНЫ ЭТАЖЕЙ ============ -->
+      <section class="view" id="view-plan">
+        <div class="view-head">
+          <h1>Интерактивный план этажа</h1>
+          <div class="sub">Корпус 3 · подъезд 2 · 7 этаж</div>
+          <div class="spacer"></div>
+          <div class="seg" id="planTabs">
+            <button type="button" class="on" data-plan="floor7">7 этаж</button>
+            <button type="button" data-plan="parking">Паркинг −1</button>
+            <button type="button" data-plan="yard">Двор</button>
+          </div>
+        </div>
+
+        <div class="grid g-2-1">
+          <div class="card">
+            <div class="card-h"><h3>План · подъезд 2, этаж 7</h3><div class="spacer"></div><span class="hint">клик по маркеру — карточка устройства</span></div>
+            <div class="plan-wrap">
+              <div id="planRoot"></div>
+              <div class="legend">
+                <div class="i"><span class="sw" style="background:var(--fire)"></span>ОПС — тревога</div>
+                <div class="i"><span class="sw" style="background:var(--ok)"></span>ОПС — норма</div>
+                <div class="i"><span class="sw" style="background:var(--primary)"></span>Точка доступа / панель</div>
+                <div class="i ext-hide"><span class="sw" style="background:var(--ext)"></span>Камера [Р]</div>
+                <div class="i"><span class="sw" style="background:var(--info)"></span>Инженерный датчик</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><h3>Карточка объекта на плане</h3></div>
+            <div class="card-b" id="planCard"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ЖУРНАЛ ============ -->
+      <section class="view" id="view-log">
+        <div class="view-head">
+          <h1>Единый журнал событий</h1>
+          <div class="sub">Все подсистемы в одной ленте · сквозной correlation ID</div>
+          <div class="spacer"></div>
+          <button class="btn sm ghost">Экспорт</button>
+        </div>
+
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-b" style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+            <div class="searchbox" style="max-width:280px;flex:0 0 280px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="color:var(--txt-3)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input placeholder="Поиск по описанию, Call-ID, номеру…" oninput="renderLog(this.value)">
+            </div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap">
+              <button class="fchip on" data-t="all" onclick="logFilter(this,'all')">Все</button>
+              <button class="fchip" data-t="sip" onclick="logFilter(this,'sip')">SIP / Домофония</button>
+              <button class="fchip" data-t="acc" onclick="logFilter(this,'acc')">Доступ</button>
+              <button class="fchip" data-t="fire" onclick="logFilter(this,'fire')">Пожар / ОПС</button>
+              <button class="fchip" data-t="scada" onclick="logFilter(this,'scada')">SCADA</button>
+              <button class="fchip" data-t="park" onclick="logFilter(this,'park')">Паркинг</button>
+              <button class="fchip ext-hide" data-t="video" onclick="logFilter(this,'video')">Видео [Р]</button>
+            </div>
+            <div class="spacer" style="flex:1"></div>
+            <select class="btn sm" style="background:var(--panel-2)">
+              <option>Сегодня</option><option>Последние 24 часа</option><option>Неделя</option><option>Произвольный период</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-b flush" style="max-height:calc(100vh - 290px);overflow:auto">
+            <table class="tbl">
+              <thead><tr><th style="width:118px">Время</th><th style="width:130px">Тип</th><th>Событие</th><th style="width:190px">Источник</th><th style="width:160px">Инициатор</th><th style="width:180px">Действия</th></tr></thead>
+              <tbody id="logTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ВИДЕО [Р] ============ -->
+      <section class="view" id="view-video">
+        <div class="view-head">
+          <h1>Видеонаблюдение</h1>
+          <span class="chip ext">Расширенная конфигурация</span>
+          <div class="sub" id="videoSub">Подключённый видеомодуль · Интеллект X / Axxon One</div>
+          <div class="spacer"></div>
+          <div class="layout-bar" id="layoutBar" title="Раскладка монитора">
+            <button type="button" class="layout-btn" data-lay="1x1" title="1×1 — однокадровый">
+              <svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="1.2" y="1.2" width="17.6" height="13.6" rx="1.6"/></svg>
+            </button>
+            <button type="button" class="layout-btn on" data-lay="2x2" title="2×2">
+              <svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="8.2" height="6.2" rx="1"/><rect x="10.8" y="1" width="8.2" height="6.2" rx="1"/><rect x="1" y="8.8" width="8.2" height="6.2" rx="1"/><rect x="10.8" y="8.8" width="8.2" height="6.2" rx="1"/></svg>
+            </button>
+            <button type="button" class="layout-btn" data-lay="15" title="6 (1+5)">
+              <svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="1" y="1" width="11.4" height="9.2" rx="1"/>
+                <rect x="13.2" y="1" width="5.6" height="4.2" rx=".7"/>
+                <rect x="13.2" y="6" width="5.6" height="4.2" rx=".7"/>
+                <rect x="1" y="11" width="5.4" height="4" rx=".7"/>
+                <rect x="7.3" y="11" width="5.4" height="4" rx=".7"/>
+                <rect x="13.6" y="11" width="5.4" height="4" rx=".7"/>
+              </svg>
+            </button>
+            <button type="button" class="layout-btn" data-lay="3x3" title="3×3">
+              <svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="1" y="1" width="5.4" height="4" rx=".7"/><rect x="7.3" y="1" width="5.4" height="4" rx=".7"/><rect x="13.6" y="1" width="5.4" height="4" rx=".7"/>
+                <rect x="1" y="6" width="5.4" height="4" rx=".7"/><rect x="7.3" y="6" width="5.4" height="4" rx=".7"/><rect x="13.6" y="6" width="5.4" height="4" rx=".7"/>
+                <rect x="1" y="11" width="5.4" height="4" rx=".7"/><rect x="7.3" y="11" width="5.4" height="4" rx=".7"/><rect x="13.6" y="11" width="5.4" height="4" rx=".7"/>
+              </svg>
+            </button>
+            <button type="button" class="layout-btn" data-lay="all" title="Все камеры">Все</button>
+          </div>
+          <div class="seg" id="videoModeSeg">
+            <button type="button" class="on" data-vmode="live">Online</button>
+            <button type="button" data-vmode="archive">Архив</button>
+          </div>
+        </div>
+        <div class="card" style="min-height:420px">
+          <div class="card-b">
+            <div id="videoWall" class="video-wall lay-2x2"></div>
+            <div id="camStrip" class="cam-strip" hidden></div>
+            <div class="hr"></div>
+            <div class="mini-note">Связи объект ↔ камера: 1+1, 1+N, N+1, N+N. Если к объекту привязано несколько камер, в однокадровом режиме работает карусель (← →), как на рабочем месте Incident Manager.</div>
+          </div>
+          <div class="ext-lock">
+            <div class="in">
+              <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+              <b>Видеомодуль не подключён</b>
+              <p>Раздел доступен в расширенной конфигурации. Базовая конфигурация продаётся без лицензий видеоплатформы; видео и аналитика — апсейл.</p>
+              <button class="btn sm" onclick="setConfig('ext')">Включить расширенную (демо)</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ДОСТУП ============ -->
+      <section class="view" id="view-access">
+        <div class="view-head">
+          <h1>Доступ и СКУД</h1>
+          <div class="sub">Точки доступа, гостевые коды, служебные зоны</div>
+          <div class="spacer"></div>
+          <button class="btn sm primary" onclick="toast('ok','Гостевой код создан','PIN 4821 · действует 4 часа · 1 проход · подъезд 2')">Выдать гостевой код</button>
+        </div>
+
+        <div class="grid g-2-1">
+          <div class="card">
+            <div class="card-h"><h3>Точки доступа объекта</h3><div class="spacer"></div><span class="hint">открытие вне звонка: REST unlock → драйвер панели</span></div>
+            <div class="card-b flush">
+              <table class="tbl">
+                <thead><tr><th>Точка доступа</th><th>Устройство</th><th>Способ открытия</th><th>Состояние</th><th style="width:210px">Управление</th></tr></thead>
+                <tbody id="doorsTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><h3>Активные гостевые коды</h3></div>
+            <div class="card-b flush">
+              <table class="tbl">
+                <thead><tr><th>Код</th><th>Кому</th><th>Осталось</th></tr></thead>
+                <tbody>
+                  <tr><td class="t-mono">PIN 7734</td><td>Курьер · кв. 214<div class="t-mut" style="font-size:11px">подъезд 2, дверь</div></td><td><span class="chip warn">28 мин</span></td></tr>
+                  <tr><td class="t-mono">QR ·  a7f2…</td><td>Гость · кв. 106<div class="t-mut" style="font-size:11px">калитка двора + подъезд 1</div></td><td><span class="chip ok">3 ч 12 м</span></td></tr>
+                  <tr><td class="t-mono">PIN 1190</td><td>Сервис лифта<div class="t-mut" style="font-size:11px">техпомещение −1</div></td><td><span class="chip ok">1 сутки</span></td></tr>
+                  <tr><td class="t-mono">QR · c31b…</td><td>Доставка · кв. 703<div class="t-mut" style="font-size:11px">1 проход</div></td><td><span class="chip warn">9 мин</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SCADA ============ -->
+      <section class="view" id="view-scada">
+        <div class="view-head">
+          <h1>Инженерные системы</h1>
+          <div class="sub">Диспетчеризация · ИТП, лифты, водоснабжение, энергоучёт</div>
+          <div class="spacer"></div>
+          <span class="chip warn">Опрос критичных тегов ≤ 1 с</span>
+        </div>
+
+        <div class="grid g-2-1" style="margin-bottom:12px">
+          <div class="card">
+            <div class="card-h"><h3>Мнемосхема ИТП</h3><div class="spacer"></div><button class="btn sm ghost ext-hide" onclick="openLinkedVideo('itp')">Камеры ИТП</button><span class="chip ok">В работе</span></div>
+            <div class="plan-wrap">
+              <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI">
+                <rect width="900" height="340" fill="#0b1017"/>
+                <!-- трубы -->
+                <g stroke-width="7" fill="none" stroke-linecap="round">
+                  <path d="M60 90 H360 V150 H620" stroke="#c0483f"/>
+                  <path d="M60 250 H360 V190 H620" stroke="#3d6ea8"/>
+                </g>
+                <text x="70" y="76" fill="#e08c84" font-size="12">Т1 подача · 72.4 °C</text>
+                <text x="70" y="278" fill="#8ab0dd" font-size="12">Т2 обратка · 46.1 °C</text>
+                <!-- теплообменник -->
+                <rect x="620" y="110" width="130" height="120" rx="6" fill="#151f2e" stroke="#3f5061" stroke-width="2"/>
+                <g stroke="#3f5061" stroke-width="2" fill="none">
+                  <path d="M634 130 h100 M634 150 h100 M634 170 h100 M634 190 h100 M634 210 h100"/>
+                </g>
+                <text x="685" y="100" fill="#9aa8ba" font-size="12" text-anchor="middle">Теплообменник</text>
+                <!-- насосы -->
+                <g onclick="openLinkedVideo('itp')" style="cursor:pointer">
+                  <circle cx="360" cy="90" r="24" fill="#152a1e" stroke="#2ea865" stroke-width="2.5"/>
+                  <path d="M352 90l14-8v16z" fill="#2ea865"/>
+                  <text x="360" y="46" fill="#57cf90" font-size="12" text-anchor="middle">Н1 · работа</text>
+                </g>
+                <g onclick="openLinkedVideo('itp')" style="cursor:pointer">
+                  <circle cx="360" cy="250" r="24" fill="#1a2331" stroke="#5c6a7d" stroke-width="2.5"/>
+                  <path d="M352 250l14-8v16z" fill="#5c6a7d"/>
+                  <text x="360" y="298" fill="#8b98a9" font-size="12" text-anchor="middle">Н2 · резерв</text>
+                </g>
+                <!-- датчики -->
+                <g><circle cx="200" cy="90" r="9" fill="#2ea865"/><text x="200" y="66" fill="#57cf90" font-size="11" text-anchor="middle">TT-01</text></g>
+                <g><circle cx="200" cy="250" r="9" fill="#2ea865"/><text x="200" y="230" fill="#57cf90" font-size="11" text-anchor="middle">TT-02</text></g>
+                <g><circle cx="500" cy="150" r="9" fill="#e8a33d"/><text x="500" y="130" fill="#efbb72" font-size="11" text-anchor="middle">PT-03 · 3.1 бар</text></g>
+                <!-- узел учёта -->
+                <rect x="780" y="120" width="90" height="100" rx="6" fill="#151f2e" stroke="#3f5061" stroke-width="2"/>
+                <text x="825" y="160" fill="#dde5ef" font-size="15" text-anchor="middle" font-family="monospace">184</text>
+                <text x="825" y="178" fill="#6b7889" font-size="10" text-anchor="middle">кВт·ч</text>
+                <text x="825" y="110" fill="#9aa8ba" font-size="12" text-anchor="middle">Узел учёта</text>
+              </svg>
+              <div class="legend">
+                <div class="i"><span class="sw" style="background:#c0483f"></span>Подача Т1</div>
+                <div class="i"><span class="sw" style="background:#3d6ea8"></span>Обратка Т2</div>
+                <div class="i"><span class="sw" style="background:var(--ok)"></span>Норма</div>
+                <div class="i"><span class="sw" style="background:var(--warn)"></span>Выход за уставку</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><h3>Теги и уставки</h3><div class="spacer"></div><span class="hint">Modbus TCP</span></div>
+            <div class="card-b flush">
+              <table class="tbl">
+                <thead><tr><th>Тег</th><th>Значение</th><th>Уставка</th><th style="width:110px"></th></tr></thead>
+                <tbody id="tagsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h3>Лифтовое оборудование</h3><div class="spacer"></div><span class="chip alarm">1 авария</span></div>
+          <div class="card-b flush">
+            <table class="tbl">
+              <thead><tr><th>Лифт</th><th>Этаж</th><th>Направление</th><th>Двери</th><th>Состояние</th><th style="width:200px">Действия</th></tr></thead>
+              <tbody>
+                <tr><td><b>П1 · Л1</b></td><td class="t-mono">7</td><td>вниз</td><td>закрыты</td><td><span class="chip ok">Норма</span></td><td><button class="btn sm ghost" onclick="toast('info','Связь с кабиной','SIP-вызов на переговорное устройство кабины П1·Л1')">Связь</button> <button class="btn sm ghost ext-hide" onclick="openLinkedVideo('lift-p1')">Камеры</button></td></tr>
+                <tr class="sel"><td><b>П2 · Л2</b></td><td class="t-mono">4–5</td><td>—</td><td>закрыты</td><td><span class="chip alarm">Останов между этажами</span></td><td><button class="btn sm danger" onclick="toast('err','Заявка создана','Аварийная заявка №4412 передана в лифтовую службу')">Заявка</button> <button class="btn sm ghost ext-hide" onclick="openLinkedVideo('lift-p2')">Камеры</button></td></tr>
+                <tr><td><b>П3 · Л1</b></td><td class="t-mono">1</td><td>стоянка</td><td>открыты</td><td><span class="chip ok">Норма</span></td><td><button class="btn sm ghost">Связь</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ПАРКИНГ ============ -->
+      <section class="view" id="view-parking">
+        <div class="view-head">
+          <h1>Паркинг и въездные группы</h1>
+          <div class="sub">Шлагбаумы, распознавание номеров, белый список</div>
+          <div class="spacer"></div>
+          <span class="chip mut">Денежные операции в объём не входят</span>
+        </div>
+
+        <div class="grid g-4" style="margin-bottom:12px">
+          <div class="kpi info"><div class="t">Занято мест</div><div class="v">42 <small>/ 60</small></div><div class="d">18 свободно · гостевых 4</div></div>
+          <div class="kpi ok"><div class="t">Проездов за сутки</div><div class="v">137</div><div class="d">авто по списку 121 · гости 16</div></div>
+          <div class="kpi ok"><div class="t">Точность LPR <span class="chip ext">Р</span></div><div class="v">96.4 <small>%</small></div><div class="d">среднее время открытия 1.4 с</div></div>
+          <div class="kpi warn"><div class="t">Отказов в проезде</div><div class="v">5</div><div class="d">нет в списках · истёк пропуск</div></div>
+        </div>
+
+        <div class="grid g-2" style="margin-bottom:12px">
+          <div class="card">
+            <div class="card-h"><h3>Въездная группа · шлагбаум</h3><div class="spacer"></div><span class="chip mut">Закрыт</span></div>
+            <div class="card-b">
+              <div class="ext-hide" id="parkCam" style="aspect-ratio:16/9;margin-bottom:11px"></div>
+              <button class="btn sm ext-hide" style="width:100%;margin-bottom:11px" onclick="openLinkedVideo('park-entry')">Карусель камер въезда</button>
+              <div class="mini-note basic-only" style="margin-bottom:11px">В базовой конфигурации въезд организуется по QR/PIN, метке или ручному открытию оператором — без распознавания автономеров.</div>
+              <div class="grid g-2" style="gap:8px">
+                <button class="btn ok" onclick="toast('ok','Шлагбаум открыт','Въезд · команда unlock · оператор Полякова И.')">Открыть въезд</button>
+                <button class="btn" onclick="toast('ok','Шлагбаум открыт','Выезд · команда unlock · оператор Полякова И.')">Открыть выезд</button>
+                <button class="btn ghost" style="grid-column:1/-1" onclick="toast('warn','Режим свободного проезда','Шлагбаум удерживается открытым до отмены оператором')">Режим свободного проезда</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><h3>Последние проезды</h3><div class="spacer"></div><span class="hint">событие → видеофрагмент [Р]</span></div>
+            <div class="card-b flush">
+              <table class="tbl">
+                <thead><tr><th style="width:78px">Время</th><th>Номер</th><th>Основание</th><th>Результат</th><th style="width:120px"></th></tr></thead>
+                <tbody id="parkTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h3>Белый список автономеров</h3><div class="spacer"></div><button class="btn sm primary">Добавить номер</button></div>
+          <div class="card-b flush">
+            <table class="tbl">
+              <thead><tr><th>Номер</th><th>Квартира</th><th>Владелец</th><th>Место</th><th>Действует до</th><th>Состояние</th></tr></thead>
+              <tbody>
+                <tr><td class="t-mono"><b>А123ВС 77</b></td><td>214</td><td>Смирнов А. В.</td><td>−1 · м. 34</td><td class="t-mut">бессрочно</td><td><span class="chip ok">Активен</span></td></tr>
+                <tr><td class="t-mono"><b>О555ТТ 77</b></td><td>106</td><td>Ковалёва М. И.</td><td>−1 · м. 12</td><td class="t-mut">бессрочно</td><td><span class="chip ok">Активен</span></td></tr>
+                <tr><td class="t-mono"><b>Р909НН 190</b></td><td>703</td><td>Гуськов Д. П.</td><td>−2 · м. 51</td><td class="t-mut">31.10.2026</td><td><span class="chip warn">Истекает</span></td></tr>
+                <tr><td class="t-mono"><b>Т321ММ 77</b></td><td>412</td><td>Ершова Н. С.</td><td>−1 · м. 07</td><td class="t-mut">бессрочно</td><td><span class="chip mut">Заблокирован</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ УСТРОЙСТВА И ПЛАГИНЫ ============ -->
+      <section class="view" id="view-devices">
+        <div class="view-head">
+          <h1>Устройства и плагины</h1>
+          <div class="sub">Плагинный механизм облачного ядра · контракт по OpenAPI</div>
+          <div class="spacer"></div>
+          <button class="btn sm primary" onclick="toast('info','Мастер добавления','Плагин → параметры → авто-обнаружение / ручной ввод')">Добавить устройство</button>
+        </div>
+
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-h"><h3>Подключённые плагины</h3><div class="spacer"></div><span class="hint">версионирование обязательно</span></div>
+          <div class="card-b flush">
+            <table class="tbl">
+              <thead><tr><th>Плагин</th><th>Тип устройств</th><th>Протокол</th><th>Версия</th><th>Устройств</th><th>Состояние</th><th style="width:110px"></th></tr></thead>
+              <tbody id="pluginsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h3>Вызывные панели объекта</h3><div class="spacer"></div><span class="hint">capability: unlock + camera</span></div>
+          <div class="card-b flush">
+            <table class="tbl">
+              <thead><tr><th>Панель</th><th>Модель</th><th>SIP-аккаунт</th><th>RTSP</th><th>Способ unlock</th><th>Состояние</th><th style="width:120px"></th></tr></thead>
+              <tbody id="panelsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ СЦЕНАРИИ ============ -->
+      <section class="view" id="view-rules">
+        <div class="view-head">
+          <h1>Сценарии ЕСЛИ → ТО</h1>
+          <div class="sub">Визуальный конструктор автоматических реакций</div>
+          <div class="spacer"></div>
+          <button class="btn sm primary">Новый сценарий</button>
+        </div>
+        <div id="rulesList"></div>
+        <div class="mini-note" style="margin-top:12px">Сценарии с пометкой [Р] требуют подключённого видеомодуля: автовывод камеры при тревоге, реакция на распознанный автономер, привязка события к видеофрагменту. Для каждого такого сценария в базовой конфигурации предусмотрен путь без VMS.</div>
+      </section>
+
+      <!-- ============ ЖИЛЬЦЫ ============ -->
+      <section class="view" id="view-residents">
+        <div class="view-head">
+          <h1>Жильцы и SIP-аккаунты</h1>
+          <div class="sub">Квартиры, устройства, push-подписки, права доступа</div>
+          <div class="spacer"></div>
+          <button class="btn sm primary">Добавить абонента</button>
+        </div>
+
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-b" style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+            <div class="searchbox" style="max-width:300px;flex:0 0 300px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="color:var(--txt-3)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input placeholder="Квартира, ФИО, SIP-номер, email…">
+            </div>
+            <span class="chip mut">254 аккаунта</span>
+            <span class="chip ok">248 онлайн</span>
+            <span class="chip warn">6 офлайн</span>
+            <span class="chip info">312 устройств с push</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-b flush">
+            <table class="tbl">
+              <thead><tr><th>Квартира</th><th>Абонент</th><th>SIP-URI</th><th>Устройства (push)</th><th>Права</th><th>Состояние</th><th style="width:150px"></th></tr></thead>
+              <tbody id="residentsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mini-note" style="margin-top:12px">Модель идентичности: SIP-аккаунт уникален по email, push-подписки привязаны к нему же. Квартиры без email жильца, передача аккаунта при смене собственника и несколько независимых аккаунтов на квартиру — решения этапа 0 (§3.1.2). Текущая маршрутизация — веерная: push уходит на все подписанные устройства, вызов принимает ответившее первым.</div>
+      </section>
+
+    </main>
+
+    <div class="splitter col" id="splitSide" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Ширина панели тревог" title="Потяните, чтобы изменить ширину. Двойной щелчок — вернуть по умолчанию"></div>
+
+    <!-- ======================= ПРАВАЯ КОЛОНКА ======================= -->
+    <aside class="side" id="side">
+      <div class="side-tabs">
+        <button class="on" id="tabAlarms" onclick="openSide('alarms')">Тревоги <span class="n alarm" id="sideAlarmN">3</span></button>
+        <button id="tabEvents" onclick="openSide('events')">Лента событий <span class="n" id="sideEvN">live</span></button>
+      </div>
+
+      <div class="side-pane on" id="pane-alarms">
+        <div id="sideAlarms"></div>
+      </div>
+
+      <div class="side-pane" id="pane-events">
+        <div class="side-filter">
+          <button class="fchip on" onclick="sideFilter(this,'all')">Все</button>
+          <button class="fchip" onclick="sideFilter(this,'sip')">SIP</button>
+          <button class="fchip" onclick="sideFilter(this,'acc')">Доступ</button>
+          <button class="fchip" onclick="sideFilter(this,'fire')">ОПС</button>
+          <button class="fchip" onclick="sideFilter(this,'scada')">SCADA</button>
+          <button class="fchip" onclick="sideFilter(this,'park')">Паркинг</button>
+        </div>
+        <div id="sideEvents"></div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ======================= АРМ КОНСЬЕРЖА ======================= -->
+  <section class="concierge-shell" id="conciergeShell">
+    <div class="phone">
+      <div class="phone-h">
+        <span class="material-symbols-outlined" style="color:var(--accent)">apartment</span>
+        <div class="who">
+          <strong>Консьерж · подъезд 2</strong>
+          <span>ЖК «Северный парк» · корпус 3</span>
+        </div>
+        <span class="duty" id="cDuty">На посту</span>
+      </div>
+
+      <div class="phone-b" id="cViewCall">
+        <div class="c-call ringing" id="cIncoming">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span class="sd alarm"></span>
+            <b>Входящий вызов</b>
+            <span class="chip info" style="margin-left:auto">Early media</span>
+          </div>
+          <div id="cCam" style="margin-bottom:10px;aspect-ratio:16/9"></div>
+          <div style="font-size:13px;margin-bottom:12px">Панель подъезда вызывает <b>кв. 214</b> · Смирнов А. В. не ответил 12 с, вызов переведён на консьержа.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn ok" onclick="answerCall();goC('call')">Ответить</button>
+            <button class="btn danger" onclick="closeCall()">Отклонить</button>
+            <button class="btn primary" style="grid-column:1/-1" onclick="quickUnlock('Подъезд 2 · входная дверь')">Открыть дверь</button>
+          </div>
+        </div>
+        <div class="mini-note">Консьерж отвечает со своего SIP-аккаунта на планшете. Браузерный WebRTC не требуется — так устроено ядро на этапе 1.</div>
+      </div>
+
+      <div class="phone-b" id="cViewDoors" hidden>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Точки доступа подъезда 2</div>
+        <div class="c-door"><span class="sd ok"></span><b>Входная дверь П2</b><button class="btn sm ghost" onclick="openLinkedVideo('door-p2')">Видео</button><button class="btn primary sm" onclick="quickUnlock('Подъезд 2 · входная дверь')">Открыть</button></div>
+        <div class="c-door"><span class="sd ok"></span><b>Калитка двора</b><button class="btn sm ghost" onclick="openLinkedVideo('door-gate')">Видео</button><button class="btn primary sm" onclick="quickUnlock('Калитка двора')">Открыть</button></div>
+        <div class="c-door"><span class="sd ok"></span><b>Тамбур 1 этажа</b><button class="btn sm ghost" onclick="openLinkedVideo('door-p2')">Видео</button><button class="btn primary sm" onclick="quickUnlock('Тамбур П2 · 1 этаж')">Открыть</button></div>
+        <div class="c-door"><span class="sd ok"></span><b>Шлагбаум въезд</b><button class="btn sm ghost" onclick="openLinkedVideo('park-entry')">Видео</button><button class="btn primary sm" onclick="toast('ok','Шлагбаум открыт','Въезд · команда unlock · консьерж Волков С.')">Открыть</button></div>
+        <div class="hr"></div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Гостевой код</div>
+        <button class="btn primary" style="width:100%" onclick="toast('ok','Гостевой код','PIN 4821 · 4 часа · 1 проход · подъезд 2')">Выдать PIN курьеру</button>
+      </div>
+
+      <div class="phone-b" id="cViewLog" hidden>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Журнал подъезда 2</div>
+        <div class="c-log" id="cLog"></div>
+      </div>
+
+      <div class="phone-b" id="cViewHelp" hidden>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Помощь на посту</div>
+        <button class="btn outline" style="width:100%;margin-bottom:8px;justify-content:flex-start" onclick="showModal('modalEmergency')">
+          <span class="material-symbols-outlined">emergency</span> 112 · МЧС и полиция
+        </button>
+        <button class="btn outline" style="width:100%;margin-bottom:8px;justify-content:flex-start" onclick="showModal('modalContacts')">
+          <span class="material-symbols-outlined">contact_phone</span> Телефоны ответственных
+        </button>
+        <button class="btn outline" style="width:100%;margin-bottom:8px;justify-content:flex-start" onclick="showModal('modalEvacuation')">
+          <span class="material-symbols-outlined">map</span> Схема эвакуации
+        </button>
+        <button class="btn outline" style="width:100%;justify-content:flex-start" onclick="showModal('modalRegulation')">
+          <span class="material-symbols-outlined">description</span> Регламент консьержа
+        </button>
+        <div class="mini-note" style="margin-top:12px">При пожаре: подтвердить, открыть двери на эвакуацию, вызвать 112, оповестить диспетчера УК.</div>
+      </div>
+
+      <nav class="c-nav" aria-label="Разделы консьержа">
+        <button type="button" class="on" data-cview="call" onclick="goC('call')">
+          <span class="material-symbols-outlined">call</span>Вызов
+        </button>
+        <button type="button" data-cview="doors" onclick="goC('doors')">
+          <span class="material-symbols-outlined">lock_open</span>Двери
+        </button>
+        <button type="button" data-cview="log" onclick="goC('log')">
+          <span class="material-symbols-outlined">list_alt</span>Журнал
+        </button>
+        <button type="button" data-cview="help" onclick="goC('help')">
+          <span class="material-symbols-outlined">help</span>Справка
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ======================= НИЖНЯЯ СТРОКА ======================= -->
+  <footer class="statusbar">
+    <div class="s"><span class="sd ok" id="stCloud"></span>Облако: <b>подключено</b></div>
+    <div class="s"><span class="sd ok"></span>Kamailio: <b>254 рег.</b></div>
+    <div class="s"><span class="sd warn"></span>RTPEngine: <b>74/100 портов</b></div>
+    <div class="s"><span class="sd ok"></span>Локальный резерв: <b id="stLocal">готов</b></div>
+    <div class="s"><span class="sd ok" id="stVms"></span>Видеомодуль: <b id="stVmsTxt">Интеллект X · 24 канала</b></div>
+    <div class="spacer"></div>
+    <div class="demo">
+      Демо:
+      <button onclick="simulateCall()">вызов</button>
+      <button onclick="simulateFire()">пожар</button>
+      <button onclick="simulateLpr()">въезд авто</button>
+      <button onclick="toggleWan()" id="wanBtn">обрыв WAN</button>
+    </div>
+    <div class="s t-mut">Прототип · ITV | AxxonSoft · v1.0</div>
+  </footer>
+</div>
+
+<!-- ======================= МОДАЛЬНОЕ ОКНО ВЫЗОВА ======================= -->
+<div class="overlay" id="callOverlay">
+  <div class="modal">
+    <div class="modal-h">
+      <span class="sd alarm"></span>
+      <h2>Входящий вызов с вызывной панели</h2>
+      <div class="spacer"></div>
+      <span class="chip info" id="callState">Early media · 183 Session Progress</span>
+      <button class="icon-btn" onclick="closeCall()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-b">
+      <div class="ring">
+        <span class="w"></span>
+        <div>
+          <div class="t">Панель «Подъезд 2 · входная дверь» вызывает кв. 214</div>
+          <div style="font-size:11.5px;color:var(--txt-2)">Абонент не ответил 12 с · вызов переведён на консьержа</div>
+        </div>
+        <div class="timer" id="callTimer">00:12</div>
+      </div>
+
+      <div class="call-grid">
+        <div>
+          <div class="call-video" id="callCam"></div>
+          <div class="mini-note" style="margin-top:10px">Видео с панели доступно <b>до</b> принятия вызова (183 Session Progress). Постоянный поток панели идёт в видеомодуль по RTSP отдельно от SIP — картинка во дворе и в подъезде доступна и без звонка.</div>
+        </div>
+
+        <div>
+          <div class="call-meta">
+            <div class="row"><span>Панель</span><b>П2 · входная дверь</b></div>
+            <div class="row"><span>Вызываемый</span><b>Кв. 214 · SIP 214</b></div>
+            <div class="row"><span>Жилец</span><b>Смирнов А. В.</b></div>
+            <div class="row"><span>Устройства абонента</span><b>2 (iPhone, Android)</b></div>
+            <div class="row"><span>Push</span><b style="color:#57cf90">доставлен 0.9 с</b></div>
+            <div class="row"><span>Call-ID</span><b class="t-mono" style="font-size:11px">a7f3c9…e12b</b></div>
+            <div class="row"><span>Кодеки</span><b>H.264 / G.711u</b></div>
+            <div class="row"><span>Медиа</span><b>RTP через RTPEngine</b></div>
+          </div>
+
+          <div class="call-actions">
+            <button class="btn ok" onclick="answerCall()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2a1 1 0 011-.2c1.1.4 2.3.6 3.6.6a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.2.2 2.4.6 3.6a1 1 0 01-.2 1l-2.3 2.2z"/></svg>
+              Ответить
+            </button>
+            <button class="btn danger" onclick="closeCall()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Отклонить
+            </button>
+            <button class="btn primary wide" onclick="unlockFromCall()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.5-2"/></svg>
+              Открыть дверь
+            </button>
+            <button class="btn" onclick="toast('info','Перевод вызова','Вызов переведён на консьержа подъезда 2')">Перевести</button>
+            <button class="btn" onclick="toast('info','Карточка жильца','Кв. 214 · Смирнов А. В. · 2 устройства · авто А123ВС 77')">Карточка</button>
+            <button class="btn ghost wide ext-hide" onclick="closeCall();openLinkedVideo('panel-call')">На монитор видеонаблюдения</button>
+          </div>
+
+          <div class="hr"></div>
+          <div style="font-size:11px;color:var(--txt-3);line-height:1.6">
+            В базовой конфигурации оператор отвечает с планшета или телефона по SIP — браузерный ответ через WebRTC вынесен из этапа 1. Открытие двери работает вне звонка: REST unlock → драйвер панели, без участия SIP.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="help-overlay" id="modalHotkeys" hidden>
+  <div class="help-card" role="dialog" aria-modal="true">
+    <h3>Горячие клавиши</h3>
+    <p class="muted">Набор рабочего места диспетчера. На телефоне консьержа клавиши не используются.</p>
+    <table class="keys">
+      <tr><td><kbd>C</kbd></td><td>Демо: входящий вызов</td></tr>
+      <tr><td><kbd>⇧</kbd> <kbd>C</kbd></td><td>Переключить АРМ диспетчера / консьержа</td></tr>
+      <tr><td><kbd>F</kbd></td><td>Демо: тревога ОПС</td></tr>
+      <tr><td><kbd>L</kbd></td><td>Демо: въезд автомобиля</td></tr>
+      <tr><td><kbd>W</kbd></td><td>Обрыв / восстановление WAN</td></tr>
+      <tr><td><kbd>G</kbd></td><td>Свернуть / развернуть меню разделов</td></tr>
+      <tr><td><kbd>M</kbd></td><td>Показать / скрыть панель тревог</td></tr>
+      <tr><td><kbd>T</kbd></td><td>Светлая / тёмная тема</td></tr>
+      <tr><td><kbd>B</kbd></td><td>Перерыв / возврат на смену</td></tr>
+      <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Карусель связанных камер (однокадровый / виджет)</td></tr>
+      <tr><td><kbd>1</kbd>–<kbd>4</kbd></td><td>Обстановка, вызовы, тревоги, план</td></tr>
+      <tr><td><kbd>Ctrl</kbd> <kbd>K</kbd></td><td>Поиск</td></tr>
+      <tr><td><kbd>Esc</kbd></td><td>Закрыть карточку вызова или справку</td></tr>
+      <tr><td><kbd>?</kbd></td><td>Эта справка</td></tr>
+    </table>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalHotkeys">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="help-overlay" id="modalContacts" hidden>
+  <div class="help-card wide" role="dialog" aria-modal="true">
+    <h3>Телефоны ответственных</h3>
+    <p class="muted">Справочник ЖК «Северный парк», корпус 3. Реальный список подтягивается из карточки объекта.</p>
+    <table class="doc-table">
+      <thead><tr><th>Роль</th><th>ФИО</th><th>Телефон</th><th>Доступность</th></tr></thead>
+      <tbody>
+        <tr><td>Диспетчер УК (эта смена)</td><td>Полякова И. П.</td><td><b>+7 495 120-41-00</b></td><td>08:00–20:00</td></tr>
+        <tr><td>Старший смены УК</td><td>Петрова М. В.</td><td><b>+7 495 120-41-01</b></td><td>Круглосуточно</td></tr>
+        <tr><td>Консьерж подъезда 2</td><td>Волков С. А.</td><td><b>+7 916 480-22-14</b></td><td>08:00–22:00</td></tr>
+        <tr><td>Аварийная служба лифтов</td><td>Мослифт · дежурный</td><td><b>+7 495 777-01-01</b></td><td>Круглосуточно</td></tr>
+        <tr><td>Дежурный ИТП</td><td>Гаврилов П. С.</td><td><b>+7 495 120-41-22</b></td><td>Круглосуточно</td></tr>
+        <tr><td>Сервис домофонии</td><td>ITV | AxxonSoft</td><td><b>+7 800 555-08-08</b></td><td>Круглосуточно, SLA 4 ч</td></tr>
+        <tr><td>Управляющий ЖК</td><td>Литвинова О. Н.</td><td><b>+7 903 771-60-40</b></td><td>Только критические</td></tr>
+      </tbody>
+    </table>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalContacts">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="help-overlay" id="modalRegulation" hidden>
+  <div class="help-card wide" role="dialog" aria-modal="true">
+    <h3>Регламент диспетчера УК</h3>
+    <p class="muted">Выдержка из документа УК-07/2026 «Действия при тревогах и вызовах МКД».</p>
+    <div class="doc">
+      <h4>1. Пожарная тревога</h4>
+      <ol>
+        <li>Подтвердить приём в течение <b>60 секунд</b>.</li>
+        <li>Проверить видео ближайшей камеры (расширенная конфигурация) или связаться с консьержем подъезда.</li>
+        <li>При подтверждении — команда «двери на эвакуацию», вызов <b>112</b>, push жильцам подъезда.</li>
+        <li>Зафиксировать номер наряда и время прибытия расчёта в журнале.</li>
+      </ol>
+      <h4>2. Входящий вызов с панели</h4>
+      <ol>
+        <li>Если жилец не ответил 20 с — вызов переводится на консьержа подъезда, затем на диспетчера.</li>
+        <li>Открытие двери — REST unlock вне звонка; DTMF только как удобство в разговоре.</li>
+        <li>Не открывать служебные зоны по просьбе неизвестного посетителя без подтверждения жильца.</li>
+      </ol>
+      <h4>3. Паркинг</h4>
+      <ol>
+        <li>Номер из белого списка открывается автоматически (расширенная конфигурация, ≤ 2 с).</li>
+        <li>Отказ в проезде: проверить заявку / QR, при сомнении — ручное открытие и запись в журнал.</li>
+      </ol>
+      <h4>4. Сроки реакции</h4>
+      <ul>
+        <li>Пожар / авария лифта — до <b>1 минуты</b>.</li>
+        <li>Вызов с панели на консьержа — до <b>15 секунд</b>.</li>
+        <li>Неисправность шлейфа — до <b>15 минут</b>, заявка техспециалисту.</li>
+      </ul>
+    </div>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalRegulation">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="help-overlay" id="modalEvacuation" hidden>
+  <div class="help-card wide" role="dialog" aria-modal="true">
+    <h3>Схема эвакуации · корпус 3, 1-й этаж</h3>
+    <p class="muted">План, привязанный к карточке объекта. Сборный пункт — двор со стороны детской площадки.</p>
+    <div class="doc-figure">
+      <svg viewBox="0 0 640 372" role="img" aria-label="План эвакуации первого этажа корпуса 3">
+        <rect width="640" height="372" fill="#f8fafc"/>
+        <rect x="24" y="24" width="592" height="292" fill="#ffffff" stroke="#334155" stroke-width="3"/>
+        <g fill="#eef2f7" stroke="#94a3b8" stroke-width="2">
+          <rect x="44" y="44" width="160" height="104"/>
+          <rect x="224" y="44" width="192" height="104"/>
+          <rect x="436" y="44" width="160" height="104"/>
+          <rect x="44" y="212" width="160" height="84"/>
+          <rect x="224" y="212" width="192" height="84"/>
+          <rect x="436" y="212" width="160" height="84"/>
+        </g>
+        <rect x="44" y="160" width="552" height="40" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+        <g fill="#475569" font-size="12" font-family="Inter, sans-serif">
+          <text x="56" y="64">Подъезд 1</text>
+          <text x="236" y="64">Холл · лифты</text>
+          <text x="448" y="64">Подъезд 3</text>
+          <text x="56" y="232">Техпомещение</text>
+          <text x="236" y="232">Подъезд 2</text>
+          <text x="448" y="232">Колясочная</text>
+        </g>
+        <g stroke="#16a34a" stroke-width="6" fill="none" marker-end="url(#evacArrowMkd)">
+          <path d="M124 148 L124 180 L42 180"/>
+          <path d="M320 148 L320 180 L598 180"/>
+          <path d="M320 212 L320 180"/>
+          <path d="M516 212 L516 180 L598 180"/>
+        </g>
+        <defs>
+          <marker id="evacArrowMkd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#16a34a"/>
+          </marker>
+        </defs>
+        <g fill="#16a34a">
+          <rect x="19" y="164" width="32" height="32" rx="3"/>
+          <rect x="589" y="164" width="32" height="32" rx="3"/>
+        </g>
+        <g fill="#dc2626">
+          <rect x="212" y="166" width="12" height="28" rx="3"/>
+          <rect x="418" y="166" width="12" height="28" rx="3"/>
+          <rect x="120" y="256" width="12" height="28" rx="3"/>
+        </g>
+        <g>
+          <circle cx="248" cy="264" r="14" fill="#1976d2" opacity=".18"/>
+          <circle cx="248" cy="264" r="7" fill="#1976d2"/>
+          <text x="266" y="268" fill="#1976d2" font-size="12" font-weight="600" font-family="Inter, sans-serif">Пост консьержа</text>
+        </g>
+        <g>
+          <circle cx="42" cy="344" r="15" fill="#16a34a"/>
+          <text x="34" y="349" fill="#ffffff" font-size="12" font-weight="700" font-family="Inter, sans-serif">СП</text>
+          <text x="66" y="349" fill="#475569" font-size="12" font-family="Inter, sans-serif">Сборный пункт — двор, 40 м от южного выхода</text>
+        </g>
+      </svg>
+    </div>
+    <div class="doc-legend">
+      <span><i class="sw green"></i>Путь эвакуации и выход</span>
+      <span><i class="sw red"></i>Огнетушитель</span>
+      <span><i class="sw blue"></i>Пост консьержа</span>
+    </div>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalEvacuation">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="help-overlay" id="modalEmergency" hidden>
+  <div class="help-card wide" role="dialog" aria-modal="true">
+    <h3>Контакты МЧС и полиции</h3>
+    <p class="muted">Единые и территориальные номера для объекта смены.</p>
+    <table class="doc-table">
+      <thead><tr><th>Служба</th><th>Номер</th><th>Когда вызываем</th></tr></thead>
+      <tbody>
+        <tr><td>Единый номер экстренных служб</td><td><b>112</b></td><td>Любая угроза жизни и здоровью</td></tr>
+        <tr><td>Пожарная охрана и МЧС</td><td><b>101</b></td><td>Открытое пламя, задымление, эвакуация</td></tr>
+        <tr><td>Полиция</td><td><b>102</b></td><td>Проникновение, агрессия у панели</td></tr>
+        <tr><td>Скорая помощь</td><td><b>103</b></td><td>Травма в лифте, потеря сознания</td></tr>
+        <tr><td>Аварийная газовая служба</td><td><b>104</b></td><td>Запах газа в ИТП или квартире</td></tr>
+        <tr><td>ОВД «Северное» · дежурная часть</td><td><b>+7 495 601-22-18</b></td><td>Передача задержанного</td></tr>
+        <tr><td>Росгвардия · пульт ПЦО</td><td><b>+7 495 601-30-90</b></td><td>Тревожная кнопка, ГБР</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">После вызова зафиксируйте номер наряда и время прибытия в журнале событий.</p>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalEmergency">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* =========================================================
+   Данные-заглушки и логика прототипа
+   ========================================================= */
+
+const now = () => new Date();
+const pad = n => String(n).padStart(2,'0');
+const hhmmss = d => pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+const hhmm = d => pad(d.getHours())+':'+pad(d.getMinutes());
+const ddmm = d => pad(d.getDate())+'.'+pad(d.getMonth()+1);
+
+/* ---------- Часы ---------- */
+const MONTHS=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const DAYS=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+function tickClock(){
+  const d=now();
+  document.getElementById('clockTime').textContent=hhmmss(d);
+  document.getElementById('clockDate').textContent=DAYS[d.getDay()]+', '+d.getDate()+' '+MONTHS[d.getMonth()];
+  ['camTime1','camTime2','camTime3'].forEach(id=>{const e=document.getElementById(id); if(e) e.textContent=hhmmss(d);});
+}
+setInterval(tickClock,1000); tickClock();
+
+/* ---------- Навигация ---------- */
+function go(v,opts){
+  opts=opts||{};
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.toggle('on', e.dataset.view===v));
+  document.getElementById('main').scrollTop=0;
+  if(v==='video'){
+    if(!opts.keepSet){
+      videoSet=null;
+      const sub=document.getElementById('videoSub');
+      if(sub) sub.textContent='Подключённый видеомодуль · Интеллект X / Axxon One';
+    }
+    renderVideoWall();
+  }
+  if(v==='plan') renderPlan(currentPlan);
+}
+function syncPanelButtons(){
+  const mid=document.getElementById('mid');
+  const railOn=!mid.classList.contains('rail-collapsed');
+  const sideOn=!mid.classList.contains('side-hidden');
+  const tr=document.getElementById('toggleRail');
+  const ts=document.getElementById('toggleSideBtn');
+  if(tr){tr.classList.toggle('on',railOn);tr.setAttribute('aria-pressed',String(railOn));}
+  if(ts){ts.classList.toggle('on',sideOn);ts.setAttribute('aria-pressed',String(sideOn));}
+}
+function toggleRail(){
+  document.getElementById('mid').classList.toggle('rail-collapsed');
+  syncPanelButtons();
+}
+function toggleSide(){
+  document.getElementById('mid').classList.toggle('side-hidden');
+  syncPanelButtons();
+}
+function openSide(t){
+  document.getElementById('mid').classList.remove('side-hidden');
+  document.getElementById('pane-alarms').classList.toggle('on',t==='alarms');
+  document.getElementById('pane-events').classList.toggle('on',t==='events');
+  document.getElementById('tabAlarms').classList.toggle('on',t==='alarms');
+  document.getElementById('tabEvents').classList.toggle('on',t==='events');
+}
+
+/* ---------- Конфигурация поставки ---------- */
+function setConfig(c){
+  document.body.classList.toggle('basic', c==='basic');
+  document.body.classList.toggle('ext', c==='ext');
+  document.getElementById('cfgBasic').classList.toggle('on', c==='basic');
+  document.getElementById('cfgExt').classList.toggle('on', c==='ext');
+  document.getElementById('stVms').className = 'sd '+(c==='ext'?'ok':'off');
+  document.getElementById('stVmsTxt').textContent = c==='ext' ? 'Интеллект X · 24 канала' : 'не подключён';
+  toast(c==='ext'?'ok':'warn', c==='ext'?'Расширенная конфигурация':'Базовая конфигурация',
+    c==='ext' ? 'Видеомодуль подключён: live, архив, аналитика, ACFA и LPR доступны'
+              : 'Лицензии VMS не требуются. Функции [Р] скрыты, доступны базовые пути без видео');
+}
+
+/* ---------- Тосты ---------- */
+function toast(kind,title,text){
+  const map={ok:'',err:'err',warn:'warn',info:'info'};
+  const el=document.createElement('div');
+  el.className='toast '+(map[kind]||'');
+  el.innerHTML='<div><b>'+title+'</b><span>'+(text||'')+'</span></div>';
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>{el.style.transition='opacity .3s,transform .3s';el.style.opacity='0';el.style.transform='translateX(24px)';setTimeout(()=>el.remove(),320)},4200);
+}
+
+/* ---------- Спарклайны ---------- */
+function spark(id,data,color){
+  const el=document.getElementById(id); if(!el) return;
+  const w=200,h=38,min=Math.min(...data),max=Math.max(...data),r=(max-min)||1;
+  const pts=data.map((v,i)=>[i*(w/(data.length-1)), h-4-((v-min)/r)*(h-10)]);
+  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=line+' L'+w+' '+h+' L0 '+h+' Z';
+  el.setAttribute('viewBox','0 0 '+w+' '+h);
+  el.setAttribute('preserveAspectRatio','none');
+  el.innerHTML='<path d="'+area+'" fill="'+color+'" opacity=".13"/><path d="'+line+'" fill="none" stroke="'+color+'" stroke-width="1.6" stroke-linejoin="round"/>';
+}
+const rnd=(base,spread,n)=>Array.from({length:n},(_,i)=>base+Math.sin(i/2.2)*spread*.6+(Math.random()-.5)*spread);
+spark('sp1',rnd(72,2.2,24),'#2ea865');
+spark('sp2',rnd(3.1,.5,24),'#e8a33d');
+spark('sp3',rnd(180,32,24),'#3d8bfd');
+spark('sp4',rnd(2.7,.9,24),'#7d5bd6');
+
+/* ---------- Камеры, сцены, связи объект↔камера ---------- */
+const SCENES={
+  entrance:`<rect width="320" height="180" fill="#232b3d"/><rect width="320" height="100" fill="#2b3448"/><polygon points="0,180 320,180 288,100 32,100" fill="#414b61"/><rect x="88" y="14" width="144" height="86" fill="#0f1725"/><g fill="#a6c2e4" opacity=".45"><rect x="94" y="20" width="64" height="80"/><rect x="162" y="20" width="64" height="80"/></g><g stroke="#c9d8ee" stroke-width="3" opacity=".8"><line x1="160" y1="14" x2="160" y2="100"/></g><g fill="#141a26" opacity=".85"><ellipse cx="158" cy="146" rx="12" ry="4.5"/><path d="M150 146c0-21 4-33 8-33s8 12 8 33z"/><circle cx="158" cy="106" r="7.5"/></g>`,
+  hall:`<rect width="320" height="180" fill="#20283a"/><rect width="320" height="94" fill="#2a3448"/><polygon points="0,180 320,180 246,94 74,94" fill="#3d465c"/><rect x="128" y="38" width="64" height="56" fill="#8fa3c6" opacity=".4"/><g fill="#131a28" opacity=".85"><ellipse cx="142" cy="150" rx="11" ry="4"/><path d="M135 150c0-17 3.5-28 7-28s7 11 7 28z"/><circle cx="142" cy="116" r="6.5"/><ellipse cx="198" cy="167" rx="12" ry="4.5"/><path d="M190 167c0-19 4-31 8-31s8 12 8 31z"/><circle cx="198" cy="129" r="7.5"/></g>`,
+  corridor:`<rect width="320" height="180" fill="#283145"/><polygon points="118,54 202,54 202,126 118,126" fill="#161d2b"/><polygon points="0,0 118,54 118,126 0,180" fill="#38425a"/><polygon points="320,0 202,54 202,126 320,180" fill="#333c53"/><polygon points="0,180 320,180 202,126 118,126" fill="#454f68"/><g fill="#b04a5a" opacity=".85"><polygon points="202,58 250,36 250,146 202,124"/></g><g fill="#131a28" opacity=".8"><path d="M154 128c0-15 2.5-24 6-24s6 9 6 24z"/><circle cx="160" cy="99" r="5.5"/></g>`,
+  gate:`<rect width="320" height="180" fill="#1e2534"/><rect width="320" height="104" fill="#28303f"/><polygon points="0,180 320,180 288,104 32,104" fill="#3b4252"/><rect x="84" y="18" width="152" height="86" fill="#4a5364"/><g stroke="#38404f" stroke-width="3"><line x1="84" y1="30" x2="236" y2="30"/><line x1="84" y1="58" x2="236" y2="58"/><line x1="84" y1="86" x2="236" y2="86"/></g><g fill="#d9a13a" opacity=".75"><rect x="30" y="112" width="260" height="4"/></g><g fill="#141a26" opacity=".85"><path d="M188 150c0-20 4-32 8-32s8 12 8 32z"/><circle cx="196" cy="112" r="7"/></g>`,
+  barrier:`<rect width="320" height="180" fill="#5b7290"/><rect width="320" height="72" fill="#7d9bbd"/><polygon points="0,180 320,180 296,78 24,78" fill="#3f4653"/><g stroke="#e8eef8" stroke-width="4" stroke-dasharray="16 14" opacity=".8"><line x1="160" y1="78" x2="160" y2="180"/></g><g><rect x="100" y="58" width="120" height="8" rx="4" fill="#e8443c"/></g><g fill="#2a3140"><rect x="176" y="96" width="96" height="42" rx="6"/><rect x="192" y="80" width="64" height="22" rx="5"/></g><g fill="#151b26"><circle cx="198" cy="140" r="10"/><circle cx="252" cy="140" r="10"/></g>`,
+  checkpoint:`<rect width="320" height="180" fill="#222a3c"/><rect width="320" height="84" fill="#2b3448"/><polygon points="0,180 320,180 272,84 48,84" fill="#414b61"/><rect x="18" y="16" width="104" height="68" fill="#1a2334"/><rect x="26" y="24" width="88" height="52" fill="#7d93b8" opacity=".45"/><g fill="#8ff0c0" opacity=".85"><circle cx="101" cy="92" r="4"/></g><g fill="#141a26" opacity=".9"><path d="M154 150c0-21 4-33 8-33s8 12 8 33z"/><circle cx="162" cy="110" r="7.5"/></g>`,
+  server:`<rect width="320" height="180" fill="#131a28"/><polygon points="0,180 320,180 250,84 70,84" fill="#232b3c"/><g fill="#0d131d"><rect x="6" y="40" width="58" height="130"/><rect x="256" y="40" width="58" height="130"/></g><g fill="#3ddc84" opacity=".85"><rect x="12" y="50" width="14" height="4"/><rect x="12" y="74" width="10" height="4"/><rect x="12" y="122" width="14" height="4"/><rect x="288" y="52" width="18" height="4"/><rect x="288" y="104" width="20" height="4"/></g>`,
+  racks:`<rect width="320" height="180" fill="#1d2432"/><rect width="320" height="88" fill="#252d3c"/><polygon points="0,180 320,180 236,88 84,88" fill="#3c4453"/><g fill="#a98046"><rect x="6" y="104" width="30" height="14"/><rect x="44" y="104" width="28" height="14"/><rect x="248" y="104" width="30" height="14"/></g>`,
+  dock:`<rect width="320" height="180" fill="#1a2130"/><rect width="320" height="96" fill="#101724"/><polygon points="0,180 320,180 300,96 20,96" fill="#39414f"/><rect x="96" y="14" width="150" height="96" rx="4" fill="#54606f"/><g fill="#d9a13a"><rect x="96" y="110" width="150" height="6"/></g><g fill="#141a26" opacity=".9"><path d="M256 152c0-21 4-33 8-33s8 12 8 33z"/><circle cx="264" cy="113" r="7"/></g>`,
+  yard:`<rect width="320" height="180" fill="#1c2434"/><rect width="320" height="22" fill="#141b28"/><rect x="20" y="22" width="280" height="76" fill="#0b111d"/><g fill="#4a7f5a"><ellipse cx="80" cy="86" rx="28" ry="16"/><ellipse cx="240" cy="80" rx="36" ry="18"/></g><polygon points="0,180 320,180 304,104 16,104" fill="#39435a"/><g fill="#1a2333"><path d="M79 142c0-27 4-42 8-42s8 15 8 42z"/><circle cx="87" cy="95" r="8"/></g>`
+};
+const CAMERAS={
+  'cam-p1':{name:'П1 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
+  'cam-p2':{name:'П2 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
+  'cam-p3':{name:'П3 · входная дверь',scene:'corridor',res:'H.264 · 1920×1080'},
+  'cam-gate':{name:'Калитка двора',scene:'gate',res:'H.264 · 1920×1080'},
+  'cam-yard':{name:'Двор · детская площадка',scene:'yard',res:'H.265 · 2560×1440'},
+  'cam-hall':{name:'Холл П2 · 1 этаж',scene:'hall',res:'H.264 · 1280×720'},
+  'cam-f7':{name:'Холл П2 · 7 этаж',scene:'corridor',res:'H.264 · 1920×1080'},
+  'cam-lift':{name:'Лифтовой холл П2',scene:'hall',res:'H.264 · 1280×720'},
+  'cam-park':{name:'LPR · въезд на паркинг',scene:'barrier',res:'H.264 · 1920×1080'},
+  'cam-park-out':{name:'LPR · выезд',scene:'barrier',res:'H.264 · 1920×1080'},
+  'cam-ramp':{name:'Паркинг −1 · рампа',scene:'dock',res:'H.264 · 1920×1080'},
+  'cam-itp':{name:'ИТП · насосная',scene:'server',res:'H.264 · 1280×720'},
+  'cam-elec':{name:'Электрощитовая',scene:'racks',res:'H.264 · 1280×720'},
+  'cam-kpp':{name:'КПП двора',scene:'checkpoint',res:'H.264 · 1920×1080'}
+};
+const CAM_IDS=Object.keys(CAMERAS);
+const CAM_LINKS={
+  'panel-p1':['cam-p1'],
+  'panel-p2':['cam-p2','cam-hall'],
+  'panel-p3':['cam-p3'],
+  'gate-k1':['cam-gate','cam-yard','cam-kpp'],
+  'entry-v1':['cam-park','cam-park-out','cam-ramp'],
+  'fire-sh14':['cam-f7','cam-lift','cam-hall'],
+  'fire-sh9':['cam-p1','cam-hall'],
+  'fire-sh7':['cam-p1','cam-yard'],
+  'door-p1':['cam-p1'],
+  'door-p2':['cam-p2','cam-hall'],
+  'door-p3':['cam-p3'],
+  'door-gate':['cam-gate','cam-yard'],
+  'door-tambur':['cam-f7'],
+  'door-tech':['cam-elec','cam-itp'],
+  'door-elec':['cam-elec'],
+  'lift-p1':['cam-lift'],
+  'lift-p2':['cam-lift','cam-f7','cam-hall'],
+  'itp':['cam-itp','cam-elec'],
+  'park-entry':['cam-park','cam-ramp','cam-park-out'],
+  'leak':['cam-f7'],
+  'cam-f7':['cam-f7'],
+  'panel-call':['cam-p2','cam-hall']
+};
+CAM_IDS.forEach(id=>{ if(!CAM_LINKS[id]) CAM_LINKS[id]=[id]; });
+let videoLayout='2x2', videoModeLive=true, videoSet=null, videoIdx=0;
+const carouselIdx={};
+let selectedAlarmId=1;
+function panelObj(name){
+  const n=name||'';
+  if(/^П1/.test(n)) return 'panel-p1';
+  if(/^П2/.test(n)) return 'panel-p2';
+  if(/^П3/.test(n)) return 'panel-p3';
+  if(/Калитка/.test(n)) return 'gate-k1';
+  if(/Въезд|паркинг/i.test(n)) return 'entry-v1';
+  return 'panel-p2';
+}
+
+function camMarkup(id,opts){
+  opts=opts||{};
+  const c=CAMERAS[id]||{name:id,scene:'hall',res:''};
+  const scene=SCENES[c.scene]||SCENES.hall;
+  const live=videoModeLive && !opts.archive;
+  const click=opts.noclick?'':(opts.wall?' onclick="focusCam(\''+id+'\')"':' onclick="openVideo([\''+id+'\'],\'1x1\')"');
+  return '<div class="cam" data-cam="'+id+'"'+click+'>'
+    +'<svg class="cam-scene" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+scene+'</svg>'
+    +'<div class="cam-hud"><div><span class="mode-tag '+(live?'live':'')+'">'+(live?'LIVE':'АРХИВ')+'</span>'
+    +(opts.rec!==false?'<span class="rec"><i></i>REC</span>':'')
+    +'<b>'+c.name+'</b></div><span class="ct">'+hhmmss(now())+'</span></div></div>';
+}
+function carouselHtml(ids,key){
+  if(!ids||!ids.length) return '<div class="empty">Камеры не привязаны</div>';
+  if(carouselIdx[key]==null) carouselIdx[key]=0;
+  if(carouselIdx[key]>=ids.length) carouselIdx[key]=0;
+  const i=carouselIdx[key], many=ids.length>1;
+  const listed=ids.map(id=>'\''+id+'\'').join(',');
+  const jump=key==='wall'?'':' onclick="videoIdx='+i+';openVideo(['+listed+'],\'1x1\')"';
+  return '<div class="cam-stage" style="min-height:180px;height:100%"'+jump+'>'
+    +camMarkup(ids[i],{noclick:true})
+    +(many?'<button type="button" class="cam-nav prev" onclick="event.stopPropagation();stepCar(\''+key+'\',-1)"><span class="material-symbols-outlined">chevron_left</span></button>'
+         +'<button type="button" class="cam-nav next" onclick="event.stopPropagation();stepCar(\''+key+'\',1)"><span class="material-symbols-outlined">chevron_right</span></button>':'')
+    +'</div>'
+    +(many?'<div class="cam-strip"><div class="cam-ticks">'+ids.map((_,n)=>{
+        const act=key==='wall'
+          ? 'carouselIdx.wall='+n+';videoIdx='+n+';renderVideoWall()'
+          : 'carouselIdx[\''+key+'\']='+n+';refreshWidget(\''+key+'\')';
+        return '<button type="button" class="cam-tick'+(n===i?' active':'')+'" onclick="event.stopPropagation();'+act+'"></button>';
+      }).join('')+'</div><span class="cam-counter">'+(i+1)+' / '+ids.length+'</span></div>':'');
+}
+function widgetIds(key){
+  if(key==='wall') return (videoSet&&videoSet.length)?videoSet:CAM_IDS;
+  if(key==='alarm'){
+    const a=ALARMS.find(x=>x.id===selectedAlarmId)||ALARMS[0];
+    return CAM_LINKS[a&&a.obj]||CAM_LINKS['fire-sh14']||[];
+  }
+  if(key==='park') return CAM_LINKS['park-entry']||[];
+  if(key==='call'||key==='concierge') return CAM_LINKS['panel-call']||[];
+  return CAM_IDS;
+}
+function refreshWidget(key){
+  const map={alarm:'alarmCam',park:'parkCam',call:'callCam',concierge:'cCam'};
+  const el=document.getElementById(map[key]);
+  if(!el) return;
+  el.innerHTML=carouselHtml(widgetIds(key),key);
+}
+function stepCar(key,delta){
+  const ids=widgetIds(key);
+  if(!ids.length) return;
+  carouselIdx[key]=((carouselIdx[key]||0)+delta+ids.length)%ids.length;
+  if(key==='wall'){
+    videoIdx=carouselIdx.wall;
+    renderVideoWall();
+    return;
+  }
+  refreshWidget(key);
+}
+function videoBtn(objId){
+  const ids=CAM_LINKS[objId]||[];
+  if(!ids.length) return '';
+  const label=ids.length>1?'Камеры · '+ids.length:'Видео';
+  return '<button type="button" class="btn sm ghost ext-hide" onclick="event.stopPropagation();openLinkedVideo(\''+objId+'\')">'+label+'</button>';
+}
+function openLinkedVideo(objId){
+  const ids=CAM_LINKS[objId]||[];
+  openVideo(ids.length?ids:CAM_IDS, '1x1');
+}
+function focusCam(id){
+  const pool=videoSet && videoSet.length ? videoSet : CAM_IDS;
+  const i=pool.indexOf(id);
+  videoIdx=i<0?0:i;
+  videoLayout='1x1';
+  go('video',{keepSet:true});
+  renderVideoWall();
+}
+function openVideo(ids,layout){
+  videoSet=ids && ids.length ? ids.slice() : null;
+  videoIdx=0;
+  carouselIdx.wall=0;
+  if(layout) videoLayout=layout;
+  else if(ids && ids.length===1) videoLayout='1x1';
+  go('video',{keepSet:true});
+  renderVideoWall();
+  const sub=document.getElementById('videoSub');
+  if(sub){
+    const n=(videoSet||CAM_IDS).length;
+    sub.textContent=videoSet ? ('Связанные камеры · '+n+(n>1?' · карусель в 1×1':'')) : 'Все камеры объекта';
+  }
+}
+function setLayout(lay){
+  videoLayout=lay;
+  document.querySelectorAll('#layoutBar .layout-btn').forEach(b=>b.classList.toggle('on', b.dataset.lay===lay));
+  renderVideoWall();
+}
+function renderVideoWall(){
+  const wall=document.getElementById('videoWall');
+  const strip=document.getElementById('camStrip');
+  if(!wall) return;
+  const pool=videoSet && videoSet.length ? videoSet : CAM_IDS;
+  const lay=videoLayout;
+  const cls={ '1x1':'lay-1x1','2x2':'lay-2x2','15':'lay-15','3x3':'lay-3x3','all':'lay-all' }[lay]||'lay-2x2';
+  wall.className='video-wall '+cls;
+  const need=lay==='1x1'?1:lay==='2x2'?4:lay==='15'?6:lay==='3x3'?9:pool.length;
+  if(lay==='1x1'){
+    carouselIdx.wall=((videoIdx%pool.length)+pool.length)%pool.length;
+    wall.innerHTML='<div class="cam-cell">'+carouselHtml(pool,'wall')+'</div>';
+  } else {
+    const cells=[];
+    if(lay==='all') pool.forEach(id=>cells.push(id));
+    else for(let i=0;i<need;i++) cells.push(pool[i%pool.length]);
+    wall.innerHTML=cells.map(id=>'<div class="cam-cell">'+camMarkup(id,{wall:true})+'</div>').join('');
+  }
+  if(strip) strip.hidden=true;
+  document.querySelectorAll('#layoutBar .layout-btn').forEach(b=>b.classList.toggle('on', b.dataset.lay===lay));
+}
+function renderDashCams(){
+  const el=document.getElementById('dashCams');
+  if(!el) return;
+  el.innerHTML=['cam-p1','cam-p2','cam-yard','cam-park'].map(id=>'<div>'+camMarkup(id)+'</div>').join('');
+}
+
+const PLAN_MARK={
+  floor7:`
+    <rect x="16" y="16" width="608" height="368" rx="6" fill="var(--map-floor)" stroke="var(--stroke-2)" stroke-width="2"/>
+    <rect x="32" y="32" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <rect x="32" y="202" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <rect x="438" y="32" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <rect x="438" y="202" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <rect x="218" y="140" width="204" height="120" fill="var(--map-room-2)" stroke="var(--stroke-2)"/>
+    <rect x="236" y="150" width="44" height="36" fill="var(--accent-dim)" stroke="var(--accent)"/>
+    <rect x="288" y="150" width="44" height="36" fill="var(--danger-bg)" stroke="var(--crit)"/>
+    <rect x="348" y="150" width="52" height="100" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <g fill="var(--map-label)" font-size="12" font-family="Inter, sans-serif">
+      <text x="117" y="110" text-anchor="middle">Кв. 701</text>
+      <text x="117" y="280" text-anchor="middle">Кв. 702</text>
+      <text x="523" y="110" text-anchor="middle">Кв. 703</text>
+      <text x="523" y="280" text-anchor="middle">Кв. 704</text>
+      <text x="320" y="220" text-anchor="middle">Лифтовой холл</text>
+    </g>`,
+  parking:`
+    <rect x="16" y="16" width="608" height="368" rx="6" fill="var(--map-floor)" stroke="var(--stroke-2)" stroke-width="2"/>
+    <rect x="40" y="40" width="240" height="300" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <rect x="360" y="40" width="240" height="300" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <rect x="290" y="40" width="60" height="300" fill="var(--map-room-2)" stroke="var(--stroke-2)"/>
+    <g fill="var(--map-label)" font-size="12" font-family="Inter, sans-serif">
+      <text x="160" y="190" text-anchor="middle">Места А · 1–30</text>
+      <text x="480" y="190" text-anchor="middle">Места Б · 31–60</text>
+      <text x="320" y="80" text-anchor="middle">Рампа</text>
+    </g>
+    <rect x="292" y="330" width="56" height="16" fill="var(--warn)"/>`,
+  yard:`
+    <rect x="16" y="16" width="608" height="368" rx="6" fill="var(--map-floor)" stroke="var(--stroke-2)" stroke-width="2"/>
+    <rect x="40" y="40" width="200" height="140" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <rect x="400" y="40" width="200" height="140" fill="var(--map-room)" stroke="var(--stroke-2)"/>
+    <ellipse cx="320" cy="230" rx="110" ry="70" fill="var(--ok-bg)" stroke="var(--ok)"/>
+    <rect x="240" y="320" width="160" height="40" fill="var(--map-room-2)" stroke="var(--stroke-2)"/>
+    <g fill="var(--map-label)" font-size="12" font-family="Inter, sans-serif">
+      <text x="140" y="110" text-anchor="middle">Подъезд 1</text>
+      <text x="500" y="110" text-anchor="middle">Подъезд 3</text>
+      <text x="320" y="236" text-anchor="middle">Детская площадка</text>
+      <text x="320" y="344" text-anchor="middle">Калитка двора</text>
+    </g>`
+};
+const PLAN_DEVICES={
+  floor7:[
+    {k:'cam',x:320,y:250,fill:'var(--accent)',label:'Камера холла',obj:'cam-f7'},
+    {k:'fire',x:80,y:70,fill:'var(--crit)',label:'ШС-14',pulse:true,obj:'fire-sh14'},
+    {k:'sensor',x:80,y:330,fill:'var(--ok)',label:'ШС-15',obj:'fire-sh14'},
+    {k:'sensor',x:560,y:70,fill:'var(--ok)',label:'ШС-16',obj:'fire-sh14'},
+    {k:'door',x:320,y:360,fill:'var(--accent)',label:'Тамбур',obj:'door-tambur'},
+    {k:'leak',x:560,y:330,fill:'var(--info)',label:'Протечка',obj:'leak'}
+  ],
+  parking:[
+    {k:'cam',x:320,y:50,fill:'var(--accent)',label:'LPR въезд',obj:'park-entry'},
+    {k:'cam',x:320,y:340,fill:'var(--accent)',label:'Рампа',obj:'park-entry'},
+    {k:'door',x:160,y:360,fill:'var(--accent)',label:'Шлагбаум',obj:'park-entry'}
+  ],
+  yard:[
+    {k:'cam',x:320,y:230,fill:'var(--accent)',label:'Площадка',obj:'gate-k1'},
+    {k:'cam',x:320,y:340,fill:'var(--accent)',label:'Калитка',obj:'gate-k1'},
+    {k:'door',x:140,y:180,fill:'var(--accent)',label:'П1',obj:'door-p1'},
+    {k:'door',x:500,y:180,fill:'var(--accent)',label:'П3',obj:'door-p3'}
+  ]
+};
+let currentPlan='floor7';
+function renderPlan(id){
+  currentPlan=id||currentPlan;
+  document.querySelectorAll('#planTabs button').forEach(b=>b.classList.toggle('on', b.dataset.plan===currentPlan));
+  const marks=(PLAN_DEVICES[currentPlan]||[]).map(m=>{
+    const pulse=m.pulse?`<circle cx="${m.x}" cy="${m.y}" r="18" fill="${m.fill}" opacity=".2"><animate attributeName="r" values="12;22;12" dur="1.6s" repeatCount="indefinite"/></circle>`:'';
+    return `<g class="mk" onclick="planPick('${m.k}','${m.obj}')">${pulse}<circle cx="${m.x}" cy="${m.y}" r="10" fill="${m.fill}"/><text x="${m.x}" y="${m.y+24}" fill="var(--map-label)" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">${m.label}</text></g>`;
+  }).join('');
+  document.getElementById('planRoot').innerHTML=`<svg class="map-svg" viewBox="0 0 640 400" role="img">${PLAN_MARK[currentPlan]}${marks}</svg>`;
+}
+
+setInterval(()=>{const t=hhmmss(now());document.querySelectorAll('.ct').forEach(e=>e.textContent=t)},1000);
+
+/* ---------- Активные вызовы ---------- */
+let activeCalls=[
+  {t:'10:14:22',panel:'П2 · входная дверь',sub:'Кв. 214 · Смирнов А. В.',st:'ringing',dur:12,obj:'panel-p2'}
+];
+function callRow(c,full){
+  const st = c.st==='ringing'
+    ? '<span class="chip info"><span class="sd ok"></span>Вызов · early media</span>'
+    : '<span class="chip ok"><span class="sd ok"></span>Разговор</span>';
+  const acts='<button class="btn sm primary" onclick="openCallModal()">Открыть</button> '
+    +'<button class="btn sm ghost" onclick="quickUnlock(\''+c.panel+'\')">Дверь</button> '
+    +videoBtn(c.obj||'panel-p2');
+  return '<tr><td class="t-mono">'+c.t+'</td><td><b>'+c.panel+'</b></td><td>'+c.sub+'</td>'
+    +(full?'<td>'+st+'</td><td class="t-mono">'+pad(Math.floor(c.dur/60))+':'+pad(c.dur%60)+'</td>':'<td>'+st+'</td>')
+    +'<td>'+acts+'</td></tr>';
+}
+function renderCalls(){
+  const a=activeCalls.map(c=>callRow(c,false)).join('');
+  const b=activeCalls.map(c=>callRow(c,true)).join('');
+  document.getElementById('callsTable').innerHTML = a || '<tr><td colspan="5" class="empty">Активных вызовов нет</td></tr>';
+  document.getElementById('activeCallsTable').innerHTML = b || '<tr><td colspan="6" class="empty">Активных вызовов нет</td></tr>';
+  document.getElementById('kpiCalls').textContent=activeCalls.length;
+  document.getElementById('navCalls').textContent=activeCalls.length;
+}
+setInterval(()=>{activeCalls.forEach(c=>c.dur++);if(activeCalls.length)renderCalls()},1000);
+
+/* ---------- История вызовов ---------- */
+const HISTORY=[
+  {t:'10:09:41',p:'П1 · входная дверь',f:'Кв. 106 · Ковалёва М. И.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, дверь открыта',len:'00:38'},
+  {t:'10:02:17',p:'Калитка двора',f:'Кв. 703 · Гуськов Д. П.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:21'},
+  {t:'09:57:03',p:'П2 · входная дверь',f:'Кв. 412 · Ершова Н. С.',d:'—',r:'miss',rt:'Не отвечен (30 с)',len:'00:30'},
+  {t:'09:51:55',p:'П3 · входная дверь',f:'Консьерж П3',d:'Планшет консьержа (SIP)',r:'ok',rt:'Отвечен, дверь открыта',len:'01:12'},
+  {t:'09:44:12',p:'Въезд на паркинг',f:'Кв. 214 · Смирнов А. В.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, шлагбаум открыт',len:'00:26'},
+  {t:'09:31:08',p:'П1 · входная дверь',f:'Кв. 508 · Титова О. Р.',d:'—',r:'rej',rt:'Отклонён абонентом',len:'00:07'},
+  {t:'09:22:44',p:'П2 · входная дверь',f:'Кв. 214 · Смирнов А. В.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:44'}
+];
+document.getElementById('callHistory').innerHTML=HISTORY.map(h=>{
+  const chip = h.r==='ok'?'<span class="chip ok">'+h.rt+'</span>' : h.r==='miss'?'<span class="chip warn">'+h.rt+'</span>':'<span class="chip mut">'+h.rt+'</span>';
+  return '<tr><td class="t-mono">'+ddmm(now())+' '+h.t+'</td><td><b>'+h.p+'</b></td><td>'+h.f+'</td><td class="t-mut">'+h.d+'</td><td>'+chip+'</td><td class="t-mono">'+h.len+'</td>'
+    +'<td><button class="btn sm ghost ext-hide" onclick="openLinkedVideo(\''+panelObj(h.p)+'\')">Видео [Р]</button>'
+    +'<button class="btn sm ghost basic-only" onclick="toast(\'info\',\'Событие\',\'Метка времени '+h.t+', идентификатор панели — без видеоссылки\')">Событие</button></td></tr>';
+}).join('');
+
+/* ---------- SIP-дерево ---------- */
+const TREE=[
+  {l:1,n:'ЖК «Северный парк»',s:'ok'},
+  {l:2,n:'Корпус 3',s:'ok'},
+  {l:3,n:'Подъезд 1 · панель П1',s:'ok'},
+  {l:3,n:'Подъезд 2 · панель П2',s:'ok'},
+  {l:3,n:'Подъезд 3 · панель П3',s:'off'},
+  {l:3,n:'Калитка двора · панель К1',s:'ok'},
+  {l:3,n:'Въезд на паркинг · панель В1',s:'ok'},
+  {l:2,n:'Абоненты · 254 аккаунта',s:'ok'},
+  {l:3,n:'Кв. 101–199 · 62 аккаунта',s:'ok'},
+  {l:3,n:'Кв. 201–299 · 64 аккаунта',s:'ok'},
+  {l:3,n:'Кв. 301–399 · 63 аккаунта',s:'ok'},
+  {l:3,n:'Кв. 401–499 · 61 аккаунт',s:'warn'},
+  {l:2,n:'Консьержи · 3 аккаунта',s:'ok'},
+  {l:2,n:'Служебные зоны · 8 точек',s:'ok'}
+];
+document.getElementById('sipTree').innerHTML=TREE.map(t=>
+  '<div class="nd lvl'+t.l+'"><span class="sd '+t.s+'"></span><span>'+t.n+'</span></div>').join('');
+
+/* ---------- Тревоги ---------- */
+let ALARMS=[
+  {id:1,obj:'fire-sh14',lvl:'fire',ttl:'Пожар 1 · дымовой извещатель',src:'Подъезд 2 · 7 этаж · ШС-14 · Болид С2000-КДЛ',t:'10:11:38',pr:'ПОЖАР'},
+  {id:2,obj:'fire-sh9',lvl:'warn',ttl:'Неисправность шлейфа',src:'Подъезд 1 · ШС-9 · обрыв линии',t:'09:48:02',pr:'Неисправность'},
+  {id:3,obj:'panel-p3',lvl:'alarm',ttl:'Панель офлайн более 10 минут',src:'Подъезд 3 · панель П3 · нет REGISTER',t:'10:00:14',pr:'Связь'}
+];
+function openAlarm(id){
+  selectedAlarmId=id;
+  go('alarms');
+  renderAlarms();
+}
+function renderAlarmCard(){
+  const el=document.getElementById('alarmCard'); if(!el) return;
+  const a=ALARMS.find(x=>x.id===selectedAlarmId)||ALARMS[0];
+  if(!a){
+    el.innerHTML='<div class="empty">Активных тревог нет</div>';
+    return;
+  }
+  selectedAlarmId=a.id;
+  const chip=a.lvl==='fire'?'<div class="chip fire" style="margin-bottom:9px">ПОЖАР 1</div>'
+    :a.lvl==='warn'?'<div class="chip warn" style="margin-bottom:9px">'+a.pr+'</div>'
+    :'<div class="chip alarm" style="margin-bottom:9px">'+a.pr+'</div>';
+  const obj=a.obj||'';
+  el.innerHTML=chip
+    +'<div style="font-weight:600;font-size:14px;margin-bottom:3px">'+a.ttl+'</div>'
+    +'<div style="color:var(--txt-2);font-size:12px;margin-bottom:12px">'+a.src+' · '+a.t+'</div>'
+    +'<div class="ext-hide" id="alarmCam" style="margin-bottom:11px;min-height:200px"></div>'
+    +(obj?'<button class="btn sm ext-hide" style="width:100%;margin-bottom:11px" onclick="openLinkedVideo(\''+obj+'\')">Открыть связанные камеры</button>':'')
+    +'<div class="mini-note basic-only" style="margin-bottom:11px">Автовывод видео ближайшей камеры — функция расширенной конфигурации [Р]. В базовой оператор получает событие с меткой времени и идентификатором прибора.</div>'
+    +'<div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--txt-3);margin-bottom:7px">Регламент реагирования</div>'
+    +'<div style="font-size:12px;line-height:1.75;color:var(--txt-2);margin-bottom:13px">'
+    +'1. Подтвердить приём тревоги.<br>2. Проверить видео / связаться с консьержем.<br>3. При подтверждении — вызов 112 и разблокировка эвакуационных выходов.<br>4. Оповестить жильцов через push и голосовое оповещение.</div>'
+    +'<div class="grid g-2" style="gap:8px">'
+    +'<button class="btn ok" onclick="ack('+a.id+')">Подтвердить</button>'
+    +'<button class="btn danger" onclick="toast(\'err\',\'Эвакуация\',\'Команда «Открыть все двери на эвакуацию» отправлена на 14 точек доступа\')">Двери на эвакуацию</button>'
+    +'<button class="btn" onclick="toast(\'info\',\'Вызов консьержа\',\'Исходящий SIP-вызов на аккаунт concierge2@…\')">Вызвать консьержа</button>'
+    +'<button class="btn" onclick="toast(\'info\',\'Оповещение\',\'Push-рассылка жильцам поставлена в очередь\')">Оповестить жильцов</button>'
+    +'<button class="btn ghost" style="grid-column:1/-1" onclick="toast(\'warn\',\'Сброс\',\'Сброс тревоги на приборе доступен после подтверждения\')">Сбросить на приборе</button>'
+    +'</div>';
+  carouselIdx.alarm=0;
+  refreshWidget('alarm');
+}
+function renderAlarms(){
+  const side=ALARMS.map(a=>
+    '<div class="alarm-item '+a.lvl+(a.id===selectedAlarmId?' on':'')+'" onclick="openAlarm('+a.id+')">'
+     +'<div class="r1"><span class="sd '+(a.lvl==='fire'?'alarm':a.lvl)+'"></span><span class="ttl">'+a.ttl+'</span><span class="tm">'+a.t+'</span></div>'
+     +'<div class="src">'+a.src+'</div>'
+     +'<div class="acts"><button class="btn sm ok" onclick="event.stopPropagation();ack('+a.id+')">Подтвердить</button>'
+     +'<button class="btn sm ghost" onclick="event.stopPropagation();openAlarm('+a.id+')">Карточка</button>'
+     +videoBtn(a.obj)+'</div></div>').join('');
+  document.getElementById('sideAlarms').innerHTML = side || '<div class="empty">Активных тревог нет</div>';
+
+  document.getElementById('alarmTable').innerHTML = ALARMS.map(a=>{
+    const chip = a.lvl==='fire'?'<span class="chip fire">'+a.pr+'</span>':a.lvl==='warn'?'<span class="chip warn">'+a.pr+'</span>':'<span class="chip alarm">'+a.pr+'</span>';
+    return '<tr class="'+(a.id===selectedAlarmId?'sel':'')+'" onclick="openAlarm('+a.id+')" style="cursor:pointer"><td class="t-mono">'+a.t+'</td><td>'+chip+'</td><td><b>'+a.ttl+'</b></td><td class="t-mut">'+a.src+'</td>'
+      +'<td><button class="btn sm ok" onclick="event.stopPropagation();ack('+a.id+')">Подтвердить</button> '
+      +'<button class="btn sm ghost" onclick="event.stopPropagation();go(\'plan\');renderPlan(\'floor7\');planPick(\'fire\',\''+(a.obj||'')+'\')">На плане</button> '
+      +videoBtn(a.obj)+'</td></tr>';
+  }).join('') || '<tr><td colspan="5" class="empty">Очередь пуста</td></tr>';
+
+  const n=ALARMS.length;
+  ['alarmDot','navAlarms','sideAlarmN','kpiAlarms'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=n});
+  document.getElementById('alarmDot').style.display = n?'block':'none';
+  document.getElementById('cntFire').textContent = ALARMS.filter(a=>a.lvl==='fire').length;
+  renderAlarmCard();
+}
+function ack(id){
+  const a=ALARMS.find(x=>x.id===id); if(!a)return;
+  ALARMS=ALARMS.filter(x=>x.id!==id);
+  renderAlarms();
+  toast('ok','Тревога подтверждена',a.ttl+' · оператор Полякова И.');
+  pushEvent(a.lvl==='fire'?'fire':'acc','Тревога подтверждена оператором',a.src);
+}
+function ackAll(){ if(!ALARMS.length) return toast('info','Очередь пуста','Активных тревог нет'); const n=ALARMS.length; ALARMS=[]; renderAlarms(); toast('ok','Подтверждено',n+' тревог(и) приняты в работу'); }
+renderAlarms();
+
+/* ---------- Лента событий ---------- */
+const EV_META={
+  sip:{c:'sip',n:'SIP',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>'},
+  acc:{c:'acc',n:'Доступ',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>'},
+  fire:{c:'fire',n:'ОПС',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h16.9a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>'},
+  scada:{c:'scada',n:'SCADA',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-6 4 4 4-7 5 9"/></svg>'},
+  video:{c:'video',n:'Видео',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'},
+  park:{c:'park',n:'Паркинг',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M9 16V8h3.5a2.5 2.5 0 010 5H9"/></svg>'}
+};
+let EVENTS=[
+  {ty:'sip',t:'10:14:22',ttl:'Входящий вызов',d:'П2 · входная дверь → кв. 214',src:'sipmanager',who:'Панель П2',obj:'panel-p2'},
+  {ty:'acc',t:'10:13:57',ttl:'Дверь открыта',d:'П1 · из мобильного приложения (REST unlock)',src:'Драйвер BEWARD',who:'Кв. 106',obj:'door-p1'},
+  {ty:'park',t:'10:12:04',ttl:'Проезд разрешён',d:'А123ВС 77 · белый список · кв. 214',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'},
+  {ty:'fire',t:'10:11:38',ttl:'ПОЖАР 1',d:'Подъезд 2 · 7 этаж · ШС-14',src:'Болид С2000-КДЛ',who:'ОПС',obj:'fire-sh14'},
+  {ty:'scada',t:'10:10:02',ttl:'Останов лифта между этажами',d:'П2 · Л2 · этажи 4–5',src:'Плагин Modbus TCP',who:'Лифт П2Л2',obj:'lift-p2'},
+  {ty:'acc',t:'10:08:47',ttl:'Проход по гостевому QR',d:'Калитка двора · гость кв. 106',src:'Ядро',who:'Гостевой код',obj:'door-gate'},
+  {ty:'sip',t:'10:09:41',ttl:'Вызов завершён',d:'П1 → кв. 106 · 00:38 · дверь открыта',src:'Kamailio',who:'Кв. 106',obj:'panel-p1'},
+  {ty:'video',t:'10:07:12',ttl:'Детектор: оставленный предмет',d:'Холл П2 · 1 этаж',src:'Интеллект X',who:'Видеоаналитика',obj:'cam-f7'},
+  {ty:'scada',t:'10:05:30',ttl:'Давление ХВС выше уставки',d:'PT-03 · 3.1 бар (уставка 3.0)',src:'Плагин Modbus TCP',who:'ИТП',obj:'itp'},
+  {ty:'acc',t:'10:03:19',ttl:'Отказ в доступе',d:'Техпомещение −1 · неизвестная карта',src:'ACFA-Интеллект',who:'СКУД',obj:'door-tech'},
+  {ty:'sip',t:'10:02:17',ttl:'Вызов завершён',d:'Калитка двора → кв. 703 · 00:21',src:'Kamailio',who:'Кв. 703',obj:'gate-k1'},
+  {ty:'park',t:'09:55:12',ttl:'Отказ в проезде',d:'Х004ММ 50 · нет в списках',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'}
+];
+let sideF='all', logF='all';
+function evHtml(e){
+  const m=EV_META[e.ty];
+  return '<div class="ev" data-ty="'+e.ty+'"><div class="ic '+m.c+'">'+m.ic+'</div>'
+    +'<div class="bd"><div class="l1"><b>'+e.ttl+'</b><span class="tm">'+e.t+'</span></div>'
+    +'<div class="l2">'+e.d+'</div></div></div>';
+}
+function renderSideEvents(){
+  const list = sideF==='all'?EVENTS:EVENTS.filter(e=>e.ty===sideF);
+  document.getElementById('sideEvents').innerHTML=list.map(evHtml).join('') || '<div class="empty">Событий нет</div>';
+  const clog=document.getElementById('cLog');
+  if(clog){
+    clog.innerHTML=EVENTS.filter(e=>e.ty==='sip'||e.ty==='acc').slice(0,8).map(e=>
+      '<div class="item"><div class="tm">'+e.t+'</div><b>'+e.ttl+'</b><div class="t-mut" style="font-size:12px">'+e.d+'</div></div>'
+    ).join('');
+  }
+}
+function sideFilter(btn,t){
+  document.querySelectorAll('#pane-events .fchip').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); sideF=t; renderSideEvents();
+}
+function pushEvent(ty,ttl,d,src){
+  EVENTS.unshift({ty,t:hhmmss(now()),ttl,d,src:src||'Ядро',who:'—'});
+  if(EVENTS.length>90) EVENTS.pop();
+  renderSideEvents(); renderLog();
+}
+renderSideEvents();
+
+/* ---------- Журнал ---------- */
+function logFilter(btn,t){
+  document.querySelectorAll('#view-log .fchip').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); logF=t; renderLog();
+}
+let logQuery='';
+function renderLog(q){
+  if(q!==undefined) logQuery=q.toLowerCase();
+  let list = logF==='all'?EVENTS:EVENTS.filter(e=>e.ty===logF);
+  if(logQuery) list=list.filter(e=>(e.ttl+' '+e.d+' '+e.src).toLowerCase().includes(logQuery));
+  document.getElementById('logTable').innerHTML = list.map(e=>{
+    const m=EV_META[e.ty];
+    const act = (e.ty==='fire' ? '<button class="btn sm ok" onclick="toast(\'ok\',\'Подтверждено\',\''+e.ttl+'\')">Подтвердить</button> ' : '')
+      + videoBtn(e.obj||(e.ty==='park'?'park-entry':e.ty==='sip'?'panel-p2':e.ty==='scada'?'lift-p2':e.ty==='acc'?'door-p1':'cam-f7'));
+    return '<tr><td class="t-mono">'+ddmm(now())+' '+e.t+'</td>'
+      +'<td><span class="chip mut"><span class="sd" style="background:currentColor"></span>'+m.n+'</span></td>'
+      +'<td><b>'+e.ttl+'</b><div class="t-mut" style="font-size:11.5px">'+e.d+'</div></td>'
+      +'<td class="t-mut">'+e.src+'</td><td class="t-mut">'+(e.who||'—')+'</td><td>'+act+'</td></tr>';
+  }).join('') || '<tr><td colspan="6" class="empty">Ничего не найдено</td></tr>';
+}
+renderLog();
+
+/* ---------- Точки доступа ---------- */
+const DOORS=[
+  {n:'Подъезд 1 · входная дверь',dev:'BEWARD DKS15120 · П1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p1'},
+  {n:'Подъезд 2 · входная дверь',dev:'BEWARD DKS15120 · П2',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p2'},
+  {n:'Подъезд 3 · входная дверь',dev:'BEWARD DKS15120 · П3',m:'HTTP/CGI',s:'off',st:'Нет связи',obj:'door-p3'},
+  {n:'Калитка двора',dev:'Fanvil i32 · К1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-gate'},
+  {n:'Тамбур П2 · 7 этаж',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tambur'},
+  {n:'Техпомещение −1',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tech'},
+  {n:'Электрощитовая',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'warn',st:'Открыта 6 мин',obj:'door-elec'}
+];
+document.getElementById('doorsTable').innerHTML=DOORS.map(d=>
+  '<tr><td><b>'+d.n+'</b></td><td class="t-mut">'+d.dev+'</td><td><span class="chip mut">'+d.m+'</span></td>'
+  +'<td><span class="sd '+d.s+'"></span> '+d.st+'</td>'
+  +'<td><button class="btn sm primary" '+(d.s==='off'?'disabled':'')+' onclick="quickUnlock(\''+d.n+'\')">Открыть</button> '
+  +'<button class="btn sm ghost" onclick="toast(\'warn\',\'Режим удержания\',\''+d.n+' удерживается открытой\')">Удержать</button> '
+  +videoBtn(d.obj)+'</td></tr>').join('');
+
+function quickUnlock(name){
+  toast('ok','Дверь открыта',name+' · REST unlock → драйвер панели · оператор Полякова И.');
+  pushEvent('acc','Дверь открыта оператором',name+' · REST unlock (вне звонка)','Драйвер панели');
+}
+function unlockFromCall(){
+  toast('ok','Дверь открыта','П2 · входная дверь · открыто из карточки вызова');
+  pushEvent('acc','Дверь открыта из вызова','П2 · входная дверь · оператор','Драйвер BEWARD');
+}
+
+/* ---------- SCADA-теги ---------- */
+const TAGS=[
+  {n:'TT-01 · Т1 подача',v:'72.4 °C',u:'60 – 80',s:'ok',obj:'itp'},
+  {n:'TT-02 · Т2 обратка',v:'46.1 °C',u:'40 – 55',s:'ok',obj:'itp'},
+  {n:'PT-03 · Давление ХВС',v:'3.1 бар',u:'2.0 – 3.0',s:'warn',obj:'itp'},
+  {n:'FT-04 · Расход ХВС',v:'2.7 м³/ч',u:'0 – 6',s:'ok',obj:'itp'},
+  {n:'EM-01 · Активная мощность',v:'184 кВт',u:'0 – 260',s:'ok',obj:'itp'},
+  {n:'PS-01 · Насос Н1',v:'работа',u:'—',s:'ok',obj:'itp'},
+  {n:'PS-02 · Насос Н2',v:'резерв',u:'—',s:'ok',obj:'itp'},
+  {n:'LV-01 · Лифт П2Л2',v:'авария',u:'—',s:'alarm',obj:'lift-p2'},
+  {n:'LK-01 · Протечка ИТП',v:'сухо',u:'—',s:'ok',obj:'itp'}
+];
+document.getElementById('tagsTable').innerHTML=TAGS.map(t=>
+  '<tr><td><span class="sd '+t.s+'"></span> '+t.n+'</td><td class="t-mono"'+(t.s==='warn'?' style="color:#efbb72"':t.s==='alarm'?' style="color:#ff8b8e"':'')+'>'+t.v+'</td><td class="t-mut">'+t.u+'</td><td>'+videoBtn(t.obj)+'</td></tr>').join('');
+
+/* ---------- Паркинг ---------- */
+let PARK=[
+  {t:'10:12:04',n:'А123ВС 77',b:'Белый список · кв. 214',r:'ok'},
+  {t:'10:08:47',n:'Е777КХ 77',b:'Гостевой QR · кв. 106',r:'ok'},
+  {t:'10:01:33',n:'О555ТТ 77',b:'Белый список · кв. 106',r:'ok'},
+  {t:'09:55:12',n:'Х004ММ 50',b:'Нет в списках',r:'no'},
+  {t:'09:47:20',n:'Р909НН 190',b:'Белый список · кв. 703',r:'ok'},
+  {t:'09:40:05',n:'К210ОР 77',b:'Ручное открытие оператором',r:'ok'}
+];
+function renderPark(){
+  document.getElementById('parkTable').innerHTML=PARK.map(p=>
+    '<tr><td class="t-mono">'+p.t+'</td><td class="t-mono"><b>'+p.n+'</b></td><td class="t-mut">'+p.b+'</td>'
+    +'<td>'+(p.r==='ok'?'<span class="chip ok">Проезд</span>':'<span class="chip alarm">Отказ</span>')+'</td>'
+    +'<td>'+videoBtn('park-entry')+'</td></tr>').join('');
+}
+renderPark();
+
+/* ---------- Плагины ---------- */
+const PLUGINS=[
+  {n:'sipmanager',d:'Панели, SIP-аккаунты, дерево адресов',p:'REST / внутренний',v:'1.4.2',c:'259',s:'ok',st:'Работает'},
+  {n:'Драйвер BEWARD',d:'Вызывные панели',p:'HTTP/CGI + RTSP',v:'0.9.1',c:'4',s:'ok',st:'Работает'},
+  {n:'Драйвер Fanvil',d:'Вызывные панели',p:'HTTP API + RTSP',v:'0.7.0',c:'1',s:'ok',st:'Работает'},
+  {n:'Modbus TCP',d:'ИТП, насосы, счётчики, лифты',p:'Modbus TCP',v:'2.1.0',c:'46',s:'ok',st:'Работает'},
+  {n:'ACFA-Интеллект',d:'СКУД и ОПС (Болид «Орион»)',p:'API видеоплатформы',v:'6.2',c:'31',s:'ext',st:'Расширенная [Р]'},
+  {n:'Авто-Интеллект',d:'Распознавание автономеров',p:'API видеоплатформы',v:'6.2',c:'2',s:'ext',st:'Расширенная [Р]'},
+  {n:'VMS-коннектор',d:'Видеомодуль (Интеллект X)',p:'RTSP + расширенный API',v:'1.0.3',c:'24',s:'ext',st:'Расширенная [Р]'},
+  {n:'Push-шлюз',d:'APNS / FCM',p:'HTTP/2',v:'1.2.5',c:'312',s:'ok',st:'Работает'}
+];
+document.getElementById('pluginsTable').innerHTML=PLUGINS.map(p=>{
+  const chip=p.s==='ok'?'<span class="chip ok">'+p.st+'</span>':'<span class="chip ext">'+p.st+'</span>';
+  return '<tr'+(p.s==='ext'?' class="ext-hide"':'')+'><td><b>'+p.n+'</b></td><td class="t-mut">'+p.d+'</td><td><span class="chip mut">'+p.p+'</span></td>'
+    +'<td class="t-mono">'+p.v+'</td><td class="t-mono">'+p.c+'</td><td>'+chip+'</td>'
+    +'<td><button class="btn sm ghost">Настроить</button></td></tr>';
+}).join('');
+
+const PANELS=[
+  {n:'П1 · входная дверь',m:'BEWARD DKS15120',a:'panel1@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p1'},
+  {n:'П2 · входная дверь',m:'BEWARD DKS15120',a:'panel2@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p2'},
+  {n:'П3 · входная дверь',m:'BEWARD DKS15120',a:'panel3@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'off',obj:'panel-p3'},
+  {n:'К1 · калитка двора',m:'Fanvil i32',a:'gate1@integrator-7',r:'rtsp://…/stream0',u:'HTTP API',s:'ok',obj:'gate-k1'},
+  {n:'В1 · въезд на паркинг',m:'BAS-IP AV-01',a:'entry1@integrator-7',r:'rtsp://…/h264',u:'Реле контроллера',s:'ok',obj:'entry-v1'}
+];
+document.getElementById('panelsTable').innerHTML=PANELS.map(p=>
+  '<tr><td><b>'+p.n+'</b></td><td class="t-mut">'+p.m+'</td><td class="t-mono" style="font-size:11px">'+p.a+'</td>'
+  +'<td class="t-mono" style="font-size:11px">'+p.r+'</td><td><span class="chip mut">'+p.u+'</span></td>'
+  +'<td>'+(p.s==='ok'?'<span class="chip ok"><span class="sd ok"></span>Онлайн</span>':'<span class="chip alarm"><span class="sd alarm"></span>Офлайн 14 мин</span>')+'</td>'
+  +'<td>'+videoBtn(p.obj)+'</td></tr>').join('');
+
+/* ---------- Сценарии ---------- */
+const RULES=[
+  {on:true,ext:false,if:'Пожар 1 в подъезде',ifd:'Событие ОПС «Пожар 1» на любом шлейфе подъезда',then:'Оповестить + разблокировать эвакуационные выходы',thend:'SMS и push диспетчеру и УК · открыть 14 точек доступа · запись в журнал'},
+  {on:true,ext:true,if:'Пожар 1 в подъезде',ifd:'Событие ОПС «Пожар 1»',then:'Вывести ближайшие камеры на экран оператора',thend:'Автораскладка 2×2 из камер этажа и холла подъезда [Р]'},
+  {on:true,ext:false,if:'Входящий вызов с панели подъезда 2',ifd:'INVITE от панели П2 без ответа абонента 20 с',then:'Уведомить консьержа и записать событие',thend:'Push консьержу П2 · событие в журнал с Call-ID'},
+  {on:true,ext:true,if:'Распознан автономер из белого списка',ifd:'Событие LPR на въездной камере [Р]',then:'Открыть шлагбаум',thend:'Команда unlock на контроллер · запись в журнал с номером и меткой времени'},
+  {on:false,ext:false,if:'Авария насоса Н1',ifd:'Тег PS-01 = «авария» дольше 10 с',then:'Запустить резервный насос Н2',thend:'Команда на контроллер · заявка в диспетчерскую · уведомление техспециалисту'},
+  {on:true,ext:false,if:'Панель офлайн более 10 минут',ifd:'Отсутствие REGISTER от SIP-аккаунта панели',then:'Создать заявку и уведомить техспециалиста',thend:'Заявка в диспетчерскую · Telegram техспециалисту'}
+];
+document.getElementById('rulesList').innerHTML=RULES.map((r,i)=>
+  '<div class="rule'+(r.ext?' ext-hide':'')+'">'
+  +'<div class="part if"><div class="k">Если</div><div class="v">'+r.if+(r.ext?' <span class="chip ext">Р</span>':'')+'<div class="sub">'+r.ifd+'</div></div></div>'
+  +'<div class="part"><div class="k">То</div><div class="v">'+r.then+'<div class="sub">'+r.thend+'</div></div></div>'
+  +'<div class="ctl"><div class="sw-t'+(r.on?' on':'')+'" onclick="this.classList.toggle(\'on\');toast(\'info\',\'Сценарий\',\''+r.if+' — состояние изменено\')"><i></i></div>'
+  +'<button class="btn sm ghost">Изменить</button></div></div>').join('');
+
+/* ---------- Жильцы ---------- */
+const RESIDENTS=[
+  {f:'214',n:'Смирнов Алексей Викторович',u:'214@integrator-7.axxoncloud.local',d:'iPhone 14, Pixel 7',p:'Жилец + авто',s:'ok'},
+  {f:'106',n:'Ковалёва Мария Игоревна',u:'106@integrator-7.axxoncloud.local',d:'iPhone 13',p:'Жилец',s:'ok'},
+  {f:'703',n:'Гуськов Дмитрий Павлович',u:'703@integrator-7.axxoncloud.local',d:'Samsung S23, iPad, Redmi',p:'Жилец + камеры [Р]',s:'ok'},
+  {f:'412',n:'Ершова Наталья Сергеевна',u:'412@integrator-7.axxoncloud.local',d:'Xiaomi 13',p:'Жилец',s:'warn'},
+  {f:'508',n:'Титова Ольга Романовна',u:'508@integrator-7.axxoncloud.local',d:'iPhone 15 Pro',p:'Жилец',s:'ok'},
+  {f:'—',n:'Консьерж подъезда 2',u:'concierge2@integrator-7.axxoncloud.local',d:'Планшет Lenovo (SIP UA)',p:'Консьерж / оператор',s:'ok'}
+];
+document.getElementById('residentsTable').innerHTML=RESIDENTS.map(r=>
+  '<tr><td><b>'+r.f+'</b></td><td>'+r.n+'</td><td class="t-mono" style="font-size:11px">'+r.u+'</td>'
+  +'<td class="t-mut">'+r.d+'</td><td><span class="chip mut">'+r.p+'</span></td>'
+  +'<td>'+(r.s==='ok'?'<span class="chip ok"><span class="sd ok"></span>Онлайн</span>':'<span class="chip warn"><span class="sd warn"></span>Офлайн</span>')+'</td>'
+  +'<td><button class="btn sm ghost">Карточка</button> <button class="btn sm ghost">Блок</button></td></tr>').join('');
+
+/* ---------- Карточка на плане ---------- */
+const PLAN_CARDS={
+  fire:{ttl:'Извещатель ШС-14',sub:'Дымовой · Болид С2000-КДЛ · подъезд 2, 7 этаж',chip:'<span class="chip fire">ПОЖАР 1</span>',rows:[['Состояние','Тревога с 10:11:38'],['Адрес прибора','1.14'],['Зона','Холл 7 этажа'],['Последний тест','12.08.2026']],acts:'<button class="btn ok" onclick="ack(1)">Подтвердить</button><button class="btn danger" onclick="toast(\'err\',\'Эвакуация\',\'Двери подъезда 2 разблокированы\')">Двери на эвакуацию</button>'},
+  sensor:{ttl:'Извещатель ШС-15',sub:'Дымовой · Болид С2000-КДЛ',chip:'<span class="chip ok">Норма</span>',rows:[['Состояние','Норма'],['Адрес прибора','1.15'],['Зона','Холл 7 этажа'],['Последний тест','12.08.2026']],acts:'<button class="btn ghost">История</button>'},
+  door:{ttl:'Дверь тамбура · 7 этаж',sub:'Контроллер Болид С2000-2 · через ACFA',chip:'<span class="chip mut">Закрыта</span>',rows:[['Способ открытия','ACFA-Интеллект'],['Последний проход','09:58 · кв. 703'],['Режим','Штатный']],acts:'<button class="btn primary" onclick="quickUnlock(\'Тамбур П2 · 7 этаж\')">Открыть</button><button class="btn ghost">Удержать открытой</button>'},
+  cam:{ttl:'Камера холла 7 этажа',sub:'Интеллект X · канал 14 · H.264 1920×1080',chip:'<span class="chip ext">Расширенная [Р]</span>',rows:[['Запись','Идёт · глубина 30 сут'],['Детекторы','Движение, оставленный предмет'],['Битрейт','4.2 Мбит/с']],acts:'<button class="btn primary" onclick="openVideo([\'cam-f7\'],\'1x1\')">Однокадровый</button>'},
+  leak:{ttl:'Датчик протечки',sub:'Стояк ХВС · плагин Modbus TCP',chip:'<span class="chip ok">Сухо</span>',rows:[['Тег','LK-01'],['Опрос','1 с'],['Последнее срабатывание','нет']],acts:'<button class="btn ghost">Тренд</button>'}
+};
+function planPick(k,objId){
+  const c=PLAN_CARDS[k]; if(!c) return;
+  const obj=objId || {fire:'fire-sh14',sensor:'fire-sh14',door:'door-tambur',cam:'cam-f7',leak:'leak'}[k];
+  document.getElementById('planCard').innerHTML=
+    c.chip+'<div style="font-weight:600;font-size:14px;margin:9px 0 3px">'+c.ttl+'</div>'
+    +'<div style="color:var(--txt-2);font-size:12px;margin-bottom:12px">'+c.sub+'</div>'
+    +'<div class="kv">'+c.rows.map(r=>'<div class="k">'+r[0]+'</div><div>'+r[1]+'</div>').join('')+'</div>'
+    +'<div class="hr"></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+c.acts+videoBtn(obj)+'</div>';
+}
+planPick('fire');
+
+/* ---------- Модальное окно вызова ---------- */
+let callTimer=null, callSec=12;
+function openCallModal(){
+  document.getElementById('callOverlay').classList.add('on');
+  refreshWidget('call');
+  clearInterval(callTimer);
+  callTimer=setInterval(()=>{callSec++;document.getElementById('callTimer').textContent=pad(Math.floor(callSec/60))+':'+pad(callSec%60)},1000);
+}
+function closeCall(){
+  document.getElementById('callOverlay').classList.remove('on');
+  clearInterval(callTimer);
+}
+function answerCall(){
+  document.getElementById('callState').textContent='Разговор · RTP через RTPEngine';
+  document.getElementById('callState').className='chip ok';
+  if(activeCalls[0]) activeCalls[0].st='talking';
+  renderCalls();
+  toast('ok','Вызов принят','Медиа установлено · H.264 + G.711u · задержка 178 мс');
+  pushEvent('sip','Вызов принят оператором','П2 · входная дверь → рабочее место диспетчера','Kamailio');
+}
+function simulateCall(){
+  callSec=0;
+  if(!activeCalls.length) activeCalls.push({t:hhmmss(now()),panel:'П2 · входная дверь',sub:'Кв. 214 · Смирнов А. В.',st:'ringing',dur:0,obj:'panel-p2'});
+  document.getElementById('callState').textContent='Early media · 183 Session Progress';
+  document.getElementById('callState').className='chip info';
+  renderCalls();
+  pushEvent('sip','Входящий вызов','П2 · входная дверь → кв. 214 · push доставлен 0.9 с','sipmanager');
+  toast('info','Входящий вызов','Панель П2 вызывает кв. 214 · early media доступно');
+  if(document.getElementById('app').classList.contains('concierge')){
+    goC('call');
+    return;
+  }
+  openCallModal();
+}
+document.addEventListener('keydown',onHotkey);
+
+/* ---------- Демо-события ---------- */
+function simulateFire(){
+  const id=Date.now();
+  ALARMS.unshift({id,obj:'fire-sh7',lvl:'fire',ttl:'Пожар 1 · дымовой извещатель',src:'Подъезд 1 · 3 этаж · ШС-7 · Болид С2000-КДЛ',t:hhmmss(now()),pr:'ПОЖАР'});
+  selectedAlarmId=id;
+  renderAlarms(); openSide('alarms');
+  pushEvent('fire','ПОЖАР 1','Подъезд 1 · 3 этаж · ШС-7','Болид С2000-КДЛ');
+  toast('err','ПОЖАР 1','Подъезд 1 · 3 этаж · ШС-7. Требуется подтверждение оператора');
+}
+const PLATES=['М456ТУ 77','В890РР 50','Н112СК 77','У345АА 190','К678ЕЕ 77'];
+function simulateLpr(){
+  const p=PLATES[Math.floor(Math.random()*PLATES.length)];
+  const ok=Math.random()>.35;
+  PARK.unshift({t:hhmmss(now()),n:p,b:ok?'Белый список · кв. '+(100+Math.floor(Math.random()*600)):'Нет в списках',r:ok?'ok':'no'});
+  if(PARK.length>12)PARK.pop();
+  renderPark();
+  pushEvent('park',ok?'Проезд разрешён':'Отказ в проезде',p+' · '+(ok?'белый список · шлагбаум открыт':'номер не найден в списках доступа'),'Авто-Интеллект');
+  toast(ok?'ok':'warn',ok?'Шлагбаум открыт':'Отказ в проезде',p+(ok?' · из белого списка · 1.4 с':' · номера нет в списках, требуется решение оператора'));
+}
+
+/* ---------- Локальный резерв ---------- */
+let wanDown=false;
+function toggleWan(){
+  wanDown=!wanDown;
+  document.body.classList.toggle('wan-down',wanDown);
+  document.getElementById('stCloud').className='sd '+(wanDown?'alarm':'ok');
+  document.getElementById('stLocal').textContent=wanDown?'АКТИВЕН':'готов';
+  document.getElementById('wanBtn').textContent=wanDown?'восстановить WAN':'обрыв WAN';
+  if(wanDown){
+    toast('warn','Переход на локальный резерв','Связь с облаком потеряна. Домофония внутри дома и открытие двери работают локально, события буферизуются');
+    pushEvent('sip','Переход на локальный резервный контур','Время переключения 18 с · регистрация панелей и абонентов сохранена','Локальный узел');
+  }else{
+    toast('ok','Связь с облаком восстановлена','Локальные события досланы в облако · провижининг сверен, расхождений нет');
+    pushEvent('sip','Возврат на облачный контур','Досылка буферизованных событий · reconciliation выполнен','Ядро');
+  }
+}
+
+/* ---------- Автогенерация ленты ---------- */
+const AUTO=[
+  ['acc','Дверь открыта','П1 · из мобильного приложения (REST unlock)','Драйвер BEWARD'],
+  ['acc','Проход по гостевому PIN','Калитка двора · курьер кв. 214','Ядро'],
+  ['sip','Вызов завершён','П1 → кв. 508 · 00:19 · дверь открыта','Kamailio'],
+  ['scada','Опрос тегов ИТП','46 тегов · отклонений нет','Плагин Modbus TCP'],
+  ['sip','Регистрация абонента','Кв. 412 · re-REGISTER после пробуждения push','Kamailio'],
+  ['video','Детектор движения','Двор · детская площадка','Интеллект X'],
+  ['acc','Отказ в доступе','Электрощитовая · карта заблокирована','ACFA-Интеллект'],
+  ['scada','Счётчик э/э · показание','Корпус 3 · 184 кВт·ч','Плагин Modbus TCP']
+];
+setInterval(()=>{
+  if(Math.random()>.55){
+    const a=AUTO[Math.floor(Math.random()*AUTO.length)];
+    pushEvent(a[0],a[1],a[2],a[3]);
+  }
+},9000);
+
+/* ---------- Тема, меню, сплиттеры, консьерж (как в Incident Manager) ---------- */
+let themeMode='dark', onBreak=false, role='dispatcher';
+const VIEW_KEYS={1:'dash',2:'calls',3:'alarms',4:'plan',5:'log'};
+
+function applyTheme(mode){
+  themeMode=mode==='light'?'light':'dark';
+  document.documentElement.dataset.theme=themeMode;
+  try{localStorage.setItem('mkd-theme',themeMode)}catch(e){}
+  const label=themeMode==='light'?'Светлая тема':'Тёмная тема';
+  const btn=document.getElementById('themeToggle');
+  btn.title=label;
+  btn.setAttribute('aria-label',label);
+  btn.setAttribute('aria-pressed',String(themeMode==='light'));
+}
+
+function showModal(id){
+  document.querySelectorAll('.help-overlay:not([hidden])').forEach(m=>m.hidden=true);
+  const modal=document.getElementById(id);
+  if(!modal) return;
+  modal.hidden=false;
+  const focus=modal.querySelector('.help-actions .btn');
+  if(focus) focus.focus();
+}
+function closeModals(){
+  document.querySelectorAll('.help-overlay:not([hidden])').forEach(m=>m.hidden=true);
+}
+function closeMenus(){
+  document.querySelectorAll('.menu').forEach(menu=>{
+    const pop=menu.querySelector('.menu-pop');
+    const trigger=menu.querySelector('[aria-haspopup]');
+    if(!pop||!trigger) return;
+    pop.hidden=true;
+    trigger.setAttribute('aria-expanded','false');
+  });
+}
+
+function setRole(next){
+  role=next;
+  const app=document.getElementById('app');
+  app.classList.toggle('concierge', role==='concierge');
+  document.getElementById('userAvatar').textContent=role==='concierge'?'СВ':'ИП';
+  document.getElementById('userName').textContent=role==='concierge'?'Сергей Волков':'Ирина Полякова';
+  document.getElementById('userRole').textContent=role==='concierge'?'Консьерж · подъезд 2 · 08:00–22:00':'Диспетчер УК · смена 08:00–20:00';
+  document.getElementById('roleBtnLabel').textContent=role==='concierge'?'Вернуться в АРМ диспетчера':'Перейти в АРМ консьержа';
+  toast('info', role==='concierge'?'АРМ консьержа':'АРМ диспетчера УК',
+    role==='concierge'?'Планшет / телефон: вызов, двери, журнал своего подъезда':'Полный web-UI объекта');
+}
+function goC(name){
+  ['call','doors','log','help'].forEach(v=>{
+    const pane=document.getElementById('cView'+v[0].toUpperCase()+v.slice(1));
+    if(pane) pane.hidden=v!==name;
+  });
+  document.querySelectorAll('.c-nav button').forEach(b=>b.classList.toggle('on', b.dataset.cview===name));
+  if(name==='call') refreshWidget('concierge');
+}
+
+function toggleBreak(){
+  onBreak=!onBreak;
+  document.getElementById('app').classList.toggle('on-break',onBreak);
+  document.getElementById('dutyBadge').textContent=onBreak?'Перерыв':'На смене';
+  document.getElementById('dutyBadge').classList.toggle('off',onBreak);
+  document.getElementById('breakBtnLabel').textContent=onBreak?'Вернуться на смену':'Уйти на перерыв';
+  const cd=document.getElementById('cDuty');
+  if(cd){cd.textContent=onBreak?'Перерыв':'На посту';cd.classList.toggle('off',onBreak)}
+  toast('info', onBreak?'Перерыв':'На смене', onBreak?'Новые вызовы на это место не назначаются':'Вы снова на смене');
+}
+
+function onHotkey(e){
+  const tag=(e.target&&e.target.tagName||'').toLowerCase();
+  const typing=tag==='input'||tag==='textarea'||tag==='select';
+  if(e.key==='Escape'){
+    closeCall(); closeModals(); closeMenus();
+    return;
+  }
+  if(e.key==='?' && !e.ctrlKey && !typing){ e.preventDefault(); showModal('modalHotkeys'); return; }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault();
+    const s=document.getElementById('globalSearch');
+    if(s) s.focus();
+    return;
+  }
+  if(typing) return;
+  const k=e.key.toLowerCase();
+  if(k==='t'){ applyTheme(themeMode==='light'?'dark':'light'); return; }
+  if(k==='b'){ toggleBreak(); return; }
+  if(k==='g'){ toggleRail(); return; }
+  if(k==='m'){ toggleSide(); return; }
+  if(k==='f'){ simulateFire(); return; }
+  if(k==='l'){ simulateLpr(); return; }
+  if(k==='w'){ toggleWan(); return; }
+  if(k==='c' && e.shiftKey){ setRole(role==='concierge'?'dispatcher':'concierge'); return; }
+  if(k==='c'){ simulateCall(); return; }
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    const d=e.key==='ArrowRight'?1:-1;
+    if(document.getElementById('view-video').classList.contains('on')){
+      e.preventDefault();
+      if(videoLayout==='1x1') stepCar('wall',d);
+      return;
+    }
+    if(document.getElementById('callOverlay').classList.contains('on')){
+      e.preventDefault(); stepCar('call',d); return;
+    }
+  }
+  if(VIEW_KEYS[k]) go(VIEW_KEYS[k]);
+}
+
+const LAYOUT_VARS={rail:'--w-rail-user', side:'--w-side-user'};
+function setLayoutVar(key,px){
+  document.documentElement.style.setProperty(LAYOUT_VARS[key], Math.round(px)+'px');
+}
+function storeLayout(){
+  const data={};
+  Object.entries(LAYOUT_VARS).forEach(([key,name])=>{
+    const px=parseFloat(document.documentElement.style.getPropertyValue(name));
+    if(px>0) data[key]=Math.round(px);
+  });
+  try{localStorage.setItem('mkd-layout',JSON.stringify(data))}catch(e){}
+}
+function restoreLayout(){
+  let data={};
+  try{data=JSON.parse(localStorage.getItem('mkd-layout')||'{}')||{}}catch(e){data={}}
+  Object.keys(LAYOUT_VARS).forEach(key=>{
+    const px=Number(data[key]);
+    if(px>0) setLayoutVar(key,px);
+  });
+}
+function bindSplitter(id,key,sign){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('pointerdown',e=>{
+    if(e.button!==0) return;
+    e.preventDefault();
+    const mid=document.getElementById('mid').getBoundingClientRect();
+    const pane=document.getElementById(key==='rail'?'rail':'side').getBoundingClientRect();
+    const min=key==='rail'?160:240;
+    const max=mid.width-280-240-2;
+    const from=e.clientX, size=pane.width;
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('dragging');
+    document.body.dataset.resize='col';
+    const move=ev=>{
+      const next=size+(ev.clientX-from)*sign;
+      setLayoutVar(key, Math.min(Math.max(next,min), Math.max(min,max)));
+    };
+    const stop=()=>{
+      el.classList.remove('dragging');
+      delete document.body.dataset.resize;
+      el.removeEventListener('pointermove',move);
+      el.removeEventListener('pointerup',stop);
+      el.removeEventListener('pointercancel',stop);
+      storeLayout();
+    };
+    el.addEventListener('pointermove',move);
+    el.addEventListener('pointerup',stop);
+    el.addEventListener('pointercancel',stop);
+  });
+  el.addEventListener('dblclick',()=>{
+    document.documentElement.style.removeProperty(LAYOUT_VARS[key]);
+    storeLayout();
+  });
+}
+
+document.getElementById('themeToggle').addEventListener('click',()=>applyTheme(themeMode==='light'?'dark':'light'));
+document.getElementById('hotkeysBtn').addEventListener('click',()=>{closeMenus();showModal('modalHotkeys')});
+document.getElementById('roleBtn').addEventListener('click',()=>{closeMenus();setRole(role==='concierge'?'dispatcher':'concierge')});
+document.getElementById('breakBtn').addEventListener('click',()=>{closeMenus();toggleBreak()});
+document.querySelectorAll('.menu').forEach(menu=>{
+  const trigger=menu.querySelector('[aria-haspopup]');
+  const pop=menu.querySelector('.menu-pop');
+  trigger.addEventListener('click',()=>{
+    const willOpen=pop.hidden;
+    closeMenus();
+    pop.hidden=!willOpen;
+    trigger.setAttribute('aria-expanded',String(willOpen));
+  });
+  menu.addEventListener('click',e=>{
+    const item=e.target.closest('[data-doc]');
+    if(!item) return;
+    e.preventDefault();
+    closeMenus();
+    showModal(item.dataset.doc);
+  });
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.menu')) closeMenus()});
+document.querySelectorAll('[data-close]').forEach(btn=>{
+  btn.addEventListener('click',()=>{document.getElementById(btn.dataset.close).hidden=true});
+});
+document.querySelectorAll('.help-overlay').forEach(ov=>{
+  ov.addEventListener('click',e=>{if(e.target===ov) ov.hidden=true});
+});
+
+restoreLayout();
+bindSplitter('splitRail','rail',1);
+bindSplitter('splitSide','side',-1);
+try{
+  const saved=localStorage.getItem('mkd-theme');
+  if(saved==='light'||saved==='dark') applyTheme(saved);
+  else applyTheme('dark');
+}catch(e){applyTheme('dark')}
+syncPanelButtons();
+
+document.getElementById('layoutBar').addEventListener('click',e=>{
+  const b=e.target.closest('.layout-btn'); if(!b) return;
+  setLayout(b.dataset.lay);
+});
+document.getElementById('videoModeSeg').addEventListener('click',e=>{
+  const b=e.target.closest('[data-vmode]'); if(!b) return;
+  videoModeLive=b.dataset.vmode==='live';
+  document.querySelectorAll('#videoModeSeg button').forEach(x=>x.classList.toggle('on', x===b));
+  renderVideoWall();
+  renderDashCams();
+  ['alarm','park','call','concierge'].forEach(refreshWidget);
+});
+document.getElementById('planTabs').addEventListener('click',e=>{
+  const b=e.target.closest('[data-plan]'); if(!b) return;
+  renderPlan(b.dataset.plan);
+});
+
+renderCalls();
+renderDashCams();
+renderVideoWall();
+renderPlan('floor7');
+refreshWidget('park');
+refreshWidget('call');
+refreshWidget('concierge');
+</script>
+</body>
+</html>
