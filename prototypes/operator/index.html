@@ -178,7 +178,11 @@ button{cursor:pointer;color:inherit;background:none;border:none}
 .mid.side-hidden #side{display:none}
 .app.concierge .dispatcher-only,
 .app.concierge #toggleRail,
-.app.concierge #toggleSideBtn{display:none}
+.app.concierge #toggleSideBtn,
+.app.concierge #mBurger,
+.app.concierge #mid,
+.app.concierge .m-nav,
+.app.concierge .statusbar{display:none}
 
 /* ---------- Верхняя панель ---------- */
 .topbar{
@@ -751,20 +755,168 @@ body.wan-down .wan-banner{display:flex}
 .c-log{display:flex;flex-direction:column;gap:8px}
 .c-log .item{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:10px 12px}
 .c-log .item .tm{font-size:11px;color:var(--faint);font-weight:500}
+.phone-h .menu-pop{min-width:230px}
 
-@media (max-width:720px){
-  .topbar{flex-wrap:nowrap;gap:8px;padding:8px 12px}
-  .brand{min-width:0;padding-right:8px}
-  .brand .names,.clock,.search-wrapper,.obj-picker,.seg,.duty{display:none}
-  .topbar-cluster{padding:0;flex:0}
-  .user-btn{padding:4px 4px 4px 8px;margin:0}
-  .operator-meta{display:none}
+/* ---------- Выбор объекта (дома) ---------- */
+.obj-switch{display:flex;align-items:center;gap:6px;padding:10px 8px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.obj-btn{
+  display:flex;align-items:center;gap:10px;flex:1;min-width:0;padding:9px 10px;text-align:left;
+  background:var(--panel);border:1px solid var(--stroke-2);border-radius:var(--radius);transition:.15s;
+}
+.obj-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+.obj-btn .ic{
+  width:30px;height:30px;flex:0 0 30px;border-radius:9px;display:grid;place-items:center;
+  background:var(--accent-dim);color:var(--accent);
+}
+.obj-btn .ic .material-symbols-outlined{font-size:19px}
+.obj-btn .tx{flex:1;min-width:0;line-height:1.3}
+.obj-btn .tx > span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.obj-btn .tx .k{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--txt-3)}
+.obj-btn .tx .v{font-size:12.5px;font-weight:600}
+.obj-btn .tx .s{font-size:11px;color:var(--txt-3)}
+.obj-btn .chev{color:var(--txt-3);font-size:18px}
+.rail-collapsed .obj-switch{padding:8px 5px}
+.rail-collapsed .obj-btn{justify-content:center;padding:9px 0}
+.rail-collapsed .obj-btn .tx,.rail-collapsed .obj-btn .chev{display:none}
+
+.obj-list{display:grid;gap:8px;margin:14px 0 2px}
+.obj-item{
+  display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:12px 14px;
+  border:1px solid var(--stroke);border-radius:var(--radius);background:var(--panel-2);transition:.15s;
+}
+.obj-item:hover{border-color:var(--accent)}
+.obj-item.on{border-color:var(--accent);background:var(--accent-dim);box-shadow:0 0 0 3px var(--accent-ring)}
+.obj-item .ic{
+  width:36px;height:36px;flex:0 0 36px;border-radius:10px;display:grid;place-items:center;
+  background:var(--panel-3);color:var(--accent);
+}
+.obj-item .bd{flex:1;min-width:0}
+.obj-item .bd b{display:block;font-size:13.5px;font-weight:600}
+.obj-item .bd .ad{font-size:12px;color:var(--txt-3);margin:1px 0 7px}
+.obj-item .bd .st{display:flex;flex-wrap:wrap;gap:6px}
+
+/* ---------- Мобильные элементы ---------- */
+#mBurger{display:none}
+.m-close,.mobile-only{display:none}
+.rail-demo{display:none;flex-wrap:wrap;gap:6px;padding:10px 12px;border-top:1px solid var(--line);flex:0 0 auto}
+.rail-demo b{width:100%;font-size:9.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--txt-3)}
+.rail-demo button{border:1px solid var(--line-2);border-radius:8px;padding:5px 10px;font-size:11.5px;color:var(--txt-2)}
+.rail-demo button:hover{background:var(--panel-2);color:var(--txt)}
+.m-nav{
+  display:none;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;
+  padding:4px 4px calc(4px + env(safe-area-inset-bottom));
+  background:var(--panel);border-top:1px solid var(--stroke);
+}
+.m-nav button{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  min-height:52px;border-radius:10px;color:var(--faint);font-size:10.5px;font-weight:500;
+}
+.m-nav button .material-symbols-outlined{font-size:21px;color:inherit}
+.m-nav button.on{background:var(--accent-dim);color:var(--accent)}
+.m-nav button .cnt{
+  position:absolute;transform:translate(14px,-14px);
+  font:700 9px/14px var(--font);min-width:14px;height:14px;padding:0 3px;border-radius:7px;
+  background:var(--crit);color:#fff;text-align:center;
+}
+.m-backdrop{position:fixed;inset:0;background:var(--overlay);z-index:60;display:none}
+body.drawer-open .m-backdrop{display:block}
+
+/* ======================= Адаптив ======================= */
+@media (max-width:1280px){
+  .g-2-1,.g-1-2{grid-template-columns:minmax(0,1fr)}
+  .g-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:1100px){
+  .brand{min-width:0}
+  .brand .names{display:none}
+  .search-wrapper{max-width:240px}
+  .topbar .obj-picker .lbl{display:none}
+}
+
+@media (max-width:860px){
+  .topbar{flex-wrap:nowrap;gap:6px;padding:8px 10px}
+  .brand{min-width:0;padding-right:0;border-right:0}
+  .brand .names{display:none}
+  #toggleRail,#toggleSideBtn,.theme-btn{display:none}
+  #mBurger{display:inline-flex}
+  .m-close,.side-tabs .m-close{display:inline-flex;align-items:center;justify-content:center;flex:0 0 40px;width:40px;padding:0;border-bottom:2px solid transparent;color:var(--faint)}
+  .mobile-only{display:flex}
+  .topbar-cluster{flex:1;min-width:0;gap:6px}
+  .search-wrapper,.clock,.top-right .seg,.operator-meta,.user-btn .chevron,.duty{display:none}
+  .top-right{gap:0}
+  .user-btn{padding:2px;margin:0;border-left:0}
+  .topbar .obj-picker{flex:1;min-width:0;padding:5px 8px;border-width:1px;gap:6px}
+  .topbar .obj-picker .val{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .icon-btn{width:38px;height:38px}
+
   .mid{grid-template-columns:minmax(0,1fr)}
-  .rail,#splitRail,#splitSide,.side,.statusbar .demo{display:none}
-  .icon-btn{width:44px;height:44px}
+  #splitRail,#splitSide{display:none}
+  .rail{
+    position:fixed;top:0;bottom:0;left:0;width:min(304px,86vw);z-index:70;
+    background:var(--panel);border-right:1px solid var(--stroke);box-shadow:var(--shadow);
+    transform:translateX(-101%);transition:transform .24s ease;
+  }
+  body.rail-open .rail{transform:none}
+  .side{
+    position:fixed;top:0;bottom:0;right:0;width:min(340px,86vw);z-index:70;
+    background:var(--panel);border-left:1px solid var(--stroke);box-shadow:var(--shadow);
+    transform:translateX(101%);transition:transform .24s ease;
+  }
+  body.side-open .side{transform:none}
+  .mid.side-hidden #side{display:flex}
+  .rail-foot{display:none}
+  .rail-demo{display:flex}
+  .app:not(.concierge) .m-nav{display:grid}
+  .statusbar{display:none}
+
+  .view{padding:12px 12px 20px}
+  .view-head{gap:8px;margin-bottom:10px}
+  .view-head h1{font-size:17px}
+  .view-head .sub{width:100%;padding-bottom:0}
+  .view-head .spacer{display:none}
+  .grid.g-3,.grid.g-2,.grid.g-2-1,.grid.g-1-2{grid-template-columns:minmax(0,1fr)}
+  .grid.g-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi{padding:10px 11px}
+  .kpi .v{font-size:20px}
+  .kpi .t{font-size:9.5px}
+  .kpi .d{font-size:10.5px}
+  .card-b.flush{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.tbl{min-width:620px}
+  .seg button{padding:6px 10px}
+
+  .video-wall,.video-wall.lay-1x1,.video-wall.lay-15{min-height:0}
+  .video-wall.lay-2x2,.video-wall.lay-3x3,.video-wall.lay-15,.video-wall.lay-all{
+    grid-template-columns:1fr 1fr;grid-template-rows:none;
+  }
+  .video-wall.lay-15 .cam-cell:first-child{grid-column:1/-1;grid-row:auto}
+  .video-wall .cam-cell{aspect-ratio:16/9;height:auto}
+  .video-wall.lay-1x1{grid-template-columns:1fr}
+  .layout-bar{overflow-x:auto;max-width:100%}
+
+  .overlay{padding:0}
+  .modal{width:100%;height:100%;max-height:100%;border-radius:0}
+  .call-grid{grid-template-columns:minmax(0,1fr)}
+  .call-video{aspect-ratio:16/9}
+  .help-overlay{padding:0}
+  .help-card,.help-card.wide{width:100%;height:100%;max-height:100%;border-radius:0;padding:18px 16px}
+  .doc-table,.keys{font-size:12px}
+  .doc-table th,.doc-table td{padding:7px 6px}
+  .toasts{right:8px;left:8px;bottom:12px}
+  .toast{min-width:0;max-width:none}
+
   .phone{width:100%;height:100%;max-height:none;border:0;border-radius:0;box-shadow:none}
   .concierge-shell{padding:0}
-  .help-card,.help-card.wide{width:calc(100% - 16px);border-radius:16px;padding:18px}
+  .app.concierge .topbar{display:none}
+  .app.concierge{grid-template-rows:minmax(0,1fr)}
+  .app.concierge.on-break{grid-template-rows:auto minmax(0,1fr)}
+}
+
+@media (max-width:430px){
+  .view{padding:10px 10px 16px}
+  .m-nav button{font-size:9.5px}
+  .card-b{padding:11px}
+  .modal-b{padding:12px}
+  .grid.g-4{grid-template-columns:minmax(0,1fr)}
 }
 </style>
 </head>
@@ -783,6 +935,9 @@ body.wan-down .wan-banner{display:flex}
     </div>
 
     <div class="topbar-cluster">
+      <button type="button" class="icon-btn" id="mBurger" title="Меню разделов" onclick="openRailDrawer()">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
       <button type="button" class="icon-btn on" id="toggleRail" title="Меню разделов" aria-pressed="true" onclick="toggleRail()">
         <span class="material-symbols-outlined">left_panel_close</span>
       </button>
@@ -790,11 +945,11 @@ body.wan-down .wan-banner{display:flex}
         <span class="material-symbols-outlined">right_panel_close</span>
       </button>
 
-      <div class="obj-picker" onclick="toast('info','Выбор объекта','В прототипе доступен один объект: ЖК «Северный парк»')">
+      <div class="obj-picker" onclick="openObjects()" title="Переключить объект">
         <span class="material-symbols-outlined" style="font-size:18px;color:var(--faint)">apartment</span>
-        <div>
+        <div style="min-width:0">
           <div class="lbl">Объект</div>
-          <div class="val">ЖК «Северный парк» · корпус 3</div>
+          <div class="val" id="topObjName">—</div>
         </div>
         <span class="material-symbols-outlined" style="font-size:18px;color:var(--faint)">expand_more</span>
       </div>
@@ -849,7 +1004,7 @@ body.wan-down .wan-banner{display:flex}
           </button>
           <button type="button" class="menu-item" role="menuitem" data-doc="modalEvacuation">
             <span class="material-symbols-outlined">map</span>
-            Схема эвакуации корпуса 3
+            Схема эвакуации объекта
           </button>
           <button type="button" class="menu-item" role="menuitem" data-doc="modalEmergency">
             <span class="material-symbols-outlined">local_police</span>
@@ -884,6 +1039,14 @@ body.wan-down .wan-banner{display:flex}
             <span id="breakBtnLabel">Уйти на перерыв</span>
             <kbd>B</kbd>
           </button>
+          <button type="button" class="menu-item mobile-only" role="menuitem" onclick="closeMenus();openObjects()">
+            <span class="material-symbols-outlined">apartment</span>
+            Сменить объект
+          </button>
+          <button type="button" class="menu-item mobile-only" role="menuitem" onclick="closeMenus();applyTheme(themeMode==='light'?'dark':'light')">
+            <span class="material-symbols-outlined">contrast</span>
+            Светлая / тёмная тема
+          </button>
         </div>
       </div>
     </div>
@@ -897,6 +1060,20 @@ body.wan-down .wan-banner{display:flex}
 
     <!-- ======================= ЛЕВОЕ МЕНЮ ======================= -->
     <nav class="rail" id="rail">
+      <div class="obj-switch">
+        <button type="button" class="obj-btn" onclick="openObjects()" title="Выбрать объект">
+          <span class="ic"><span class="material-symbols-outlined">apartment</span></span>
+          <span class="tx">
+            <span class="k">Объект</span>
+            <span class="v" id="railObjName">—</span>
+            <span class="s" id="railObjSub">—</span>
+          </span>
+          <span class="material-symbols-outlined chev">unfold_more</span>
+        </button>
+        <button type="button" class="m-close" onclick="closeDrawers()" aria-label="Закрыть меню">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
       <div class="rail-scroll">
         <div class="group-title">Оперативная работа</div>
         <div class="nav-item on" data-view="dash" onclick="go('dash')">
@@ -915,7 +1092,7 @@ body.wan-down .wan-banner{display:flex}
         </div>
         <div class="nav-item" data-view="plan" onclick="go('plan')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 20l-6-3V4l6 3m0 13l6-3m-6 3V7m6 10l6 3V7l-6-3m0 13V4"/></svg>
-          <span class="cap">Планы этажей</span>
+          <span class="cap">Планы объекта</span>
         </div>
         <div class="nav-item" data-view="log" onclick="go('log')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
@@ -956,6 +1133,14 @@ body.wan-down .wan-banner{display:flex}
           <span class="cap">Жильцы и аккаунты</span>
         </div>
       </div>
+      <div class="rail-demo">
+        <b>Демо-события</b>
+        <button type="button" onclick="simulateCall()">вызов</button>
+        <button type="button" onclick="simulateFire()">пожар</button>
+        <button type="button" onclick="simulateLpr()">въезд авто</button>
+        <button type="button" onclick="toggleWan()">обрыв WAN</button>
+        <button type="button" onclick="closeDrawers()">закрыть меню</button>
+      </div>
       <div class="rail-foot" onclick="toggleRail()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg>
         <span class="rail-foot-txt">Свернуть меню</span>
@@ -976,7 +1161,7 @@ body.wan-down .wan-banner{display:flex}
       <section class="view on" id="view-dash">
         <div class="view-head">
           <h1>Оперативная обстановка</h1>
-          <div class="sub">Обзорный экран смены · обновление в реальном времени</div>
+          <div class="sub" id="dashSub">Обзорный экран смены · обновление в реальном времени</div>
           <div class="spacer"></div>
           <button class="btn sm" onclick="simulateCall()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
@@ -985,28 +1170,7 @@ body.wan-down .wan-banner{display:flex}
           <button class="btn sm" onclick="simulateFire()">Демо: тревога ОПС</button>
         </div>
 
-        <div class="grid g-4" style="margin-bottom:12px">
-          <div class="kpi ok">
-            <div class="t"><span class="sd ok"></span>SIP-устройства онлайн</div>
-            <div class="v">248 <small>/ 254</small></div>
-            <div class="d">6 офлайн · 2 панели, 4 абонента</div>
-          </div>
-          <div class="kpi info">
-            <div class="t"><span class="sd ok"></span>Активные вызовы</div>
-            <div class="v" id="kpiCalls">1</div>
-            <div class="d">за сутки: 87 · среднее соединение 2.1 с</div>
-          </div>
-          <div class="kpi alarm">
-            <div class="t"><span class="sd alarm"></span>Активные тревоги</div>
-            <div class="v" id="kpiAlarms">3</div>
-            <div class="d">1 пожар · 1 неисправность · 1 связь</div>
-          </div>
-          <div class="kpi warn">
-            <div class="t"><span class="sd warn"></span>Заявки в работе</div>
-            <div class="v">12 <small>/ 4 просрочено</small></div>
-            <div class="d">лифт П2 · ИТП · освещение двора</div>
-          </div>
-        </div>
+        <div class="grid g-4" id="dashKpi" style="margin-bottom:12px"></div>
 
         <div class="grid g-2-1" style="margin-bottom:12px">
           <div class="card">
@@ -1068,74 +1232,25 @@ body.wan-down .wan-banner{display:flex}
             <div class="card-h">
               <h3>Инженерные системы · критические параметры</h3>
               <div class="spacer"></div>
-              <span class="chip warn">1 отклонение</span>
+              <span class="chip warn" id="dashEngChip">1 отклонение</span>
             </div>
-            <div class="card-b">
-              <div class="grid g-2" style="gap:10px">
-                <div>
-                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">ИТП · подача Т1</div>
-                  <div style="font:600 19px var(--mono);color:#57cf90">72.4 <span style="font-size:12px;color:var(--txt-3)">°C</span></div>
-                  <svg class="spark" id="sp1"></svg>
-                </div>
-                <div>
-                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Давление ХВС</div>
-                  <div style="font:600 19px var(--mono);color:#efbb72">3.1 <span style="font-size:12px;color:var(--txt-3)">бар</span></div>
-                  <svg class="spark" id="sp2"></svg>
-                </div>
-                <div>
-                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Потребление э/э</div>
-                  <div style="font:600 19px var(--mono)">184 <span style="font-size:12px;color:var(--txt-3)">кВт·ч</span></div>
-                  <svg class="spark" id="sp3"></svg>
-                </div>
-                <div>
-                  <div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Расход ХВС</div>
-                  <div style="font:600 19px var(--mono)">2.7 <span style="font-size:12px;color:var(--txt-3)">м³/ч</span></div>
-                  <svg class="spark" id="sp4"></svg>
-                </div>
-              </div>
-              <div class="hr"></div>
-              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Лифт П1 · этаж 7, движение вниз</span><span class="chip ok">Норма</span></div>
-              <div class="gauge-row"><span class="sd alarm"></span><span class="nm">Лифт П2 · останов между этажами 4–5</span><span class="chip alarm">Авария</span></div>
-              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Насос ХВС №1 · в работе</span><span class="chip ok">Норма</span></div>
-            </div>
+            <div class="card-b" id="dashEng"></div>
           </div>
         </div>
 
         <div class="grid g-3">
           <div class="card">
             <div class="card-h"><h3>Доступ за последний час</h3></div>
-            <div class="card-b">
-              <div class="gauge-row"><span class="nm">Открытий из приложения</span><span class="vl">34</span></div>
-              <div class="gauge-row"><span class="nm">По коду / QR (гости)</span><span class="vl">7</span></div>
-              <div class="gauge-row"><span class="nm">Из вызова (DTMF)</span><span class="vl">11</span></div>
-              <div class="gauge-row"><span class="nm">Оператором вручную</span><span class="vl">3</span></div>
-              <div class="gauge-row"><span class="nm">Отказов в доступе</span><span class="vl" style="color:#ff8b8e">2</span></div>
-            </div>
+            <div class="card-b" id="dashAccess"></div>
           </div>
-          <div class="card">
-            <div class="card-h"><h3>Паркинг</h3><div class="spacer"></div><span class="chip info">42 / 60 занято</span></div>
-            <div class="card-b">
-              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Шлагбаум въезд</span><span class="chip mut">Закрыт</span></div>
-              <div class="gauge-row"><span class="sd ok"></span><span class="nm">Шлагбаум выезд</span><span class="chip mut">Закрыт</span></div>
-              <div class="gauge-row"><span class="sd ok"></span><span class="nm">LPR-камера въезда <span class="chip ext" style="margin-left:4px">Р</span></span><span class="chip ok">Активна</span></div>
-              <div class="hr"></div>
-              <div class="t-mono" style="font-size:11.5px">
-                <div>10:12:04 · <b style="color:#7cc4dd">А123ВС 77</b> · белый список · кв. 214</div>
-                <div>10:08:47 · <b style="color:#7cc4dd">Е777КХ 77</b> · гостевой QR · кв. 106</div>
-                <div>09:55:12 · <b style="color:#ff8b8e">Х004ММ 50</b> · нет в списках · отказ</div>
-              </div>
-            </div>
+          <div class="card" id="dashParkCard">
+            <div class="card-h"><h3>Паркинг и въезд</h3><div class="spacer"></div><span class="chip info" id="dashParkChip">—</span></div>
+            <div class="card-b" id="dashPark"></div>
           </div>
           <div class="card">
             <div class="card-h"><h3>Смена и регламент</h3></div>
             <div class="card-b">
-              <div class="kv">
-                <div class="k">Оператор</div><div>Полякова И. · Диспетчер УК</div>
-                <div class="k">Смена</div><div>08:00 – 20:00 (осталось 9 ч 22 м)</div>
-                <div class="k">Обработано тревог</div><div>7 из 10</div>
-                <div class="k">Среднее время реакции</div><div>00:41</div>
-                <div class="k">Не подтверждено</div><div style="color:#ff8b8e">3 тревоги</div>
-              </div>
+              <div class="kv" id="dashShift"></div>
               <div class="hr"></div>
               <button class="btn sm" style="width:100%" onclick="toast('info','Передача смены','Форма передачи смены — вне объёма прототипа')">Передать смену</button>
             </div>
@@ -1229,19 +1344,15 @@ body.wan-down .wan-banner{display:flex}
       <!-- ============ ПЛАНЫ ЭТАЖЕЙ ============ -->
       <section class="view" id="view-plan">
         <div class="view-head">
-          <h1>Интерактивный план этажа</h1>
-          <div class="sub">Корпус 3 · подъезд 2 · 7 этаж</div>
+          <h1>Планы объекта</h1>
+          <div class="sub" id="planSub">—</div>
           <div class="spacer"></div>
-          <div class="seg" id="planTabs">
-            <button type="button" class="on" data-plan="floor7">7 этаж</button>
-            <button type="button" data-plan="parking">Паркинг −1</button>
-            <button type="button" data-plan="yard">Двор</button>
-          </div>
+          <div class="seg" id="planTabs"></div>
         </div>
 
         <div class="grid g-2-1">
           <div class="card">
-            <div class="card-h"><h3>План · подъезд 2, этаж 7</h3><div class="spacer"></div><span class="hint">клик по маркеру — карточка устройства</span></div>
+            <div class="card-h"><h3 id="planTitle">План</h3><div class="spacer"></div><span class="hint">клик по маркеру — карточка устройства</span></div>
             <div class="plan-wrap">
               <div id="planRoot"></div>
               <div class="legend">
@@ -1383,12 +1494,7 @@ body.wan-down .wan-banner{display:flex}
             <div class="card-b flush">
               <table class="tbl">
                 <thead><tr><th>Код</th><th>Кому</th><th>Осталось</th></tr></thead>
-                <tbody>
-                  <tr><td class="t-mono">PIN 7734</td><td>Курьер · кв. 214<div class="t-mut" style="font-size:11px">подъезд 2, дверь</div></td><td><span class="chip warn">28 мин</span></td></tr>
-                  <tr><td class="t-mono">QR ·  a7f2…</td><td>Гость · кв. 106<div class="t-mut" style="font-size:11px">калитка двора + подъезд 1</div></td><td><span class="chip ok">3 ч 12 м</span></td></tr>
-                  <tr><td class="t-mono">PIN 1190</td><td>Сервис лифта<div class="t-mut" style="font-size:11px">техпомещение −1</div></td><td><span class="chip ok">1 сутки</span></td></tr>
-                  <tr><td class="t-mono">QR · c31b…</td><td>Доставка · кв. 703<div class="t-mut" style="font-size:11px">1 проход</div></td><td><span class="chip warn">9 мин</span></td></tr>
-                </tbody>
+                <tbody id="guestTable"></tbody>
               </table>
             </div>
           </div>
@@ -1415,8 +1521,8 @@ body.wan-down .wan-banner{display:flex}
                   <path d="M60 90 H360 V150 H620" stroke="#c0483f"/>
                   <path d="M60 250 H360 V190 H620" stroke="#3d6ea8"/>
                 </g>
-                <text x="70" y="76" fill="#e08c84" font-size="12">Т1 подача · 72.4 °C</text>
-                <text x="70" y="278" fill="#8ab0dd" font-size="12">Т2 обратка · 46.1 °C</text>
+                <text x="70" y="76" fill="#e08c84" font-size="12" id="itpT1">Т1 подача · 72.4 °C</text>
+                <text x="70" y="278" fill="#8ab0dd" font-size="12" id="itpT2">Т2 обратка · 46.1 °C</text>
                 <!-- теплообменник -->
                 <rect x="620" y="110" width="130" height="120" rx="6" fill="#151f2e" stroke="#3f5061" stroke-width="2"/>
                 <g stroke="#3f5061" stroke-width="2" fill="none">
@@ -1437,10 +1543,10 @@ body.wan-down .wan-banner{display:flex}
                 <!-- датчики -->
                 <g><circle cx="200" cy="90" r="9" fill="#2ea865"/><text x="200" y="66" fill="#57cf90" font-size="11" text-anchor="middle">TT-01</text></g>
                 <g><circle cx="200" cy="250" r="9" fill="#2ea865"/><text x="200" y="230" fill="#57cf90" font-size="11" text-anchor="middle">TT-02</text></g>
-                <g><circle cx="500" cy="150" r="9" fill="#e8a33d"/><text x="500" y="130" fill="#efbb72" font-size="11" text-anchor="middle">PT-03 · 3.1 бар</text></g>
+                <g><circle cx="500" cy="150" r="9" fill="#e8a33d"/><text x="500" y="130" fill="#efbb72" font-size="11" text-anchor="middle" id="itpPt">PT-03 · 3.1 бар</text></g>
                 <!-- узел учёта -->
                 <rect x="780" y="120" width="90" height="100" rx="6" fill="#151f2e" stroke="#3f5061" stroke-width="2"/>
-                <text x="825" y="160" fill="#dde5ef" font-size="15" text-anchor="middle" font-family="monospace">184</text>
+                <text x="825" y="160" fill="#dde5ef" font-size="15" text-anchor="middle" font-family="monospace" id="itpEm">184</text>
                 <text x="825" y="178" fill="#6b7889" font-size="10" text-anchor="middle">кВт·ч</text>
                 <text x="825" y="110" fill="#9aa8ba" font-size="12" text-anchor="middle">Узел учёта</text>
               </svg>
@@ -1465,15 +1571,11 @@ body.wan-down .wan-banner{display:flex}
         </div>
 
         <div class="card">
-          <div class="card-h"><h3>Лифтовое оборудование</h3><div class="spacer"></div><span class="chip alarm">1 авария</span></div>
+          <div class="card-h"><h3>Лифтовое оборудование</h3><div class="spacer"></div><span class="chip mut" id="liftsChip">—</span></div>
           <div class="card-b flush">
             <table class="tbl">
               <thead><tr><th>Лифт</th><th>Этаж</th><th>Направление</th><th>Двери</th><th>Состояние</th><th style="width:200px">Действия</th></tr></thead>
-              <tbody>
-                <tr><td><b>П1 · Л1</b></td><td class="t-mono">7</td><td>вниз</td><td>закрыты</td><td><span class="chip ok">Норма</span></td><td><button class="btn sm ghost" onclick="toast('info','Связь с кабиной','SIP-вызов на переговорное устройство кабины П1·Л1')">Связь</button> <button class="btn sm ghost ext-hide" onclick="openLinkedVideo('lift-p1')">Камеры</button></td></tr>
-                <tr class="sel"><td><b>П2 · Л2</b></td><td class="t-mono">4–5</td><td>—</td><td>закрыты</td><td><span class="chip alarm">Останов между этажами</span></td><td><button class="btn sm danger" onclick="toast('err','Заявка создана','Аварийная заявка №4412 передана в лифтовую службу')">Заявка</button> <button class="btn sm ghost ext-hide" onclick="openLinkedVideo('lift-p2')">Камеры</button></td></tr>
-                <tr><td><b>П3 · Л1</b></td><td class="t-mono">1</td><td>стоянка</td><td>открыты</td><td><span class="chip ok">Норма</span></td><td><button class="btn sm ghost">Связь</button></td></tr>
-              </tbody>
+              <tbody id="liftsTable"></tbody>
             </table>
           </div>
         </div>
@@ -1488,16 +1590,11 @@ body.wan-down .wan-banner{display:flex}
           <span class="chip mut">Денежные операции в объём не входят</span>
         </div>
 
-        <div class="grid g-4" style="margin-bottom:12px">
-          <div class="kpi info"><div class="t">Занято мест</div><div class="v">42 <small>/ 60</small></div><div class="d">18 свободно · гостевых 4</div></div>
-          <div class="kpi ok"><div class="t">Проездов за сутки</div><div class="v">137</div><div class="d">авто по списку 121 · гости 16</div></div>
-          <div class="kpi ok"><div class="t">Точность LPR <span class="chip ext">Р</span></div><div class="v">96.4 <small>%</small></div><div class="d">среднее время открытия 1.4 с</div></div>
-          <div class="kpi warn"><div class="t">Отказов в проезде</div><div class="v">5</div><div class="d">нет в списках · истёк пропуск</div></div>
-        </div>
+        <div class="grid g-4" id="parkKpi" style="margin-bottom:12px"></div>
 
         <div class="grid g-2" style="margin-bottom:12px">
           <div class="card">
-            <div class="card-h"><h3>Въездная группа · шлагбаум</h3><div class="spacer"></div><span class="chip mut">Закрыт</span></div>
+            <div class="card-h"><h3 id="parkEntryTitle">Въездная группа · шлагбаум</h3><div class="spacer"></div><span class="chip mut">Закрыт</span></div>
             <div class="card-b">
               <div class="ext-hide" id="parkCam" style="aspect-ratio:16/9;margin-bottom:11px"></div>
               <button class="btn sm ext-hide" style="width:100%;margin-bottom:11px" onclick="openLinkedVideo('park-entry')">Карусель камер въезда</button>
@@ -1526,12 +1623,7 @@ body.wan-down .wan-banner{display:flex}
           <div class="card-b flush">
             <table class="tbl">
               <thead><tr><th>Номер</th><th>Квартира</th><th>Владелец</th><th>Место</th><th>Действует до</th><th>Состояние</th></tr></thead>
-              <tbody>
-                <tr><td class="t-mono"><b>А123ВС 77</b></td><td>214</td><td>Смирнов А. В.</td><td>−1 · м. 34</td><td class="t-mut">бессрочно</td><td><span class="chip ok">Активен</span></td></tr>
-                <tr><td class="t-mono"><b>О555ТТ 77</b></td><td>106</td><td>Ковалёва М. И.</td><td>−1 · м. 12</td><td class="t-mut">бессрочно</td><td><span class="chip ok">Активен</span></td></tr>
-                <tr><td class="t-mono"><b>Р909НН 190</b></td><td>703</td><td>Гуськов Д. П.</td><td>−2 · м. 51</td><td class="t-mut">31.10.2026</td><td><span class="chip warn">Истекает</span></td></tr>
-                <tr><td class="t-mono"><b>Т321ММ 77</b></td><td>412</td><td>Ершова Н. С.</td><td>−1 · м. 07</td><td class="t-mut">бессрочно</td><td><span class="chip mut">Заблокирован</span></td></tr>
-              </tbody>
+              <tbody id="whiteTable"></tbody>
             </table>
           </div>
         </div>
@@ -1594,10 +1686,10 @@ body.wan-down .wan-banner{display:flex}
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="color:var(--txt-3)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
               <input placeholder="Квартира, ФИО, SIP-номер, email…">
             </div>
-            <span class="chip mut">254 аккаунта</span>
-            <span class="chip ok">248 онлайн</span>
-            <span class="chip warn">6 офлайн</span>
-            <span class="chip info">312 устройств с push</span>
+            <span class="chip mut" id="resTotal">—</span>
+            <span class="chip ok" id="resOnline">—</span>
+            <span class="chip warn" id="resOffline">—</span>
+            <span class="chip info" id="resPush">—</span>
           </div>
         </div>
 
@@ -1622,6 +1714,9 @@ body.wan-down .wan-banner{display:flex}
       <div class="side-tabs">
         <button class="on" id="tabAlarms" onclick="openSide('alarms')">Тревоги <span class="n alarm" id="sideAlarmN">3</span></button>
         <button id="tabEvents" onclick="openSide('events')">Лента событий <span class="n" id="sideEvN">live</span></button>
+        <button type="button" class="m-close" onclick="closeDrawers()" aria-label="Закрыть панель">
+          <span class="material-symbols-outlined">close</span>
+        </button>
       </div>
 
       <div class="side-pane on" id="pane-alarms">
@@ -1648,43 +1743,47 @@ body.wan-down .wan-banner{display:flex}
       <div class="phone-h">
         <span class="material-symbols-outlined" style="color:var(--accent)">apartment</span>
         <div class="who">
-          <strong>Консьерж · подъезд 2</strong>
-          <span>ЖК «Северный парк» · корпус 3</span>
+          <strong id="cPost">Консьерж</strong>
+          <span id="cObject">—</span>
         </div>
         <span class="duty" id="cDuty">На посту</span>
+        <div class="menu" id="cMenu">
+          <button type="button" class="icon-btn" aria-haspopup="menu" aria-expanded="false" title="Меню">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+          <div class="menu-pop" role="menu" hidden>
+            <button type="button" class="menu-item" role="menuitem" onclick="closeMenus();openObjects()">
+              <span class="material-symbols-outlined">apartment</span> Сменить объект
+            </button>
+            <button type="button" class="menu-item" role="menuitem" onclick="closeMenus();toggleBreak()">
+              <span class="material-symbols-outlined">coffee</span> Перерыв / на пост
+            </button>
+            <button type="button" class="menu-item" role="menuitem" onclick="closeMenus();applyTheme(themeMode==='light'?'dark':'light')">
+              <span class="material-symbols-outlined">contrast</span> Светлая / тёмная тема
+            </button>
+            <div class="menu-sep"></div>
+            <button type="button" class="menu-item" role="menuitem" onclick="closeMenus();setRole('dispatcher')">
+              <span class="material-symbols-outlined">desktop_windows</span> АРМ диспетчера УК
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="phone-b" id="cViewCall">
-        <div class="c-call ringing" id="cIncoming">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <span class="sd alarm"></span>
-            <b>Входящий вызов</b>
-            <span class="chip info" style="margin-left:auto">Early media</span>
-          </div>
-          <div id="cCam" style="margin-bottom:10px;aspect-ratio:16/9"></div>
-          <div style="font-size:13px;margin-bottom:12px">Панель подъезда вызывает <b>кв. 214</b> · Смирнов А. В. не ответил 12 с, вызов переведён на консьержа.</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn ok" onclick="answerCall();goC('call')">Ответить</button>
-            <button class="btn danger" onclick="closeCall()">Отклонить</button>
-            <button class="btn primary" style="grid-column:1/-1" onclick="quickUnlock('Подъезд 2 · входная дверь')">Открыть дверь</button>
-          </div>
-        </div>
+        <div class="c-call ringing" id="cIncoming"></div>
         <div class="mini-note">Консьерж отвечает со своего SIP-аккаунта на планшете. Браузерный WebRTC не требуется — так устроено ядро на этапе 1.</div>
       </div>
 
       <div class="phone-b" id="cViewDoors" hidden>
-        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Точки доступа подъезда 2</div>
-        <div class="c-door"><span class="sd ok"></span><b>Входная дверь П2</b><button class="btn sm ghost" onclick="openLinkedVideo('door-p2')">Видео</button><button class="btn primary sm" onclick="quickUnlock('Подъезд 2 · входная дверь')">Открыть</button></div>
-        <div class="c-door"><span class="sd ok"></span><b>Калитка двора</b><button class="btn sm ghost" onclick="openLinkedVideo('door-gate')">Видео</button><button class="btn primary sm" onclick="quickUnlock('Калитка двора')">Открыть</button></div>
-        <div class="c-door"><span class="sd ok"></span><b>Тамбур 1 этажа</b><button class="btn sm ghost" onclick="openLinkedVideo('door-p2')">Видео</button><button class="btn primary sm" onclick="quickUnlock('Тамбур П2 · 1 этаж')">Открыть</button></div>
-        <div class="c-door"><span class="sd ok"></span><b>Шлагбаум въезд</b><button class="btn sm ghost" onclick="openLinkedVideo('park-entry')">Видео</button><button class="btn primary sm" onclick="toast('ok','Шлагбаум открыт','Въезд · команда unlock · консьерж Волков С.')">Открыть</button></div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px" id="cDoorsTitle">Точки доступа</div>
+        <div id="cDoorsList"></div>
         <div class="hr"></div>
         <div style="font-size:13px;font-weight:600;margin-bottom:10px">Гостевой код</div>
-        <button class="btn primary" style="width:100%" onclick="toast('ok','Гостевой код','PIN 4821 · 4 часа · 1 проход · подъезд 2')">Выдать PIN курьеру</button>
+        <button class="btn primary" style="width:100%" onclick="toast('ok','Гостевой код','PIN 4821 · 4 часа · 1 проход')">Выдать PIN курьеру</button>
       </div>
 
       <div class="phone-b" id="cViewLog" hidden>
-        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Журнал подъезда 2</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px" id="cLogTitle">Журнал поста</div>
         <div class="c-log" id="cLog"></div>
       </div>
 
@@ -1722,10 +1821,29 @@ body.wan-down .wan-banner{display:flex}
     </div>
   </section>
 
+  <!-- ======================= МОБИЛЬНАЯ НАВИГАЦИЯ ======================= -->
+  <nav class="m-nav" id="mNav" aria-label="Основные разделы">
+    <button type="button" data-view="dash" onclick="go('dash')">
+      <span class="material-symbols-outlined">dashboard</span>Обстановка
+    </button>
+    <button type="button" data-view="calls" onclick="go('calls')">
+      <span class="material-symbols-outlined">call</span>Вызовы
+    </button>
+    <button type="button" data-view="alarms" onclick="go('alarms')">
+      <span class="material-symbols-outlined">warning</span>Тревоги
+    </button>
+    <button type="button" data-view="plan" onclick="go('plan')">
+      <span class="material-symbols-outlined">map</span>Планы
+    </button>
+    <button type="button" onclick="openRailDrawer()">
+      <span class="material-symbols-outlined">menu</span>Ещё
+    </button>
+  </nav>
+
   <!-- ======================= НИЖНЯЯ СТРОКА ======================= -->
   <footer class="statusbar">
     <div class="s"><span class="sd ok" id="stCloud"></span>Облако: <b>подключено</b></div>
-    <div class="s"><span class="sd ok"></span>Kamailio: <b>254 рег.</b></div>
+    <div class="s"><span class="sd ok"></span>Kamailio: <b id="stKam">254 рег.</b></div>
     <div class="s"><span class="sd warn"></span>RTPEngine: <b>74/100 портов</b></div>
     <div class="s"><span class="sd ok"></span>Локальный резерв: <b id="stLocal">готов</b></div>
     <div class="s"><span class="sd ok" id="stVms"></span>Видеомодуль: <b id="stVmsTxt">Интеллект X · 24 канала</b></div>
@@ -1737,9 +1855,11 @@ body.wan-down .wan-banner{display:flex}
       <button onclick="simulateLpr()">въезд авто</button>
       <button onclick="toggleWan()" id="wanBtn">обрыв WAN</button>
     </div>
-    <div class="s t-mut">Прототип · ITV | AxxonSoft · v1.0</div>
+    <div class="s t-mut">Прототип · ITV | AxxonSoft · v1.1</div>
   </footer>
 </div>
+
+<div class="m-backdrop" id="mBackdrop" onclick="closeDrawers()"></div>
 
 <!-- ======================= МОДАЛЬНОЕ ОКНО ВЫЗОВА ======================= -->
 <div class="overlay" id="callOverlay">
@@ -1757,7 +1877,7 @@ body.wan-down .wan-banner{display:flex}
       <div class="ring">
         <span class="w"></span>
         <div>
-          <div class="t">Панель «Подъезд 2 · входная дверь» вызывает кв. 214</div>
+          <div class="t" id="callRingTitle">—</div>
           <div style="font-size:11.5px;color:var(--txt-2)">Абонент не ответил 12 с · вызов переведён на консьержа</div>
         </div>
         <div class="timer" id="callTimer">00:12</div>
@@ -1771,9 +1891,9 @@ body.wan-down .wan-banner{display:flex}
 
         <div>
           <div class="call-meta">
-            <div class="row"><span>Панель</span><b>П2 · входная дверь</b></div>
-            <div class="row"><span>Вызываемый</span><b>Кв. 214 · SIP 214</b></div>
-            <div class="row"><span>Жилец</span><b>Смирнов А. В.</b></div>
+            <div class="row"><span>Панель</span><b id="callMetaPanel">—</b></div>
+            <div class="row"><span>Вызываемый</span><b id="callMetaFlat">—</b></div>
+            <div class="row"><span>Жилец</span><b id="callMetaWho">—</b></div>
             <div class="row"><span>Устройства абонента</span><b>2 (iPhone, Android)</b></div>
             <div class="row"><span>Push</span><b style="color:#57cf90">доставлен 0.9 с</b></div>
             <div class="row"><span>Call-ID</span><b class="t-mono" style="font-size:11px">a7f3c9…e12b</b></div>
@@ -1809,6 +1929,25 @@ body.wan-down .wan-banner{display:flex}
   </div>
 </div>
 
+<div class="help-overlay" id="modalObjects" hidden>
+  <div class="help-card wide" role="dialog" aria-modal="true">
+    <h3>Объекты на обслуживании</h3>
+    <p class="muted">Оператор ведёт несколько домов. Переключение меняет камеры, планы, точки доступа, ОПС, паркинг и журнал.</p>
+    <div class="obj-list" id="objList"></div>
+    <p class="muted" style="margin-top:12px">Конфигурация поставки (базовая / расширенная [Р]) задаётся для каждого объекта отдельно и применяется при переключении.</p>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalObjects">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="help-overlay" id="modalCam" hidden>
+  <div class="help-card wide" role="dialog" aria-modal="true">
+    <h3 id="camModalTitle">Связанные камеры</h3>
+    <p class="muted" id="camModalSub">Карусель камер, привязанных к объекту</p>
+    <div id="camModalBody" style="margin-top:14px"></div>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalCam">Закрыть</button></div>
+  </div>
+</div>
+
 <div class="help-overlay" id="modalHotkeys" hidden>
   <div class="help-card" role="dialog" aria-modal="true">
     <h3>Горячие клавиши</h3>
@@ -1836,18 +1975,10 @@ body.wan-down .wan-banner{display:flex}
 <div class="help-overlay" id="modalContacts" hidden>
   <div class="help-card wide" role="dialog" aria-modal="true">
     <h3>Телефоны ответственных</h3>
-    <p class="muted">Справочник ЖК «Северный парк», корпус 3. Реальный список подтягивается из карточки объекта.</p>
+    <p class="muted" id="contactsSub">Справочник объекта. Реальный список подтягивается из карточки объекта.</p>
     <table class="doc-table">
       <thead><tr><th>Роль</th><th>ФИО</th><th>Телефон</th><th>Доступность</th></tr></thead>
-      <tbody>
-        <tr><td>Диспетчер УК (эта смена)</td><td>Полякова И. П.</td><td><b>+7 495 120-41-00</b></td><td>08:00–20:00</td></tr>
-        <tr><td>Старший смены УК</td><td>Петрова М. В.</td><td><b>+7 495 120-41-01</b></td><td>Круглосуточно</td></tr>
-        <tr><td>Консьерж подъезда 2</td><td>Волков С. А.</td><td><b>+7 916 480-22-14</b></td><td>08:00–22:00</td></tr>
-        <tr><td>Аварийная служба лифтов</td><td>Мослифт · дежурный</td><td><b>+7 495 777-01-01</b></td><td>Круглосуточно</td></tr>
-        <tr><td>Дежурный ИТП</td><td>Гаврилов П. С.</td><td><b>+7 495 120-41-22</b></td><td>Круглосуточно</td></tr>
-        <tr><td>Сервис домофонии</td><td>ITV | AxxonSoft</td><td><b>+7 800 555-08-08</b></td><td>Круглосуточно, SLA 4 ч</td></tr>
-        <tr><td>Управляющий ЖК</td><td>Литвинова О. Н.</td><td><b>+7 903 771-60-40</b></td><td>Только критические</td></tr>
-      </tbody>
+      <tbody id="contactsTable"></tbody>
     </table>
     <div class="help-actions"><button type="button" class="btn primary" data-close="modalContacts">Закрыть</button></div>
   </div>
@@ -1889,8 +2020,8 @@ body.wan-down .wan-banner{display:flex}
 
 <div class="help-overlay" id="modalEvacuation" hidden>
   <div class="help-card wide" role="dialog" aria-modal="true">
-    <h3>Схема эвакуации · корпус 3, 1-й этаж</h3>
-    <p class="muted">План, привязанный к карточке объекта. Сборный пункт — двор со стороны детской площадки.</p>
+    <h3 id="evacTitle">Схема эвакуации · 1-й этаж</h3>
+    <p class="muted" id="evacSub">План, привязанный к карточке объекта. Сборный пункт — двор со стороны детской площадки.</p>
     <div class="doc-figure">
       <svg viewBox="0 0 640 372" role="img" aria-label="План эвакуации первого этажа корпуса 3">
         <rect width="640" height="372" fill="#f8fafc"/>
@@ -2004,12 +2135,14 @@ function go(v,opts){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.getElementById('view-'+v).classList.add('on');
   document.querySelectorAll('.nav-item').forEach(e=>e.classList.toggle('on', e.dataset.view===v));
+  document.querySelectorAll('#mNav button').forEach(e=>e.classList.toggle('on', e.dataset.view===v));
   document.getElementById('main').scrollTop=0;
+  closeDrawers();
   if(v==='video'){
     if(!opts.keepSet){
       videoSet=null;
       const sub=document.getElementById('videoSub');
-      if(sub) sub.textContent='Подключённый видеомодуль · Интеллект X / Axxon One';
+      if(sub) sub.textContent='Подключённый видеомодуль · '+(OBJ.stat.vms||'—');
     }
     renderVideoWall();
   }
@@ -2025,15 +2158,24 @@ function syncPanelButtons(){
   if(ts){ts.classList.toggle('on',sideOn);ts.setAttribute('aria-pressed',String(sideOn));}
 }
 function toggleRail(){
+  if(isMobile()){
+    document.body.classList.contains('rail-open') ? closeDrawers() : openRailDrawer();
+    return;
+  }
   document.getElementById('mid').classList.toggle('rail-collapsed');
   syncPanelButtons();
 }
 function toggleSide(){
+  if(isMobile()){
+    document.body.classList.contains('side-open') ? closeDrawers() : openSideDrawer();
+    return;
+  }
   document.getElementById('mid').classList.toggle('side-hidden');
   syncPanelButtons();
 }
 function openSide(t){
   document.getElementById('mid').classList.remove('side-hidden');
+  if(isMobile()){ document.body.classList.remove('rail-open'); openSideDrawer(); }
   document.getElementById('pane-alarms').classList.toggle('on',t==='alarms');
   document.getElementById('pane-events').classList.toggle('on',t==='events');
   document.getElementById('tabAlarms').classList.toggle('on',t==='alarms');
@@ -2041,13 +2183,14 @@ function openSide(t){
 }
 
 /* ---------- Конфигурация поставки ---------- */
-function setConfig(c){
+function setConfig(c,silent){
   document.body.classList.toggle('basic', c==='basic');
   document.body.classList.toggle('ext', c==='ext');
   document.getElementById('cfgBasic').classList.toggle('on', c==='basic');
   document.getElementById('cfgExt').classList.toggle('on', c==='ext');
   document.getElementById('stVms').className = 'sd '+(c==='ext'?'ok':'off');
-  document.getElementById('stVmsTxt').textContent = c==='ext' ? 'Интеллект X · 24 канала' : 'не подключён';
+  document.getElementById('stVmsTxt').textContent = c==='ext' ? (OBJ.stat.vms||'подключён') : 'не подключён';
+  if(silent) return;
   toast(c==='ext'?'ok':'warn', c==='ext'?'Расширенная конфигурация':'Базовая конфигурация',
     c==='ext' ? 'Видеомодуль подключён: live, архив, аналитика, ACFA и LPR доступны'
               : 'Лицензии VMS не требуются. Функции [Р] скрыты, доступны базовые пути без видео');
@@ -2075,10 +2218,6 @@ function spark(id,data,color){
   el.innerHTML='<path d="'+area+'" fill="'+color+'" opacity=".13"/><path d="'+line+'" fill="none" stroke="'+color+'" stroke-width="1.6" stroke-linejoin="round"/>';
 }
 const rnd=(base,spread,n)=>Array.from({length:n},(_,i)=>base+Math.sin(i/2.2)*spread*.6+(Math.random()-.5)*spread);
-spark('sp1',rnd(72,2.2,24),'#2ea865');
-spark('sp2',rnd(3.1,.5,24),'#e8a33d');
-spark('sp3',rnd(180,32,24),'#3d8bfd');
-spark('sp4',rnd(2.7,.9,24),'#7d5bd6');
 
 /* ---------- Камеры, сцены, связи объект↔камера ---------- */
 const SCENES={
@@ -2093,60 +2232,714 @@ const SCENES={
   dock:`<rect width="320" height="180" fill="#1a2130"/><rect width="320" height="96" fill="#101724"/><polygon points="0,180 320,180 300,96 20,96" fill="#39414f"/><rect x="96" y="14" width="150" height="96" rx="4" fill="#54606f"/><g fill="#d9a13a"><rect x="96" y="110" width="150" height="6"/></g><g fill="#141a26" opacity=".9"><path d="M256 152c0-21 4-33 8-33s8 12 8 33z"/><circle cx="264" cy="113" r="7"/></g>`,
   yard:`<rect width="320" height="180" fill="#1c2434"/><rect width="320" height="22" fill="#141b28"/><rect x="20" y="22" width="280" height="76" fill="#0b111d"/><g fill="#4a7f5a"><ellipse cx="80" cy="86" rx="28" ry="16"/><ellipse cx="240" cy="80" rx="36" ry="18"/></g><polygon points="0,180 320,180 304,104 16,104" fill="#39435a"/><g fill="#1a2333"><path d="M79 142c0-27 4-42 8-42s8 15 8 42z"/><circle cx="87" cy="95" r="8"/></g>`
 };
-const CAMERAS={
-  'cam-p1':{name:'П1 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
-  'cam-p2':{name:'П2 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
-  'cam-p3':{name:'П3 · входная дверь',scene:'corridor',res:'H.264 · 1920×1080'},
-  'cam-gate':{name:'Калитка двора',scene:'gate',res:'H.264 · 1920×1080'},
-  'cam-yard':{name:'Двор · детская площадка',scene:'yard',res:'H.265 · 2560×1440'},
-  'cam-hall':{name:'Холл П2 · 1 этаж',scene:'hall',res:'H.264 · 1280×720'},
-  'cam-f7':{name:'Холл П2 · 7 этаж',scene:'corridor',res:'H.264 · 1920×1080'},
-  'cam-lift':{name:'Лифтовой холл П2',scene:'hall',res:'H.264 · 1280×720'},
-  'cam-park':{name:'LPR · въезд на паркинг',scene:'barrier',res:'H.264 · 1920×1080'},
-  'cam-park-out':{name:'LPR · выезд',scene:'barrier',res:'H.264 · 1920×1080'},
-  'cam-ramp':{name:'Паркинг −1 · рампа',scene:'dock',res:'H.264 · 1920×1080'},
-  'cam-itp':{name:'ИТП · насосная',scene:'server',res:'H.264 · 1280×720'},
-  'cam-elec':{name:'Электрощитовая',scene:'racks',res:'H.264 · 1280×720'},
-  'cam-kpp':{name:'КПП двора',scene:'checkpoint',res:'H.264 · 1920×1080'}
-};
-const CAM_IDS=Object.keys(CAMERAS);
-const CAM_LINKS={
-  'panel-p1':['cam-p1'],
-  'panel-p2':['cam-p2','cam-hall'],
-  'panel-p3':['cam-p3'],
-  'gate-k1':['cam-gate','cam-yard','cam-kpp'],
-  'entry-v1':['cam-park','cam-park-out','cam-ramp'],
-  'fire-sh14':['cam-f7','cam-lift','cam-hall'],
-  'fire-sh9':['cam-p1','cam-hall'],
-  'fire-sh7':['cam-p1','cam-yard'],
-  'door-p1':['cam-p1'],
-  'door-p2':['cam-p2','cam-hall'],
-  'door-p3':['cam-p3'],
-  'door-gate':['cam-gate','cam-yard'],
-  'door-tambur':['cam-f7'],
-  'door-tech':['cam-elec','cam-itp'],
-  'door-elec':['cam-elec'],
-  'lift-p1':['cam-lift'],
-  'lift-p2':['cam-lift','cam-f7','cam-hall'],
-  'itp':['cam-itp','cam-elec'],
-  'park-entry':['cam-park','cam-ramp','cam-park-out'],
-  'leak':['cam-f7'],
-  'cam-f7':['cam-f7'],
-  'panel-call':['cam-p2','cam-hall']
-};
-CAM_IDS.forEach(id=>{ if(!CAM_LINKS[id]) CAM_LINKS[id]=[id]; });
+/* =========================================================
+   Объекты обслуживания (дома). Оператор ведёт несколько
+   объектов; переключение меняет весь набор данных: камеры,
+   планы, точки доступа, ОПС, паркинг, жильцов и журнал.
+   ========================================================= */
+const PLAN_SHELL='<rect x="16" y="16" width="608" height="368" rx="6" fill="var(--map-floor)" stroke="var(--stroke-2)" stroke-width="2"/>';
+const room=(x,y,w,h,alt)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="var(--map-room'+(alt?'-2':'')+')" stroke="var(--stroke-2)"/>';
+const label=(x,y,t)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle">'+t+'</text>';
+const labels=inner=>'<g fill="var(--map-label)" font-size="12" font-family="Inter, sans-serif">'+inner+'</g>';
+
+const OBJECTS=[
+/* ============================================================ */
+{
+  id:'sp3',
+  name:'ЖК «Северный парк»',
+  unit:'Корпус 3',
+  short:'Северный парк · к3',
+  addr:'Москва, ул. Полярная, 14, корпус 3',
+  facts:'3 подъезда · 18 этажей · 254 абонента · паркинг 60 мест',
+  config:'ext',
+  chips:[['ok','254 SIP-аккаунта'],['ext','Видеомодуль · 24 канала'],['alarm','3 тревоги']],
+  stat:{kam:'254 рег.',rtp:'74/100 портов',vms:'Интеллект X · 24 канала'},
+  kpi:{sipOn:248,sipAll:254,sipNote:'6 офлайн · 2 панели, 4 абонента',
+       callNote:'за сутки: 87 · среднее соединение 2.1 с',
+       alarmNote:'1 пожар · 1 неисправность · 1 связь',
+       tasks:'12',tasksSub:'/ 4 просрочено',taskNote:'лифт П2 · ИТП · освещение двора'},
+  shift:[['Оператор','Полякова И. · Диспетчер УК'],['Смена','08:00 – 20:00 (осталось 9 ч 22 м)'],
+         ['Обработано тревог','7 из 10'],['Среднее время реакции','00:41'],['Не подтверждено','3 тревоги']],
+  access:[['Открытий из приложения','34'],['По коду / QR (гости)','7'],['Из вызова (DTMF)','11'],
+          ['Оператором вручную','3'],['Отказов в доступе','2','bad']],
+  eng:{t1:'72.4',t2:'46.1',press:'3.1',power:'184',water:'2.7',chip:'1 отклонение',chipCls:'warn',
+       rows:[['ok','Лифт П1 · этаж 7, движение вниз','ok','Норма'],
+             ['alarm','Лифт П2 · останов между этажами 4–5','alarm','Авария'],
+             ['ok','Насос ХВС №1 · в работе','ok','Норма']]},
+  itp:{t1:'Т1 подача · 72.4 °C',t2:'Т2 обратка · 46.1 °C',pt:'PT-03 · 3.1 бар',em:'184'},
+  cameras:{
+    'cam-p1':{name:'П1 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
+    'cam-p2':{name:'П2 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
+    'cam-p3':{name:'П3 · входная дверь',scene:'corridor',res:'H.264 · 1920×1080'},
+    'cam-gate':{name:'Калитка двора',scene:'gate',res:'H.264 · 1920×1080'},
+    'cam-yard':{name:'Двор · детская площадка',scene:'yard',res:'H.265 · 2560×1440'},
+    'cam-hall':{name:'Холл П2 · 1 этаж',scene:'hall',res:'H.264 · 1280×720'},
+    'cam-f7':{name:'Холл П2 · 7 этаж',scene:'corridor',res:'H.264 · 1920×1080'},
+    'cam-lift':{name:'Лифтовой холл П2',scene:'hall',res:'H.264 · 1280×720'},
+    'cam-park':{name:'LPR · въезд на паркинг',scene:'barrier',res:'H.264 · 1920×1080'},
+    'cam-park-out':{name:'LPR · выезд',scene:'barrier',res:'H.264 · 1920×1080'},
+    'cam-ramp':{name:'Паркинг −1 · рампа',scene:'dock',res:'H.264 · 1920×1080'},
+    'cam-itp':{name:'ИТП · насосная',scene:'server',res:'H.264 · 1280×720'},
+    'cam-elec':{name:'Электрощитовая',scene:'racks',res:'H.264 · 1280×720'},
+    'cam-kpp':{name:'КПП двора',scene:'checkpoint',res:'H.264 · 1920×1080'}
+  },
+  links:{
+    'panel-p1':['cam-p1'],'panel-p2':['cam-p2','cam-hall'],'panel-p3':['cam-p3'],
+    'gate-k1':['cam-gate','cam-yard','cam-kpp'],'entry-v1':['cam-park','cam-park-out','cam-ramp'],
+    'fire-sh14':['cam-f7','cam-lift','cam-hall'],'fire-sh9':['cam-p1','cam-hall'],'fire-sh7':['cam-p1','cam-yard'],
+    'door-p1':['cam-p1'],'door-p2':['cam-p2','cam-hall'],'door-p3':['cam-p3'],
+    'door-gate':['cam-gate','cam-yard'],'door-tambur':['cam-f7'],
+    'door-tech':['cam-elec','cam-itp'],'door-elec':['cam-elec'],
+    'lift-p1':['cam-lift'],'lift-p2':['cam-lift','cam-f7','cam-hall'],
+    'itp':['cam-itp','cam-elec'],'park-entry':['cam-park','cam-ramp','cam-park-out'],
+    'leak':['cam-f7'],'panel-call':['cam-p2','cam-hall']
+  },
+  dashCams:['cam-p1','cam-p2','cam-yard','cam-park'],
+  plans:[
+    {id:'floor7',label:'7 этаж',title:'План · подъезд 2, этаж 7',sub:'Корпус 3 · подъезд 2 · 7 этаж',
+     svg:PLAN_SHELL+room(32,32,170,150)+room(32,202,170,150)+room(438,32,170,150)+room(438,202,170,150)
+        +room(218,140,204,120,1)
+        +'<rect x="236" y="150" width="44" height="36" fill="var(--accent-dim)" stroke="var(--accent)"/>'
+        +'<rect x="288" y="150" width="44" height="36" fill="var(--danger-bg)" stroke="var(--crit)"/>'
+        +room(348,150,52,100)
+        +labels(label(117,110,'Кв. 701')+label(117,280,'Кв. 702')+label(523,110,'Кв. 703')+label(523,280,'Кв. 704')+label(320,220,'Лифтовой холл')),
+     dev:[{k:'cam',x:320,y:250,label:'Камера холла',obj:'cam-f7'},
+          {k:'fire',x:80,y:70,label:'ШС-14',state:'alarm',obj:'fire-sh14',sub:'Дымовой · Болид С2000-КДЛ · подъезд 2, 7 этаж'},
+          {k:'sensor',x:80,y:330,label:'ШС-15',obj:'fire-sh14'},
+          {k:'sensor',x:560,y:70,label:'ШС-16',obj:'fire-sh14'},
+          {k:'door',x:320,y:360,label:'Тамбур',obj:'door-tambur',cmd:'Тамбур П2 · 7 этаж'},
+          {k:'eng',x:560,y:330,label:'Протечка',obj:'leak',sub:'Стояк ХВС · плагин Modbus TCP'}]},
+    {id:'parking',label:'Паркинг −1',title:'План · паркинг, уровень −1',sub:'Корпус 3 · подземный паркинг · 60 мест',
+     svg:PLAN_SHELL+room(40,40,240,300)+room(360,40,240,300)+room(290,40,60,300,1)
+        +labels(label(160,190,'Места А · 1–30')+label(480,190,'Места Б · 31–60')+label(320,80,'Рампа'))
+        +'<rect x="292" y="330" width="56" height="16" fill="var(--warn)"/>',
+     dev:[{k:'cam',x:320,y:50,label:'LPR въезд',obj:'park-entry'},
+          {k:'cam',x:320,y:340,label:'Рампа',obj:'park-entry'},
+          {k:'door',x:160,y:360,label:'Шлагбаум',obj:'park-entry',cmd:'Шлагбаум въезда на паркинг'},
+          {k:'door',x:480,y:360,label:'Техпомещение',obj:'door-tech',cmd:'Техпомещение −1'}]},
+    {id:'yard',label:'Двор',title:'План · придомовая территория',sub:'Корпус 3 · двор, детская площадка, калитка',
+     svg:PLAN_SHELL+room(40,40,200,140)+room(400,40,200,140)
+        +'<ellipse cx="320" cy="230" rx="110" ry="70" fill="var(--ok-bg)" stroke="var(--ok)"/>'
+        +room(240,320,160,40,1)
+        +labels(label(140,110,'Подъезд 1')+label(500,110,'Подъезд 3')+label(320,236,'Детская площадка')+label(320,344,'Калитка двора')),
+     dev:[{k:'cam',x:320,y:230,label:'Площадка',obj:'gate-k1'},
+          {k:'cam',x:320,y:340,label:'Калитка',obj:'gate-k1'},
+          {k:'door',x:140,y:180,label:'П1',obj:'door-p1',cmd:'Подъезд 1 · входная дверь'},
+          {k:'door',x:500,y:180,label:'П3',obj:'door-p3',cmd:'Подъезд 3 · входная дверь'}]}
+  ],
+  tree:[
+    {l:1,n:'ЖК «Северный парк»',s:'ok'},{l:2,n:'Корпус 3',s:'ok'},
+    {l:3,n:'Подъезд 1 · панель П1',s:'ok'},{l:3,n:'Подъезд 2 · панель П2',s:'ok'},
+    {l:3,n:'Подъезд 3 · панель П3',s:'off'},{l:3,n:'Калитка двора · панель К1',s:'ok'},
+    {l:3,n:'Въезд на паркинг · панель В1',s:'ok'},
+    {l:2,n:'Абоненты · 254 аккаунта',s:'ok'},
+    {l:3,n:'Кв. 101–199 · 62 аккаунта',s:'ok'},{l:3,n:'Кв. 201–299 · 64 аккаунта',s:'ok'},
+    {l:3,n:'Кв. 301–399 · 63 аккаунта',s:'ok'},{l:3,n:'Кв. 401–499 · 61 аккаунт',s:'warn'},
+    {l:2,n:'Консьержи · 3 аккаунта',s:'ok'},{l:2,n:'Служебные зоны · 8 точек',s:'ok'}
+  ],
+  alarms:[
+    {id:1,obj:'fire-sh14',lvl:'fire',ttl:'Пожар 1 · дымовой извещатель',src:'Подъезд 2 · 7 этаж · ШС-14 · Болид С2000-КДЛ',t:'10:11:38',pr:'ПОЖАР'},
+    {id:2,obj:'fire-sh9',lvl:'warn',ttl:'Неисправность шлейфа',src:'Подъезд 1 · ШС-9 · обрыв линии',t:'09:48:02',pr:'Неисправность'},
+    {id:3,obj:'panel-p3',lvl:'alarm',ttl:'Панель офлайн более 10 минут',src:'Подъезд 3 · панель П3 · нет REGISTER',t:'10:00:14',pr:'Связь'}
+  ],
+  events:[
+    {ty:'sip',t:'10:14:22',ttl:'Входящий вызов',d:'П2 · входная дверь → кв. 214',src:'sipmanager',who:'Панель П2',obj:'panel-p2'},
+    {ty:'acc',t:'10:13:57',ttl:'Дверь открыта',d:'П1 · из мобильного приложения (REST unlock)',src:'Драйвер BEWARD',who:'Кв. 106',obj:'door-p1'},
+    {ty:'park',t:'10:12:04',ttl:'Проезд разрешён',d:'А123ВС 77 · белый список · кв. 214',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'},
+    {ty:'fire',t:'10:11:38',ttl:'ПОЖАР 1',d:'Подъезд 2 · 7 этаж · ШС-14',src:'Болид С2000-КДЛ',who:'ОПС',obj:'fire-sh14'},
+    {ty:'scada',t:'10:10:02',ttl:'Останов лифта между этажами',d:'П2 · Л2 · этажи 4–5',src:'Плагин Modbus TCP',who:'Лифт П2Л2',obj:'lift-p2'},
+    {ty:'acc',t:'10:08:47',ttl:'Проход по гостевому QR',d:'Калитка двора · гость кв. 106',src:'Ядро',who:'Гостевой код',obj:'door-gate'},
+    {ty:'sip',t:'10:09:41',ttl:'Вызов завершён',d:'П1 → кв. 106 · 00:38 · дверь открыта',src:'Kamailio',who:'Кв. 106',obj:'panel-p1'},
+    {ty:'video',t:'10:07:12',ttl:'Детектор: оставленный предмет',d:'Холл П2 · 1 этаж',src:'Интеллект X',who:'Видеоаналитика',obj:'cam-hall'},
+    {ty:'scada',t:'10:05:30',ttl:'Давление ХВС выше уставки',d:'PT-03 · 3.1 бар (уставка 3.0)',src:'Плагин Modbus TCP',who:'ИТП',obj:'itp'},
+    {ty:'acc',t:'10:03:19',ttl:'Отказ в доступе',d:'Техпомещение −1 · неизвестная карта',src:'ACFA-Интеллект',who:'СКУД',obj:'door-tech'},
+    {ty:'sip',t:'10:02:17',ttl:'Вызов завершён',d:'Калитка двора → кв. 703 · 00:21',src:'Kamailio',who:'Кв. 703',obj:'gate-k1'},
+    {ty:'park',t:'09:55:12',ttl:'Отказ в проезде',d:'Х004ММ 50 · нет в списках',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'}
+  ],
+  calls:[{t:'10:14:22',panel:'П2 · входная дверь',sub:'Кв. 214 · Смирнов А. В.',st:'ringing',dur:12,obj:'panel-p2'}],
+  history:[
+    {t:'10:09:41',p:'П1 · входная дверь',f:'Кв. 106 · Ковалёва М. И.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, дверь открыта',len:'00:38',obj:'panel-p1'},
+    {t:'10:02:17',p:'Калитка двора',f:'Кв. 703 · Гуськов Д. П.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:21',obj:'gate-k1'},
+    {t:'09:57:03',p:'П2 · входная дверь',f:'Кв. 412 · Ершова Н. С.',d:'—',r:'miss',rt:'Не отвечен (30 с)',len:'00:30',obj:'panel-p2'},
+    {t:'09:51:55',p:'П3 · входная дверь',f:'Консьерж П3',d:'Планшет консьержа (SIP)',r:'ok',rt:'Отвечен, дверь открыта',len:'01:12',obj:'panel-p3'},
+    {t:'09:44:12',p:'Въезд на паркинг',f:'Кв. 214 · Смирнов А. В.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, шлагбаум открыт',len:'00:26',obj:'entry-v1'},
+    {t:'09:31:08',p:'П1 · входная дверь',f:'Кв. 508 · Титова О. Р.',d:'—',r:'rej',rt:'Отклонён абонентом',len:'00:07',obj:'panel-p1'},
+    {t:'09:22:44',p:'П2 · входная дверь',f:'Кв. 214 · Смирнов А. В.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:44',obj:'panel-p2'}
+  ],
+  doors:[
+    {n:'Подъезд 1 · входная дверь',dev:'BEWARD DKS15120 · П1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p1'},
+    {n:'Подъезд 2 · входная дверь',dev:'BEWARD DKS15120 · П2',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p2'},
+    {n:'Подъезд 3 · входная дверь',dev:'BEWARD DKS15120 · П3',m:'HTTP/CGI',s:'off',st:'Нет связи',obj:'door-p3'},
+    {n:'Калитка двора',dev:'Fanvil i32 · К1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-gate'},
+    {n:'Тамбур П2 · 7 этаж',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tambur'},
+    {n:'Техпомещение −1',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tech'},
+    {n:'Электрощитовая',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'warn',st:'Открыта 6 мин',obj:'door-elec'}
+  ],
+  panels:[
+    {n:'П1 · входная дверь',m:'BEWARD DKS15120',a:'panel1@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p1'},
+    {n:'П2 · входная дверь',m:'BEWARD DKS15120',a:'panel2@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p2'},
+    {n:'П3 · входная дверь',m:'BEWARD DKS15120',a:'panel3@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'off',obj:'panel-p3'},
+    {n:'К1 · калитка двора',m:'Fanvil i32',a:'gate1@integrator-7',r:'rtsp://…/stream0',u:'HTTP API',s:'ok',obj:'gate-k1'},
+    {n:'В1 · въезд на паркинг',m:'BAS-IP AV-01',a:'entry1@integrator-7',r:'rtsp://…/h264',u:'Реле контроллера',s:'ok',obj:'entry-v1'}
+  ],
+  resStats:{total:'254 аккаунта',online:'248 онлайн',offline:'6 офлайн',push:'312 устройств с push'},
+  residents:[
+    {f:'214',n:'Смирнов Алексей Викторович',u:'214@integrator-7.axxoncloud.local',d:'iPhone 14, Pixel 7',p:'Жилец + авто',s:'ok'},
+    {f:'106',n:'Ковалёва Мария Игоревна',u:'106@integrator-7.axxoncloud.local',d:'iPhone 13',p:'Жилец',s:'ok'},
+    {f:'703',n:'Гуськов Дмитрий Павлович',u:'703@integrator-7.axxoncloud.local',d:'Samsung S23, iPad, Redmi',p:'Жилец + камеры [Р]',s:'ok'},
+    {f:'412',n:'Ершова Наталья Сергеевна',u:'412@integrator-7.axxoncloud.local',d:'Xiaomi 13',p:'Жилец',s:'warn'},
+    {f:'508',n:'Титова Ольга Романовна',u:'508@integrator-7.axxoncloud.local',d:'iPhone 15 Pro',p:'Жилец',s:'ok'},
+    {f:'—',n:'Консьерж подъезда 2',u:'concierge2@integrator-7.axxoncloud.local',d:'Планшет Lenovo (SIP UA)',p:'Консьерж / оператор',s:'ok'}
+  ],
+  tags:[
+    {n:'TT-01 · Т1 подача',v:'72.4 °C',u:'60 – 80',s:'ok',obj:'itp'},
+    {n:'TT-02 · Т2 обратка',v:'46.1 °C',u:'40 – 55',s:'ok',obj:'itp'},
+    {n:'PT-03 · Давление ХВС',v:'3.1 бар',u:'2.0 – 3.0',s:'warn',obj:'itp'},
+    {n:'FT-04 · Расход ХВС',v:'2.7 м³/ч',u:'0 – 6',s:'ok',obj:'itp'},
+    {n:'EM-01 · Активная мощность',v:'184 кВт',u:'0 – 260',s:'ok',obj:'itp'},
+    {n:'PS-01 · Насос Н1',v:'работа',u:'—',s:'ok',obj:'itp'},
+    {n:'PS-02 · Насос Н2',v:'резерв',u:'—',s:'ok',obj:'itp'},
+    {n:'LV-01 · Лифт П2Л2',v:'авария',u:'—',s:'alarm',obj:'lift-p2'},
+    {n:'LK-01 · Протечка ИТП',v:'сухо',u:'—',s:'ok',obj:'itp'}
+  ],
+  lifts:{chip:'1 авария',chipCls:'alarm',rows:[
+    {n:'П1 · Л1',f:'7',dir:'вниз',dr:'закрыты',s:'ok',st:'Норма',obj:'lift-p1'},
+    {n:'П2 · Л2',f:'4–5',dir:'—',dr:'закрыты',s:'alarm',st:'Останов между этажами',obj:'lift-p2'},
+    {n:'П3 · Л1',f:'1',dir:'стоянка',dr:'открыты',s:'ok',st:'Норма',obj:'lift-p1'}
+  ]},
+  park:{title:'Въездная группа паркинга · шлагбаум',entryObj:'park-entry',lpr:true,
+    kpi:{busy:'42',total:'60',freeNote:'18 свободно · гостевых 4',passes:'137',passNote:'авто по списку 121 · гости 16',
+         acc:'96.4',accNote:'среднее время открытия 1.4 с',deny:'5',denyNote:'нет в списках · истёк пропуск'},
+    dash:[['ok','Шлагбаум въезд','mut','Закрыт'],['ok','Шлагбаум выезд','mut','Закрыт'],['ok','LPR-камера въезда','ok','Активна']],
+    rows:[
+      {t:'10:12:04',n:'А123ВС 77',b:'Белый список · кв. 214',r:'ok'},
+      {t:'10:08:47',n:'Е777КХ 77',b:'Гостевой QR · кв. 106',r:'ok'},
+      {t:'10:01:33',n:'О555ТТ 77',b:'Белый список · кв. 106',r:'ok'},
+      {t:'09:55:12',n:'Х004ММ 50',b:'Нет в списках',r:'no'},
+      {t:'09:47:20',n:'Р909НН 190',b:'Белый список · кв. 703',r:'ok'},
+      {t:'09:40:05',n:'К210ОР 77',b:'Ручное открытие оператором',r:'ok'}
+    ],
+    white:[
+      {p:'А123ВС 77',f:'214',o:'Смирнов А. В.',s:'−1 · м. 34',u:'бессрочно',st:'ok',stt:'Активен'},
+      {p:'О555ТТ 77',f:'106',o:'Ковалёва М. И.',s:'−1 · м. 12',u:'бессрочно',st:'ok',stt:'Активен'},
+      {p:'Р909НН 190',f:'703',o:'Гуськов Д. П.',s:'−2 · м. 51',u:'31.10.2026',st:'warn',stt:'Истекает'},
+      {p:'Т321ММ 77',f:'412',o:'Ершова Н. С.',s:'−1 · м. 07',u:'бессрочно',st:'mut',stt:'Заблокирован'}
+    ]},
+  guests:[
+    {c:'PIN 7734',w:'Курьер · кв. 214',sub:'подъезд 2, дверь',left:'28 мин',s:'warn'},
+    {c:'QR · a7f2…',w:'Гость · кв. 106',sub:'калитка двора + подъезд 1',left:'3 ч 12 м',s:'ok'},
+    {c:'PIN 1190',w:'Сервис лифта',sub:'техпомещение −1',left:'1 сутки',s:'ok'},
+    {c:'QR · c31b…',w:'Доставка · кв. 703',sub:'1 проход',left:'9 мин',s:'warn'}
+  ],
+  concierge:{post:'Консьерж · подъезд 2',who:'Сергей Волков',init:'СВ',hours:'08:00–22:00',
+    doorsTitle:'Точки доступа подъезда 2',logTitle:'Журнал подъезда 2',
+    call:{panel:'Панель подъезда 2',flat:'кв. 214',who:'Смирнов А. В.',cmd:'Подъезд 2 · входная дверь'},
+    doors:[{n:'Входная дверь П2',obj:'door-p2',cmd:'Подъезд 2 · входная дверь'},
+           {n:'Калитка двора',obj:'door-gate',cmd:'Калитка двора'},
+           {n:'Тамбур 1 этажа',obj:'door-p2',cmd:'Тамбур П2 · 1 этаж'},
+           {n:'Шлагбаум въезд',obj:'park-entry',cmd:'Шлагбаум въезда на паркинг'}]},
+  contacts:[
+    ['Диспетчер УК (эта смена)','Полякова И. П.','+7 495 120-41-00','08:00–20:00'],
+    ['Старший смены УК','Петрова М. В.','+7 495 120-41-01','Круглосуточно'],
+    ['Консьерж подъезда 2','Волков С. А.','+7 916 480-22-14','08:00–22:00'],
+    ['Аварийная служба лифтов','Мослифт · дежурный','+7 495 777-01-01','Круглосуточно'],
+    ['Дежурный ИТП','Гаврилов П. С.','+7 495 120-41-22','Круглосуточно'],
+    ['Сервис домофонии','ITV | AxxonSoft','+7 800 555-08-08','Круглосуточно, SLA 4 ч'],
+    ['Управляющий ЖК','Литвинова О. Н.','+7 903 771-60-40','Только критические']
+  ],
+  evac:{title:'Схема эвакуации · корпус 3, 1-й этаж',sub:'Сборный пункт — двор со стороны детской площадки.'}
+},
+/* ============================================================ */
+{
+  id:'sp1',
+  name:'ЖК «Северный парк»',
+  unit:'Корпус 1',
+  short:'Северный парк · к1',
+  addr:'Москва, ул. Полярная, 14, корпус 1',
+  facts:'2 подъезда · 12 этажей · 168 абонентов · гостевая парковка во дворе',
+  config:'ext',
+  chips:[['ok','168 SIP-аккаунтов'],['ext','Видеомодуль · 8 каналов'],['warn','2 предупреждения']],
+  stat:{kam:'168 рег.',rtp:'31/100 портов',vms:'Интеллект X · 8 каналов'},
+  kpi:{sipOn:166,sipAll:168,sipNote:'2 офлайн · абоненты кв. 33, кв. 91',
+       callNote:'за сутки: 41 · среднее соединение 1.8 с',
+       alarmNote:'2 предупреждения · пожарных тревог нет',
+       tasks:'4',tasksSub:'/ 1 просрочена',taskNote:'домофон П2 · освещение подъезда'},
+  shift:[['Оператор','Полякова И. · Диспетчер УК'],['Смена','08:00 – 20:00 (осталось 9 ч 22 м)'],
+         ['Обработано тревог','3 из 5'],['Среднее время реакции','00:33'],['Не подтверждено','2 предупреждения']],
+  access:[['Открытий из приложения','19'],['По коду / QR (гости)','3'],['Из вызова (DTMF)','6'],
+          ['Оператором вручную','1'],['Отказов в доступе','0']],
+  eng:{t1:'69.8',t2:'44.2',press:'2.6',power:'96',water:'1.4',chip:'Норма',chipCls:'ok',
+       rows:[['ok','Лифт П1 · этаж 3, движение вверх','ok','Норма'],
+             ['ok','Лифт П2 · стоянка, 1 этаж','ok','Норма'],
+             ['warn','Насос ХВС №1 · частые пуски','warn','Наблюдение']]},
+  itp:{t1:'Т1 подача · 69.8 °C',t2:'Т2 обратка · 44.2 °C',pt:'PT-03 · 2.6 бар',em:'96'},
+  cameras:{
+    'k1-p1':{name:'П1 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
+    'k1-p2':{name:'П2 · входная дверь',scene:'entrance',res:'H.264 · 1920×1080'},
+    'k1-hall':{name:'Холл П1 · 1 этаж',scene:'hall',res:'H.264 · 1280×720'},
+    'k1-f4':{name:'Коридор 4 этажа',scene:'corridor',res:'H.264 · 1280×720'},
+    'k1-gate':{name:'Калитка · ул. Полярная',scene:'gate',res:'H.264 · 1920×1080'},
+    'k1-yard':{name:'Двор · гостевая парковка',scene:'yard',res:'H.265 · 2560×1440'},
+    'k1-itp':{name:'ИТП корпуса 1',scene:'server',res:'H.264 · 1280×720'},
+    'k1-elec':{name:'Электрощитовая',scene:'racks',res:'H.264 · 1280×720'}
+  },
+  links:{
+    'panel-p1':['k1-p1','k1-hall'],'panel-p2':['k1-p2'],'gate-k1':['k1-gate','k1-yard'],
+    'door-p1':['k1-p1','k1-hall'],'door-p2':['k1-p2'],'door-gate':['k1-gate','k1-yard'],
+    'door-tech':['k1-itp','k1-elec'],'door-elec':['k1-elec'],
+    'fire-sh3':['k1-f4','k1-hall'],'fire-sh5':['k1-p2'],
+    'lift-1':['k1-hall'],'lift-2':['k1-p2'],'itp':['k1-itp','k1-elec'],
+    'leak':['k1-itp'],'panel-call':['k1-p1','k1-hall']
+  },
+  dashCams:['k1-p1','k1-p2','k1-yard','k1-hall'],
+  plans:[
+    {id:'floor4',label:'4 этаж',title:'План · подъезд 1, этаж 4',sub:'Корпус 1 · подъезд 1 · типовой этаж',
+     svg:PLAN_SHELL+room(34,34,200,140)+room(34,226,200,140)+room(406,34,200,140)+room(406,226,200,140)
+        +room(252,120,136,160,1)+room(266,134,52,40)+room(324,134,50,40)
+        +labels(label(134,108,'Кв. 41')+label(134,300,'Кв. 42')+label(506,108,'Кв. 43')+label(506,300,'Кв. 44')+label(320,300,'Лифтовой холл')),
+     dev:[{k:'cam',x:320,y:224,label:'Коридор',obj:'k1-f4'},
+          {k:'fire',x:120,y:200,label:'ШС-3',state:'ok',obj:'fire-sh3',sub:'Дымовой · Болид С2000-КДЛ · подъезд 1, 4 этаж'},
+          {k:'sensor',x:520,y:200,label:'ШС-4',obj:'fire-sh3'},
+          {k:'door',x:320,y:352,label:'Тамбур',obj:'door-p1',cmd:'Тамбур П1 · 4 этаж'}]},
+    {id:'tech',label:'Техподполье',title:'План · техподполье, ИТП',sub:'Корпус 1 · технические помещения',
+     svg:PLAN_SHELL+room(40,60,250,180)+room(330,60,270,120)+room(330,210,270,130,1)
+        +labels(label(165,155,'ИТП · насосная')+label(465,125,'Электрощитовая')+label(465,280,'Водомерный узел')),
+     dev:[{k:'cam',x:165,y:230,label:'ИТП',obj:'itp'},
+          {k:'cam',x:465,y:170,label:'Щитовая',obj:'door-elec'},
+          {k:'door',x:310,y:300,label:'Вход',obj:'door-tech',cmd:'Техподполье корпуса 1'},
+          {k:'eng',x:465,y:320,label:'Протечка',obj:'leak',sub:'Водомерный узел · плагин Modbus TCP'}]},
+    {id:'yard',label:'Двор',title:'План · двор и гостевая парковка',sub:'Корпус 1 · двор, калитка, 12 гостевых мест',
+     svg:PLAN_SHELL+room(40,40,240,110)+room(360,40,240,110)+room(40,250,300,110,1)
+        +'<ellipse cx="470" cy="270" rx="120" ry="80" fill="var(--ok-bg)" stroke="var(--ok)"/>'
+        +labels(label(160,100,'Подъезд 1')+label(480,100,'Подъезд 2')+label(190,310,'Гостевая парковка')+label(470,276,'Сквер')),
+     dev:[{k:'cam',x:160,y:160,label:'П1',obj:'panel-p1'},
+          {k:'cam',x:480,y:160,label:'П2',obj:'panel-p2'},
+          {k:'door',x:320,y:360,label:'Калитка',obj:'door-gate',cmd:'Калитка · ул. Полярная'}]}
+  ],
+  tree:[
+    {l:1,n:'ЖК «Северный парк»',s:'ok'},{l:2,n:'Корпус 1',s:'ok'},
+    {l:3,n:'Подъезд 1 · панель П1',s:'ok'},{l:3,n:'Подъезд 2 · панель П2',s:'warn'},
+    {l:3,n:'Калитка · панель К1',s:'ok'},
+    {l:2,n:'Абоненты · 168 аккаунтов',s:'ok'},
+    {l:3,n:'Кв. 1–60 · 58 аккаунтов',s:'ok'},{l:3,n:'Кв. 61–120 · 57 аккаунтов',s:'ok'},
+    {l:3,n:'Кв. 121–168 · 53 аккаунта',s:'ok'},
+    {l:2,n:'Консьерж · 1 аккаунт',s:'ok'},{l:2,n:'Служебные зоны · 4 точки',s:'ok'}
+  ],
+  alarms:[
+    {id:11,obj:'door-elec',lvl:'warn',ttl:'Дверь удерживается открытой',src:'Электрощитовая · 9 минут без закрытия',t:'10:06:41',pr:'Доступ'},
+    {id:12,obj:'itp',lvl:'warn',ttl:'Частые пуски насоса Н1',src:'ИТП корпуса 1 · PS-01 · 6 пусков за 10 мин',t:'09:52:10',pr:'Инженерия'}
+  ],
+  events:[
+    {ty:'acc',t:'10:12:33',ttl:'Дверь открыта',d:'П1 · из мобильного приложения',src:'Драйвер BEWARD',who:'Кв. 44',obj:'door-p1'},
+    {ty:'sip',t:'10:10:18',ttl:'Вызов завершён',d:'П2 → кв. 91 · 00:27 · дверь открыта',src:'Kamailio',who:'Кв. 91',obj:'panel-p2'},
+    {ty:'acc',t:'10:06:41',ttl:'Дверь удерживается открытой',d:'Электрощитовая · 9 минут',src:'ACFA-Интеллект',who:'СКУД',obj:'door-elec'},
+    {ty:'scada',t:'09:52:10',ttl:'Частые пуски насоса Н1',d:'PS-01 · 6 пусков за 10 минут',src:'Плагин Modbus TCP',who:'ИТП',obj:'itp'},
+    {ty:'video',t:'09:48:55',ttl:'Детектор движения',d:'Двор · гостевая парковка, ночной режим снят',src:'Интеллект X',who:'Видеоаналитика',obj:'k1-yard'},
+    {ty:'sip',t:'09:41:02',ttl:'Входящий вызов',d:'Калитка → кв. 12 · push доставлен 1.1 с',src:'sipmanager',who:'Панель К1',obj:'gate-k1'},
+    {ty:'acc',t:'09:33:47',ttl:'Проход по гостевому PIN',d:'Калитка · курьер кв. 44',src:'Ядро',who:'Гостевой код',obj:'door-gate'},
+    {ty:'scada',t:'09:20:14',ttl:'Опрос тегов ИТП',d:'22 тега · отклонений нет',src:'Плагин Modbus TCP',who:'ИТП',obj:'itp'}
+  ],
+  calls:[],
+  history:[
+    {t:'10:10:18',p:'П2 · входная дверь',f:'Кв. 91 · Логинов К. А.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, дверь открыта',len:'00:27',obj:'panel-p2'},
+    {t:'09:41:02',p:'Калитка · ул. Полярная',f:'Кв. 12 · Абрамова Е. С.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:19',obj:'gate-k1'},
+    {t:'09:15:36',p:'П1 · входная дверь',f:'Кв. 44 · Дементьев И. О.',d:'Планшет консьержа (SIP)',r:'ok',rt:'Переведён консьержу',len:'00:52',obj:'panel-p1'},
+    {t:'08:58:20',p:'П1 · входная дверь',f:'Кв. 33 · Соловьёв П. Н.',d:'—',r:'miss',rt:'Не отвечен (30 с)',len:'00:30',obj:'panel-p1'}
+  ],
+  doors:[
+    {n:'Подъезд 1 · входная дверь',dev:'BEWARD DKS15120 · П1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p1'},
+    {n:'Подъезд 2 · входная дверь',dev:'BEWARD DKS15120 · П2',m:'HTTP/CGI',s:'warn',st:'Пропадания связи',obj:'door-p2'},
+    {n:'Калитка · ул. Полярная',dev:'Fanvil i32 · К1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-gate'},
+    {n:'Техподполье',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tech'},
+    {n:'Электрощитовая',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'warn',st:'Открыта 9 мин',obj:'door-elec'}
+  ],
+  panels:[
+    {n:'П1 · входная дверь',m:'BEWARD DKS15120',a:'k1panel1@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p1'},
+    {n:'П2 · входная дверь',m:'BEWARD DKS15120',a:'k1panel2@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p2'},
+    {n:'К1 · калитка',m:'Fanvil i32',a:'k1gate@integrator-7',r:'rtsp://…/stream0',u:'HTTP API',s:'ok',obj:'gate-k1'}
+  ],
+  resStats:{total:'168 аккаунтов',online:'166 онлайн',offline:'2 офлайн',push:'201 устройство с push'},
+  residents:[
+    {f:'44',n:'Дементьев Игорь Олегович',u:'k1-44@integrator-7.axxoncloud.local',d:'iPhone 13, iPad',p:'Жилец',s:'ok'},
+    {f:'91',n:'Логинов Кирилл Андреевич',u:'k1-91@integrator-7.axxoncloud.local',d:'Pixel 8',p:'Жилец',s:'warn'},
+    {f:'12',n:'Абрамова Елена Сергеевна',u:'k1-12@integrator-7.axxoncloud.local',d:'Samsung A54',p:'Жилец',s:'ok'},
+    {f:'33',n:'Соловьёв Пётр Николаевич',u:'k1-33@integrator-7.axxoncloud.local',d:'iPhone SE',p:'Жилец',s:'warn'},
+    {f:'—',n:'Консьерж корпуса 1',u:'k1-concierge@integrator-7.axxoncloud.local',d:'Планшет Huawei (SIP UA)',p:'Консьерж / оператор',s:'ok'}
+  ],
+  tags:[
+    {n:'TT-01 · Т1 подача',v:'69.8 °C',u:'60 – 80',s:'ok',obj:'itp'},
+    {n:'TT-02 · Т2 обратка',v:'44.2 °C',u:'40 – 55',s:'ok',obj:'itp'},
+    {n:'PT-03 · Давление ХВС',v:'2.6 бар',u:'2.0 – 3.0',s:'ok',obj:'itp'},
+    {n:'FT-04 · Расход ХВС',v:'1.4 м³/ч',u:'0 – 4',s:'ok',obj:'itp'},
+    {n:'EM-01 · Активная мощность',v:'96 кВт',u:'0 – 160',s:'ok',obj:'itp'},
+    {n:'PS-01 · Насос Н1',v:'частые пуски',u:'≤ 3 / 10 мин',s:'warn',obj:'itp'},
+    {n:'LK-01 · Протечка ВУ',v:'сухо',u:'—',s:'ok',obj:'leak'}
+  ],
+  lifts:{chip:'Норма',chipCls:'ok',rows:[
+    {n:'П1 · Л1',f:'3',dir:'вверх',dr:'закрыты',s:'ok',st:'Норма',obj:'lift-1'},
+    {n:'П2 · Л1',f:'1',dir:'стоянка',dr:'открыты',s:'ok',st:'Норма',obj:'lift-2'}
+  ]},
+  park:null,
+  guests:[
+    {c:'PIN 5510',w:'Курьер · кв. 44',sub:'калитка + подъезд 1',left:'42 мин',s:'ok'},
+    {c:'QR · 9bb1…',w:'Гость · кв. 12',sub:'калитка, 1 проход',left:'16 мин',s:'warn'}
+  ],
+  concierge:{post:'Консьерж · корпус 1',who:'Мария Тихонова',init:'МТ',hours:'08:00–20:00',
+    doorsTitle:'Точки доступа корпуса 1',logTitle:'Журнал поста корпуса 1',
+    call:{panel:'Панель подъезда 1',flat:'кв. 44',who:'Дементьев И. О.',cmd:'Подъезд 1 · входная дверь'},
+    doors:[{n:'Входная дверь П1',obj:'door-p1',cmd:'Подъезд 1 · входная дверь'},
+           {n:'Входная дверь П2',obj:'door-p2',cmd:'Подъезд 2 · входная дверь'},
+           {n:'Калитка · Полярная',obj:'door-gate',cmd:'Калитка · ул. Полярная'}]},
+  contacts:[
+    ['Диспетчер УК (эта смена)','Полякова И. П.','+7 495 120-41-00','08:00–20:00'],
+    ['Консьерж корпуса 1','Тихонова М. Ю.','+7 916 480-22-31','08:00–20:00'],
+    ['Аварийная служба лифтов','Мослифт · дежурный','+7 495 777-01-01','Круглосуточно'],
+    ['Дежурный ИТП','Гаврилов П. С.','+7 495 120-41-22','Круглосуточно'],
+    ['Сервис домофонии','ITV | AxxonSoft','+7 800 555-08-08','Круглосуточно, SLA 4 ч'],
+    ['Управляющий ЖК','Литвинова О. Н.','+7 903 771-60-40','Только критические']
+  ],
+  evac:{title:'Схема эвакуации · корпус 1, 1-й этаж',sub:'Сборный пункт — сквер во дворе, 30 м от западного выхода.'}
+},
+/* ============================================================ */
+{
+  id:'ro2',
+  name:'ЖК «Речные Огни»',
+  unit:'Корпус 2',
+  short:'Речные Огни · к2',
+  addr:'Москва, Набережная Портовая, 7, корпус 2',
+  facts:'4 подъезда · 25 этажей · 312 абонентов · паркинг −2 на 180 мест',
+  config:'ext',
+  chips:[['ok','312 SIP-аккаунтов'],['ext','Axxon One · 48 каналов'],['alarm','2 тревоги']],
+  stat:{kam:'312 рег.',rtp:'88/120 портов',vms:'Axxon One · 48 каналов'},
+  kpi:{sipOn:305,sipAll:312,sipNote:'7 офлайн · 1 панель, 6 абонентов',
+       callNote:'за сутки: 143 · среднее соединение 2.4 с',
+       alarmNote:'1 доступ · 1 видеоканал',
+       tasks:'19',tasksSub:'/ 6 просрочено',taskNote:'вентиляция паркинга · LPR выезда · КПП'},
+  shift:[['Оператор','Полякова И. · Диспетчер УК'],['Смена','08:00 – 20:00 (осталось 9 ч 22 м)'],
+         ['Обработано тревог','11 из 13'],['Среднее время реакции','00:52'],['Не подтверждено','2 тревоги']],
+  access:[['Открытий из приложения','76'],['По коду / QR (гости)','21'],['Из вызова (DTMF)','24'],
+          ['Оператором вручную','5'],['Отказов в доступе','6','bad']],
+  eng:{t1:'74.1',t2:'48.6',press:'4.2',power:'421',water:'6.3',chip:'2 отклонения',chipCls:'warn',
+       rows:[['ok','Лифты П1–П4 · 8 кабин в работе','ok','Норма'],
+             ['warn','Вентиляция паркинга −2 · падение расхода','warn','Наблюдение'],
+             ['ok','Повысительная насосная · Н2 в работе','ok','Норма']]},
+  itp:{t1:'Т1 подача · 74.1 °C',t2:'Т2 обратка · 48.6 °C',pt:'PT-03 · 4.2 бар',em:'421'},
+  cameras:{
+    'r2-p1':{name:'П1 · входная группа',scene:'entrance',res:'H.265 · 2560×1440'},
+    'r2-p2':{name:'П2 · входная группа',scene:'entrance',res:'H.265 · 2560×1440'},
+    'r2-p3':{name:'П3 · входная группа',scene:'corridor',res:'H.264 · 1920×1080'},
+    'r2-p4':{name:'П4 · входная группа',scene:'corridor',res:'H.264 · 1920×1080'},
+    'r2-lobby':{name:'Лобби · стилобат',scene:'hall',res:'H.265 · 2560×1440'},
+    'r2-kpp':{name:'КПП · въездная группа',scene:'checkpoint',res:'H.264 · 1920×1080'},
+    'r2-in':{name:'LPR · въезд в паркинг',scene:'barrier',res:'H.264 · 1920×1080'},
+    'r2-out':{name:'LPR · выезд из паркинга',scene:'barrier',res:'H.264 · 1920×1080'},
+    'r2-ramp':{name:'Паркинг −2 · рампа',scene:'dock',res:'H.264 · 1920×1080'},
+    'r2-quay':{name:'Набережная · прогулочная зона',scene:'yard',res:'H.265 · 2560×1440'},
+    'r2-itp':{name:'ИТП · насосная',scene:'server',res:'H.264 · 1280×720'},
+    'r2-serv':{name:'Серверная',scene:'racks',res:'H.264 · 1280×720'}
+  },
+  links:{
+    'panel-p1':['r2-p1','r2-lobby'],'panel-p2':['r2-p2','r2-lobby'],
+    'panel-p3':['r2-p3'],'panel-p4':['r2-p4'],
+    'gate-kpp':['r2-kpp','r2-quay'],'entry-v1':['r2-in','r2-out','r2-ramp'],
+    'door-p1':['r2-p1'],'door-p2':['r2-p2'],'door-p3':['r2-p3'],'door-p4':['r2-p4'],
+    'door-lobby':['r2-lobby'],'door-serv':['r2-serv'],'door-tech':['r2-itp','r2-serv'],
+    'fire-sh21':['r2-lobby','r2-p2'],'fire-sh30':['r2-ramp'],
+    'lift-p1':['r2-lobby'],'lift-p3':['r2-p3'],
+    'itp':['r2-itp','r2-serv'],'park-entry':['r2-in','r2-ramp','r2-out'],
+    'vent':['r2-ramp'],'leak':['r2-itp'],'panel-call':['r2-p2','r2-lobby']
+  },
+  dashCams:['r2-p1','r2-lobby','r2-in','r2-quay'],
+  plans:[
+    {id:'lobby',label:'Стилобат',title:'План · стилобат, 1 этаж',sub:'Корпус 2 · лобби, 4 входные группы',
+     svg:PLAN_SHELL+room(34,40,120,120)+room(174,40,120,120)+room(346,40,120,120)+room(486,40,120,120)
+        +room(34,200,572,150,1)+room(280,220,80,110)
+        +labels(label(94,105,'П1')+label(234,105,'П2')+label(406,105,'П3')+label(546,105,'П4')
+               +label(160,280,'Лобби · ресепшн')+label(320,280,'Лифты')+label(490,280,'Колясочные')),
+     dev:[{k:'cam',x:320,y:180,label:'Лобби',obj:'r2-lobby'},
+          {k:'fire',x:110,y:330,label:'ШС-21',state:'ok',obj:'fire-sh21',sub:'Дымовой · Болид С2000-КДЛ · лобби'},
+          {k:'door',x:94,y:170,label:'П1',obj:'door-p1',cmd:'Подъезд 1 · входная группа'},
+          {k:'door',x:234,y:170,label:'П2',obj:'door-p2',cmd:'Подъезд 2 · входная группа'},
+          {k:'door',x:406,y:170,label:'П3',obj:'door-p3',cmd:'Подъезд 3 · входная группа'},
+          {k:'door',x:546,y:170,label:'П4',obj:'door-p4',cmd:'Подъезд 4 · входная группа'},
+          {k:'door',x:560,y:330,label:'Серверная',obj:'door-serv',cmd:'Серверная стилобата'}]},
+    {id:'park2',label:'Паркинг −2',title:'План · паркинг, уровень −2',sub:'Корпус 2 · 180 мест, два уровня',
+     svg:PLAN_SHELL+room(36,40,180,300)+room(232,40,176,140)+room(232,200,176,140)+room(424,40,180,300)
+        +'<rect x="216" y="180" width="192" height="20" fill="var(--map-room-2)" stroke="var(--stroke-2)"/>'
+        +labels(label(126,190,'Сектор А · 1–60')+label(320,110,'Рампа −1 / −2')+label(320,270,'Проезд')+label(514,190,'Сектор Б · 61–120'))
+        +'<rect x="292" y="330" width="56" height="16" fill="var(--warn)"/>',
+     dev:[{k:'cam',x:320,y:60,label:'LPR въезд',obj:'r2-in'},
+          {k:'cam',x:320,y:330,label:'Рампа',obj:'r2-ramp'},
+          {k:'door',x:120,y:360,label:'Шлагбаум',obj:'park-entry',cmd:'Шлагбаум паркинга −2'},
+          {k:'fire',x:520,y:100,label:'ШС-30',state:'ok',obj:'fire-sh30',sub:'Тепловой · паркинг −2, сектор Б'},
+          {k:'eng',x:520,y:330,label:'Вентиляция',obj:'vent',sub:'Приточно-вытяжная установка паркинга'}]},
+    {id:'quay',label:'Набережная',title:'План · набережная и КПП',sub:'Корпус 2 · закрытая территория, КПП',
+     svg:PLAN_SHELL+room(40,40,180,120)+room(420,40,180,120)
+        +'<rect x="40" y="240" width="560" height="110" rx="40" fill="var(--ok-bg)" stroke="var(--ok)"/>'
+        +room(268,40,104,110,1)
+        +labels(label(130,105,'Корпус 1')+label(510,105,'Корпус 3')+label(320,105,'КПП')+label(320,300,'Набережная · прогулочная зона')),
+     dev:[{k:'cam',x:320,y:180,label:'КПП',obj:'gate-kpp'},
+          {k:'cam',x:470,y:300,label:'Набережная',obj:'r2-quay'},
+          {k:'door',x:200,y:190,label:'Калитка',obj:'gate-kpp',cmd:'Калитка КПП · набережная'}]}
+  ],
+  tree:[
+    {l:1,n:'ЖК «Речные Огни»',s:'ok'},{l:2,n:'Корпус 2',s:'ok'},
+    {l:3,n:'Подъезд 1 · панель П1',s:'ok'},{l:3,n:'Подъезд 2 · панель П2',s:'ok'},
+    {l:3,n:'Подъезд 3 · панель П3',s:'ok'},{l:3,n:'Подъезд 4 · панель П4',s:'warn'},
+    {l:3,n:'КПП · панель КПП-1',s:'ok'},{l:3,n:'Въезд в паркинг · панель В1',s:'ok'},
+    {l:2,n:'Абоненты · 312 аккаунтов',s:'ok'},
+    {l:3,n:'Секция А · 82 аккаунта',s:'ok'},{l:3,n:'Секция Б · 79 аккаунтов',s:'ok'},
+    {l:3,n:'Секция В · 76 аккаунтов',s:'ok'},{l:3,n:'Секция Г · 75 аккаунтов',s:'warn'},
+    {l:2,n:'Консьержи · 4 аккаунта',s:'ok'},{l:2,n:'Служебные зоны · 14 точек',s:'ok'}
+  ],
+  alarms:[
+    {id:21,obj:'door-serv',lvl:'alarm',ttl:'Несанкционированное открытие двери',src:'Серверная стилобата · вскрытие без карты',t:'10:09:55',pr:'Доступ'},
+    {id:22,obj:'r2-out',lvl:'warn',ttl:'Потерян видеоканал',src:'LPR · выезд из паркинга · нет потока 4 мин',t:'09:58:31',pr:'Видео'}
+  ],
+  events:[
+    {ty:'acc',t:'10:09:55',ttl:'Несанкционированное открытие',d:'Серверная стилобата · вскрытие без карты',src:'ACFA-Интеллект',who:'СКУД',obj:'door-serv'},
+    {ty:'video',t:'09:58:31',ttl:'Потерян видеоканал',d:'LPR выезда · нет потока 4 минуты',src:'Axxon One',who:'Видеомодуль',obj:'r2-out'},
+    {ty:'park',t:'10:11:47',ttl:'Проезд разрешён',d:'С700ЕЕ 799 · белый список · кв. 1804',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'},
+    {ty:'sip',t:'10:10:12',ttl:'Входящий вызов',d:'КПП → кв. 2211 · push доставлен 0.7 с',src:'sipmanager',who:'Панель КПП',obj:'gate-kpp'},
+    {ty:'acc',t:'10:04:38',ttl:'Дверь открыта',d:'П2 · из мобильного приложения',src:'Драйвер BEWARD',who:'Кв. 908',obj:'door-p2'},
+    {ty:'scada',t:'10:01:20',ttl:'Падение расхода вентиляции',d:'Паркинг −2 · ПВУ-1 · 62 % от уставки',src:'Плагин Modbus TCP',who:'Вентиляция',obj:'vent'},
+    {ty:'video',t:'09:55:04',ttl:'Детектор: скопление людей',d:'Лобби стилобата',src:'Axxon One',who:'Видеоаналитика',obj:'r2-lobby'},
+    {ty:'park',t:'09:49:16',ttl:'Отказ в проезде',d:'В221ХК 750 · пропуск истёк',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'},
+    {ty:'sip',t:'09:44:51',ttl:'Вызов завершён',d:'П4 → кв. 2504 · 00:33',src:'Kamailio',who:'Кв. 2504',obj:'panel-p4'},
+    {ty:'acc',t:'09:38:02',ttl:'Проход по гостевому QR',d:'КПП · гость кв. 1804',src:'Ядро',who:'Гостевой код',obj:'gate-kpp'}
+  ],
+  calls:[{t:'10:10:12',panel:'КПП · въездная группа',sub:'Кв. 2211 · Насонова В. Д.',st:'talking',dur:34,obj:'gate-kpp'}],
+  history:[
+    {t:'10:04:38',p:'П2 · входная группа',f:'Кв. 908 · Рыбаков С. Л.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, дверь открыта',len:'00:31',obj:'panel-p2'},
+    {t:'09:44:51',p:'П4 · входная группа',f:'Кв. 2504 · Жукова А. И.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:33',obj:'panel-p4'},
+    {t:'09:38:02',p:'КПП · въездная группа',f:'Кв. 1804 · Панин Р. Э.',d:'Планшет консьержа (SIP)',r:'ok',rt:'Переведён консьержу',len:'01:04',obj:'gate-kpp'},
+    {t:'09:21:44',p:'П3 · входная группа',f:'Кв. 1207 · Юсупов Т. М.',d:'—',r:'rej',rt:'Отклонён абонентом',len:'00:05',obj:'panel-p3'},
+    {t:'09:02:19',p:'Въезд в паркинг',f:'Кв. 908 · Рыбаков С. Л.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, шлагбаум открыт',len:'00:22',obj:'entry-v1'}
+  ],
+  doors:[
+    {n:'Подъезд 1 · входная группа',dev:'BEWARD DKS20320 · П1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p1'},
+    {n:'Подъезд 2 · входная группа',dev:'BEWARD DKS20320 · П2',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p2'},
+    {n:'Подъезд 3 · входная группа',dev:'BEWARD DKS20320 · П3',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p3'},
+    {n:'Подъезд 4 · входная группа',dev:'BEWARD DKS20320 · П4',m:'HTTP/CGI',s:'warn',st:'Задержка отклика',obj:'door-p4'},
+    {n:'Лобби · турникет',dev:'Perco KT-05',m:'ACFA-Интеллект',s:'ok',st:'Штатный режим',obj:'door-lobby'},
+    {n:'Калитка КПП · набережная',dev:'Fanvil i33V · КПП-1',m:'HTTP API',s:'ok',st:'Закрыта',obj:'gate-kpp'},
+    {n:'Серверная стилобата',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'alarm',st:'Вскрытие',obj:'door-serv'},
+    {n:'Техпомещение −2',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tech'}
+  ],
+  panels:[
+    {n:'П1 · входная группа',m:'BEWARD DKS20320',a:'ro2p1@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p1'},
+    {n:'П2 · входная группа',m:'BEWARD DKS20320',a:'ro2p2@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p2'},
+    {n:'П3 · входная группа',m:'BEWARD DKS20320',a:'ro2p3@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p3'},
+    {n:'П4 · входная группа',m:'BEWARD DKS20320',a:'ro2p4@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'off',obj:'panel-p4'},
+    {n:'КПП-1 · калитка',m:'Fanvil i33V',a:'ro2kpp@integrator-7',r:'rtsp://…/stream0',u:'HTTP API',s:'ok',obj:'gate-kpp'},
+    {n:'В1 · въезд в паркинг',m:'BAS-IP AV-02',a:'ro2entry@integrator-7',r:'rtsp://…/h264',u:'Реле контроллера',s:'ok',obj:'entry-v1'}
+  ],
+  resStats:{total:'312 аккаунтов',online:'305 онлайн',offline:'7 офлайн',push:'468 устройств с push'},
+  residents:[
+    {f:'1804',n:'Панин Роман Эдуардович',u:'ro2-1804@integrator-7.axxoncloud.local',d:'iPhone 15 Pro, iPad Air',p:'Жилец + авто',s:'ok'},
+    {f:'908',n:'Рыбаков Сергей Леонидович',u:'ro2-908@integrator-7.axxoncloud.local',d:'iPhone 14',p:'Жилец + авто',s:'ok'},
+    {f:'2211',n:'Насонова Вера Дмитриевна',u:'ro2-2211@integrator-7.axxoncloud.local',d:'Pixel 8 Pro',p:'Жилец',s:'ok'},
+    {f:'2504',n:'Жукова Алина Игоревна',u:'ro2-2504@integrator-7.axxoncloud.local',d:'Samsung S24',p:'Жилец + камеры [Р]',s:'ok'},
+    {f:'1207',n:'Юсупов Тимур Маратович',u:'ro2-1207@integrator-7.axxoncloud.local',d:'Xiaomi 14',p:'Жилец',s:'warn'},
+    {f:'—',n:'Консьерж лобби',u:'ro2-lobby@integrator-7.axxoncloud.local',d:'Планшет Lenovo (SIP UA)',p:'Консьерж / оператор',s:'ok'}
+  ],
+  tags:[
+    {n:'TT-01 · Т1 подача',v:'74.1 °C',u:'60 – 80',s:'ok',obj:'itp'},
+    {n:'TT-02 · Т2 обратка',v:'48.6 °C',u:'40 – 55',s:'ok',obj:'itp'},
+    {n:'PT-03 · Давление ХВС',v:'4.2 бар',u:'3.5 – 5.0',s:'ok',obj:'itp'},
+    {n:'FT-04 · Расход ХВС',v:'6.3 м³/ч',u:'0 – 12',s:'ok',obj:'itp'},
+    {n:'EM-01 · Активная мощность',v:'421 кВт',u:'0 – 600',s:'ok',obj:'itp'},
+    {n:'VT-01 · Расход ПВУ паркинга',v:'62 %',u:'≥ 85 %',s:'warn',obj:'vent'},
+    {n:'PS-02 · Насос повысительный Н2',v:'работа',u:'—',s:'ok',obj:'itp'},
+    {n:'LK-01 · Протечка ИТП',v:'сухо',u:'—',s:'ok',obj:'leak'}
+  ],
+  lifts:{chip:'8 кабин · норма',chipCls:'ok',rows:[
+    {n:'П1 · Л1',f:'14',dir:'вниз',dr:'закрыты',s:'ok',st:'Норма',obj:'lift-p1'},
+    {n:'П1 · Л2',f:'22',dir:'вверх',dr:'закрыты',s:'ok',st:'Норма',obj:'lift-p1'},
+    {n:'П3 · Л1',f:'1',dir:'стоянка',dr:'открыты',s:'ok',st:'Норма',obj:'lift-p3'},
+    {n:'П3 · Л2',f:'9',dir:'вниз',dr:'закрыты',s:'warn',st:'Плановое ТО через 3 дня',obj:'lift-p3'}
+  ]},
+  park:{title:'Въезд в паркинг −2 · шлагбаум',entryObj:'park-entry',lpr:true,
+    kpi:{busy:'148',total:'180',freeNote:'32 свободно · гостевых 12',passes:'384',passNote:'авто по списку 351 · гости 33',
+         acc:'94.8',accNote:'среднее время открытия 1.7 с',deny:'11',denyNote:'истёк пропуск · нет в списках'},
+    dash:[['ok','Шлагбаум въезд','mut','Закрыт'],['warn','Шлагбаум выезд · нет видео','warn','Ручной режим'],['ok','КПП · калитка','ok','Закрыта']],
+    rows:[
+      {t:'10:11:47',n:'С700ЕЕ 799',b:'Белый список · кв. 1804',r:'ok'},
+      {t:'10:06:02',n:'Т118ОР 197',b:'Гостевой QR · кв. 2211',r:'ok'},
+      {t:'09:59:41',n:'М909АХ 77',b:'Белый список · кв. 908',r:'ok'},
+      {t:'09:49:16',n:'В221ХК 750',b:'Пропуск истёк',r:'no'},
+      {t:'09:35:28',n:'Н404РС 799',b:'Белый список · кв. 2504',r:'ok'},
+      {t:'09:12:55',n:'У073КТ 50',b:'Нет в списках',r:'no'}
+    ],
+    white:[
+      {p:'С700ЕЕ 799',f:'1804',o:'Панин Р. Э.',s:'−2 · м. 118',u:'бессрочно',st:'ok',stt:'Активен'},
+      {p:'М909АХ 77',f:'908',o:'Рыбаков С. Л.',s:'−1 · м. 44',u:'бессрочно',st:'ok',stt:'Активен'},
+      {p:'Н404РС 799',f:'2504',o:'Жукова А. И.',s:'−2 · м. 151',u:'бессрочно',st:'ok',stt:'Активен'},
+      {p:'В221ХК 750',f:'1207',o:'Юсупов Т. М.',s:'−1 · м. 09',u:'28.08.2026',st:'mut',stt:'Истёк'}
+    ]},
+  guests:[
+    {c:'QR · 41ce…',w:'Гость · кв. 2211',sub:'КПП + лобби',left:'1 ч 40 м',s:'ok'},
+    {c:'PIN 3092',w:'Клининг · лобби',sub:'служебный вход, смена',left:'5 ч',s:'ok'},
+    {c:'QR · 77aa…',w:'Доставка · кв. 1804',sub:'1 проход, П1',left:'12 мин',s:'warn'}
+  ],
+  concierge:{post:'Консьерж · лобби стилобата',who:'Артём Белов',init:'АБ',hours:'круглосуточно, смена 12 ч',
+    doorsTitle:'Точки доступа лобби и КПП',logTitle:'Журнал поста лобби',
+    call:{panel:'Панель КПП',flat:'кв. 2211',who:'Насонова В. Д.',cmd:'Калитка КПП · набережная'},
+    doors:[{n:'Подъезд 1 · вход',obj:'door-p1',cmd:'Подъезд 1 · входная группа'},
+           {n:'Подъезд 2 · вход',obj:'door-p2',cmd:'Подъезд 2 · входная группа'},
+           {n:'Турникет лобби',obj:'door-lobby',cmd:'Лобби · турникет'},
+           {n:'Калитка КПП',obj:'gate-kpp',cmd:'Калитка КПП · набережная'},
+           {n:'Шлагбаум паркинга',obj:'park-entry',cmd:'Шлагбаум паркинга −2'}]},
+  contacts:[
+    ['Диспетчер УК (эта смена)','Полякова И. П.','+7 495 120-41-00','08:00–20:00'],
+    ['Пост охраны КПП','Дежурный ЧОП','+7 499 340-77-10','Круглосуточно'],
+    ['Консьерж лобби','Белов А. Г.','+7 916 204-51-77','Круглосуточно'],
+    ['Аварийная служба лифтов','ОТИС · сервис','+7 495 662-11-90','Круглосуточно'],
+    ['Инженер паркинга','Шевцов Д. К.','+7 903 118-22-45','08:00–20:00'],
+    ['Сервис домофонии','ITV | AxxonSoft','+7 800 555-08-08','Круглосуточно, SLA 4 ч']
+  ],
+  evac:{title:'Схема эвакуации · корпус 2, стилобат',sub:'Сборный пункт — набережная, 60 м от восточного выхода.'}
+},
+/* ============================================================ */
+{
+  id:'sg',
+  name:'ЖК «Старый город»',
+  unit:'Литер А',
+  short:'Старый город · А',
+  addr:'Москва, Гончарный проезд, 3, литер А',
+  facts:'1 подъезд · 7 этажей · 96 абонентов · базовая конфигурация',
+  config:'basic',
+  chips:[['ok','96 SIP-аккаунтов'],['mut','Базовая конфигурация · без VMS'],['alarm','1 тревога']],
+  stat:{kam:'96 рег.',rtp:'12/60 портов',vms:'не подключён'},
+  kpi:{sipOn:94,sipAll:96,sipNote:'2 офлайн · 1 панель, 1 абонент',
+       callNote:'за сутки: 22 · среднее соединение 1.6 с',
+       alarmNote:'1 связь · видеоподтверждение недоступно',
+       tasks:'3',tasksSub:'/ 1 просрочена',taskNote:'домофон · ворота двора'},
+  shift:[['Оператор','Полякова И. · Диспетчер УК'],['Смена','08:00 – 20:00 (осталось 9 ч 22 м)'],
+         ['Обработано тревог','2 из 3'],['Среднее время реакции','00:47'],['Не подтверждено','1 тревога']],
+  access:[['Открытий из приложения','11'],['По коду / QR (гости)','5'],['Из вызова (DTMF)','8'],
+          ['Оператором вручную','2'],['Отказов в доступе','1','bad']],
+  eng:{t1:'66.2',t2:'42.0',press:'2.3',power:'54',water:'0.9',chip:'Норма',chipCls:'ok',
+       rows:[['ok','Лифт · этаж 5, движение вниз','ok','Норма'],
+             ['ok','Насос ХВС · в работе','ok','Норма'],
+             ['ok','Узел учёта · опрос по расписанию','ok','Норма']]},
+  itp:{t1:'Т1 подача · 66.2 °C',t2:'Т2 обратка · 42.0 °C',pt:'PT-03 · 2.3 бар',em:'54'},
+  cameras:{
+    'sg-p1':{name:'Панель · вход в подъезд',scene:'entrance',res:'RTSP · 1280×720'},
+    'sg-gate':{name:'Ворота двора',scene:'gate',res:'RTSP · 1280×720'}
+  },
+  links:{
+    'panel-p1':['sg-p1'],'gate-k1':['sg-gate'],
+    'door-p1':['sg-p1'],'door-gate':['sg-gate'],'door-tech':['sg-p1'],
+    'fire-sh2':['sg-p1'],'lift-1':['sg-p1'],'itp':['sg-p1'],
+    'park-entry':['sg-gate'],'leak':['sg-p1'],'panel-call':['sg-p1']
+  },
+  dashCams:['sg-p1','sg-gate'],
+  plans:[
+    {id:'floor3',label:'3 этаж',title:'План · подъезд, этаж 3',sub:'Литер А · типовой этаж, 4 квартиры',
+     svg:PLAN_SHELL+room(40,40,250,140)+room(40,220,250,140)+room(350,40,250,140)+room(350,220,250,140)
+        +room(300,150,40,100,1)
+        +labels(label(165,115,'Кв. 31')+label(165,295,'Кв. 32')+label(475,115,'Кв. 33')+label(475,295,'Кв. 34')+label(320,130,'Лестница')),
+     dev:[{k:'fire',x:320,y:210,label:'ШС-2',state:'ok',obj:'fire-sh2',sub:'Дымовой · Болид С2000-КДЛ · лестничная клетка'},
+          {k:'door',x:320,y:340,label:'Тамбур',obj:'door-p1',cmd:'Тамбур · 3 этаж'}]},
+    {id:'yard',label:'Двор',title:'План · двор и ворота',sub:'Литер А · закрытый двор, 24 машиноместа',
+     svg:PLAN_SHELL+room(40,40,300,120)+room(380,40,220,120,1)
+        +room(40,220,560,120)
+        +labels(label(190,105,'Литер А')+label(490,105,'Мусорокамера')+label(320,285,'Двор · парковка 24 места')),
+     dev:[{k:'cam',x:190,y:180,label:'Панель',obj:'panel-p1'},
+          {k:'door',x:320,y:360,label:'Ворота',obj:'door-gate',cmd:'Ворота двора'}]}
+  ],
+  tree:[
+    {l:1,n:'ЖК «Старый город»',s:'ok'},{l:2,n:'Литер А',s:'ok'},
+    {l:3,n:'Подъезд · панель П1',s:'ok'},{l:3,n:'Ворота двора · панель К1',s:'off'},
+    {l:2,n:'Абоненты · 96 аккаунтов',s:'ok'},
+    {l:3,n:'Кв. 1–48 · 48 аккаунтов',s:'ok'},{l:3,n:'Кв. 49–96 · 48 аккаунтов',s:'ok'},
+    {l:2,n:'Служебные зоны · 2 точки',s:'ok'}
+  ],
+  alarms:[
+    {id:31,obj:'gate-k1',lvl:'alarm',ttl:'Панель ворот офлайн',src:'Ворота двора · панель К1 · нет REGISTER 22 мин',t:'09:51:07',pr:'Связь'}
+  ],
+  events:[
+    {ty:'sip',t:'10:07:31',ttl:'Вызов завершён',d:'П1 → кв. 27 · 00:24 · дверь открыта',src:'Kamailio',who:'Кв. 27',obj:'panel-p1'},
+    {ty:'acc',t:'10:05:12',ttl:'Дверь открыта',d:'Подъезд · из мобильного приложения',src:'Драйвер Fanvil',who:'Кв. 27',obj:'door-p1'},
+    {ty:'sip',t:'09:51:07',ttl:'Панель офлайн',d:'Ворота двора · нет REGISTER 22 минуты',src:'Kamailio',who:'Панель К1',obj:'gate-k1'},
+    {ty:'acc',t:'09:44:29',ttl:'Проход по PIN',d:'Подъезд · курьер кв. 61',src:'Ядро',who:'Гостевой код',obj:'door-p1'},
+    {ty:'scada',t:'09:30:00',ttl:'Опрос узла учёта',d:'Литер А · 54 кВт·ч',src:'Плагин Modbus TCP',who:'Узел учёта',obj:'itp'},
+    {ty:'acc',t:'09:12:48',ttl:'Отказ в доступе',d:'Техпомещение · код не подошёл',src:'Ядро',who:'СКУД',obj:'door-tech'}
+  ],
+  calls:[],
+  history:[
+    {t:'10:07:31',p:'П1 · вход в подъезд',f:'Кв. 27 · Гринберг Л. М.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен, дверь открыта',len:'00:24',obj:'panel-p1'},
+    {t:'09:38:55',p:'П1 · вход в подъезд',f:'Кв. 61 · Осипова К. В.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:16',obj:'panel-p1'},
+    {t:'09:04:12',p:'Ворота двора',f:'Кв. 14 · Царёв М. Б.',d:'—',r:'miss',rt:'Не отвечен (30 с)',len:'00:30',obj:'gate-k1'}
+  ],
+  doors:[
+    {n:'Подъезд · входная дверь',dev:'Fanvil i30 · П1',m:'HTTP API',s:'ok',st:'Закрыта',obj:'door-p1'},
+    {n:'Ворота двора',dev:'Fanvil i32 · К1',m:'Реле контроллера',s:'off',st:'Нет связи',obj:'door-gate'},
+    {n:'Техпомещение',dev:'Кодовая панель',m:'Локальный код',s:'ok',st:'Закрыта',obj:'door-tech'}
+  ],
+  panels:[
+    {n:'П1 · вход в подъезд',m:'Fanvil i30',a:'sgpanel1@integrator-7',r:'rtsp://…/stream0',u:'HTTP API',s:'ok',obj:'panel-p1'},
+    {n:'К1 · ворота двора',m:'Fanvil i32',a:'sggate@integrator-7',r:'rtsp://…/stream0',u:'Реле контроллера',s:'off',obj:'gate-k1'}
+  ],
+  resStats:{total:'96 аккаунтов',online:'94 онлайн',offline:'2 офлайн',push:'118 устройств с push'},
+  residents:[
+    {f:'27',n:'Гринберг Леонид Маркович',u:'sg-27@integrator-7.axxoncloud.local',d:'Pixel 7a',p:'Жилец',s:'ok'},
+    {f:'61',n:'Осипова Ксения Владимировна',u:'sg-61@integrator-7.axxoncloud.local',d:'iPhone 12',p:'Жилец',s:'ok'},
+    {f:'14',n:'Царёв Михаил Борисович',u:'sg-14@integrator-7.axxoncloud.local',d:'Redmi Note 12',p:'Жилец + авто',s:'warn'},
+    {f:'88',n:'Ильина Тамара Петровна',u:'sg-88@integrator-7.axxoncloud.local',d:'Кнопочный SIP-моноблок',p:'Жилец',s:'ok'}
+  ],
+  tags:[
+    {n:'TT-01 · Т1 подача',v:'66.2 °C',u:'60 – 80',s:'ok',obj:'itp'},
+    {n:'TT-02 · Т2 обратка',v:'42.0 °C',u:'38 – 52',s:'ok',obj:'itp'},
+    {n:'PT-03 · Давление ХВС',v:'2.3 бар',u:'2.0 – 3.0',s:'ok',obj:'itp'},
+    {n:'EM-01 · Активная мощность',v:'54 кВт',u:'0 – 100',s:'ok',obj:'itp'},
+    {n:'LK-01 · Протечка подвала',v:'сухо',u:'—',s:'ok',obj:'leak'}
+  ],
+  lifts:{chip:'Норма',chipCls:'ok',rows:[
+    {n:'Подъезд · Л1',f:'5',dir:'вниз',dr:'закрыты',s:'ok',st:'Норма',obj:'lift-1'}
+  ]},
+  park:{title:'Ворота двора · без распознавания номеров',entryObj:'park-entry',lpr:false,
+    kpi:{busy:'19',total:'24',freeNote:'5 свободно · гостевых 2',passes:'31',passNote:'по метке 24 · вручную 7',
+         acc:'—',accNote:'LPR не входит в базовую конфигурацию',deny:'2',denyNote:'метка не найдена'},
+    dash:[['off','Ворота двора · нет связи','alarm','Офлайн'],['ok','Открытие по метке / коду','ok','Работает']],
+    rows:[
+      {t:'10:02:11',n:'—',b:'Метка жильца · кв. 14',r:'ok'},
+      {t:'09:41:03',n:'—',b:'Ручное открытие оператором',r:'ok'},
+      {t:'09:18:37',n:'—',b:'Метка не найдена',r:'no'},
+      {t:'08:55:20',n:'—',b:'Метка жильца · кв. 61',r:'ok'}
+    ],
+    white:[
+      {p:'Метка 0417',f:'14',o:'Царёв М. Б.',s:'двор · м. 6',u:'бессрочно',st:'ok',stt:'Активна'},
+      {p:'Метка 0903',f:'61',o:'Осипова К. В.',s:'двор · м. 12',u:'бессрочно',st:'ok',stt:'Активна'},
+      {p:'Метка 1120',f:'27',o:'Гринберг Л. М.',s:'двор · м. 3',u:'01.12.2026',st:'warn',stt:'Истекает'}
+    ]},
+  guests:[
+    {c:'PIN 8802',w:'Курьер · кв. 61',sub:'подъезд, 1 проход',left:'22 мин',s:'warn'},
+    {c:'PIN 4417',w:'Сантехник УК',sub:'техпомещение',left:'4 ч',s:'ok'}
+  ],
+  concierge:{post:'Дежурный по литеру А',who:'Нина Захарова',init:'НЗ',hours:'08:00–20:00',
+    doorsTitle:'Точки доступа литера А',logTitle:'Журнал дежурного',
+    call:{panel:'Панель подъезда',flat:'кв. 27',who:'Гринберг Л. М.',cmd:'Подъезд · входная дверь'},
+    doors:[{n:'Входная дверь подъезда',obj:'door-p1',cmd:'Подъезд · входная дверь'},
+           {n:'Ворота двора',obj:'door-gate',cmd:'Ворота двора'},
+           {n:'Техпомещение',obj:'door-tech',cmd:'Техпомещение литера А'}]},
+  contacts:[
+    ['Диспетчер УК (эта смена)','Полякова И. П.','+7 495 120-41-00','08:00–20:00'],
+    ['Дежурный по литеру А','Захарова Н. Ф.','+7 916 771-04-52','08:00–20:00'],
+    ['Аварийная служба лифтов','Мослифт · дежурный','+7 495 777-01-01','Круглосуточно'],
+    ['Сантехник УК','Морозов В. И.','+7 903 220-14-08','08:00–20:00'],
+    ['Сервис домофонии','ITV | AxxonSoft','+7 800 555-08-08','Круглосуточно, SLA 8 ч']
+  ],
+  evac:{title:'Схема эвакуации · литер А, 1-й этаж',sub:'Сборный пункт — двор у ворот, 20 м от подъезда.'}
+}
+];
+
+let OBJ=OBJECTS[0];
+let CAMERAS={}, CAM_LINKS={}, CAM_IDS=[];
 let videoLayout='2x2', videoModeLive=true, videoSet=null, videoIdx=0;
 const carouselIdx={};
-let selectedAlarmId=1;
-function panelObj(name){
-  const n=name||'';
-  if(/^П1/.test(n)) return 'panel-p1';
-  if(/^П2/.test(n)) return 'panel-p2';
-  if(/^П3/.test(n)) return 'panel-p3';
-  if(/Калитка/.test(n)) return 'gate-k1';
-  if(/Въезд|паркинг/i.test(n)) return 'entry-v1';
-  return 'panel-p2';
-}
+let selectedAlarmId=1, modalCams=[];
 
 function camMarkup(id,opts){
   opts=opts||{};
@@ -2181,16 +2974,17 @@ function carouselHtml(ids,key){
 }
 function widgetIds(key){
   if(key==='wall') return (videoSet&&videoSet.length)?videoSet:CAM_IDS;
+  if(key==='modal') return modalCams;
   if(key==='alarm'){
     const a=ALARMS.find(x=>x.id===selectedAlarmId)||ALARMS[0];
-    return CAM_LINKS[a&&a.obj]||CAM_LINKS['fire-sh14']||[];
+    return (a&&CAM_LINKS[a.obj])||CAM_IDS.slice(0,3);
   }
-  if(key==='park') return CAM_LINKS['park-entry']||[];
-  if(key==='call'||key==='concierge') return CAM_LINKS['panel-call']||[];
+  if(key==='park') return CAM_LINKS[(OBJ.park&&OBJ.park.entryObj)||'park-entry']||CAM_IDS.slice(0,2);
+  if(key==='call'||key==='concierge') return CAM_LINKS['panel-call']||CAM_IDS.slice(0,2);
   return CAM_IDS;
 }
 function refreshWidget(key){
-  const map={alarm:'alarmCam',park:'parkCam',call:'callCam',concierge:'cCam'};
+  const map={alarm:'alarmCam',park:'parkCam',call:'callCam',concierge:'cCam',modal:'camModalBody'};
   const el=document.getElementById(map[key]);
   if(!el) return;
   el.innerHTML=carouselHtml(widgetIds(key),key);
@@ -2214,7 +3008,18 @@ function videoBtn(objId){
 }
 function openLinkedVideo(objId){
   const ids=CAM_LINKS[objId]||[];
-  openVideo(ids.length?ids:CAM_IDS, '1x1');
+  const list=ids.length?ids:CAM_IDS;
+  if(role==='concierge'){ openCamModal(list); return; }
+  openVideo(list,'1x1');
+}
+function openCamModal(ids){
+  modalCams=(ids&&ids.length?ids:CAM_IDS).slice();
+  carouselIdx.modal=0;
+  const n=modalCams.length;
+  document.getElementById('camModalSub').textContent=
+    n>1 ? ('Связанных камер: '+n+' · листайте карусель') : 'Одна связанная камера';
+  showModal('modalCam');
+  refreshWidget('modal');
 }
 function focusCam(id){
   const pool=videoSet && videoSet.length ? videoSet : CAM_IDS;
@@ -2267,96 +3072,56 @@ function renderVideoWall(){
 function renderDashCams(){
   const el=document.getElementById('dashCams');
   if(!el) return;
-  el.innerHTML=['cam-p1','cam-p2','cam-yard','cam-park'].map(id=>'<div>'+camMarkup(id)+'</div>').join('');
+  el.innerHTML=(OBJ.dashCams||CAM_IDS.slice(0,4)).map(id=>'<div>'+camMarkup(id)+'</div>').join('');
 }
 
-const PLAN_MARK={
-  floor7:`
-    <rect x="16" y="16" width="608" height="368" rx="6" fill="var(--map-floor)" stroke="var(--stroke-2)" stroke-width="2"/>
-    <rect x="32" y="32" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <rect x="32" y="202" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <rect x="438" y="32" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <rect x="438" y="202" width="170" height="150" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <rect x="218" y="140" width="204" height="120" fill="var(--map-room-2)" stroke="var(--stroke-2)"/>
-    <rect x="236" y="150" width="44" height="36" fill="var(--accent-dim)" stroke="var(--accent)"/>
-    <rect x="288" y="150" width="44" height="36" fill="var(--danger-bg)" stroke="var(--crit)"/>
-    <rect x="348" y="150" width="52" height="100" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <g fill="var(--map-label)" font-size="12" font-family="Inter, sans-serif">
-      <text x="117" y="110" text-anchor="middle">Кв. 701</text>
-      <text x="117" y="280" text-anchor="middle">Кв. 702</text>
-      <text x="523" y="110" text-anchor="middle">Кв. 703</text>
-      <text x="523" y="280" text-anchor="middle">Кв. 704</text>
-      <text x="320" y="220" text-anchor="middle">Лифтовой холл</text>
-    </g>`,
-  parking:`
-    <rect x="16" y="16" width="608" height="368" rx="6" fill="var(--map-floor)" stroke="var(--stroke-2)" stroke-width="2"/>
-    <rect x="40" y="40" width="240" height="300" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <rect x="360" y="40" width="240" height="300" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <rect x="290" y="40" width="60" height="300" fill="var(--map-room-2)" stroke="var(--stroke-2)"/>
-    <g fill="var(--map-label)" font-size="12" font-family="Inter, sans-serif">
-      <text x="160" y="190" text-anchor="middle">Места А · 1–30</text>
-      <text x="480" y="190" text-anchor="middle">Места Б · 31–60</text>
-      <text x="320" y="80" text-anchor="middle">Рампа</text>
-    </g>
-    <rect x="292" y="330" width="56" height="16" fill="var(--warn)"/>`,
-  yard:`
-    <rect x="16" y="16" width="608" height="368" rx="6" fill="var(--map-floor)" stroke="var(--stroke-2)" stroke-width="2"/>
-    <rect x="40" y="40" width="200" height="140" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <rect x="400" y="40" width="200" height="140" fill="var(--map-room)" stroke="var(--stroke-2)"/>
-    <ellipse cx="320" cy="230" rx="110" ry="70" fill="var(--ok-bg)" stroke="var(--ok)"/>
-    <rect x="240" y="320" width="160" height="40" fill="var(--map-room-2)" stroke="var(--stroke-2)"/>
-    <g fill="var(--map-label)" font-size="12" font-family="Inter, sans-serif">
-      <text x="140" y="110" text-anchor="middle">Подъезд 1</text>
-      <text x="500" y="110" text-anchor="middle">Подъезд 3</text>
-      <text x="320" y="236" text-anchor="middle">Детская площадка</text>
-      <text x="320" y="344" text-anchor="middle">Калитка двора</text>
-    </g>`
-};
-const PLAN_DEVICES={
-  floor7:[
-    {k:'cam',x:320,y:250,fill:'var(--accent)',label:'Камера холла',obj:'cam-f7'},
-    {k:'fire',x:80,y:70,fill:'var(--crit)',label:'ШС-14',pulse:true,obj:'fire-sh14'},
-    {k:'sensor',x:80,y:330,fill:'var(--ok)',label:'ШС-15',obj:'fire-sh14'},
-    {k:'sensor',x:560,y:70,fill:'var(--ok)',label:'ШС-16',obj:'fire-sh14'},
-    {k:'door',x:320,y:360,fill:'var(--accent)',label:'Тамбур',obj:'door-tambur'},
-    {k:'leak',x:560,y:330,fill:'var(--info)',label:'Протечка',obj:'leak'}
-  ],
-  parking:[
-    {k:'cam',x:320,y:50,fill:'var(--accent)',label:'LPR въезд',obj:'park-entry'},
-    {k:'cam',x:320,y:340,fill:'var(--accent)',label:'Рампа',obj:'park-entry'},
-    {k:'door',x:160,y:360,fill:'var(--accent)',label:'Шлагбаум',obj:'park-entry'}
-  ],
-  yard:[
-    {k:'cam',x:320,y:230,fill:'var(--accent)',label:'Площадка',obj:'gate-k1'},
-    {k:'cam',x:320,y:340,fill:'var(--accent)',label:'Калитка',obj:'gate-k1'},
-    {k:'door',x:140,y:180,fill:'var(--accent)',label:'П1',obj:'door-p1'},
-    {k:'door',x:500,y:180,fill:'var(--accent)',label:'П3',obj:'door-p3'}
-  ]
-};
-let currentPlan='floor7';
+/* ---------- Планы объекта ---------- */
+const MARK_FILL={cam:'var(--ext)',door:'var(--accent)',sensor:'var(--ok)',eng:'var(--info)'};
+let currentPlan=null, planDevices=[];
+function markFill(m){
+  if(m.k==='fire') return m.state==='alarm' ? 'var(--crit)' : 'var(--ok)';
+  return MARK_FILL[m.k]||'var(--accent)';
+}
+function renderPlanTabs(){
+  const tabs=document.getElementById('planTabs');
+  if(!tabs) return;
+  tabs.innerHTML=OBJ.plans.map(p=>
+    '<button type="button" class="'+(p.id===currentPlan?'on':'')+'" data-plan="'+p.id+'">'+p.label+'</button>').join('');
+}
 function renderPlan(id){
-  currentPlan=id||currentPlan;
-  document.querySelectorAll('#planTabs button').forEach(b=>b.classList.toggle('on', b.dataset.plan===currentPlan));
-  const marks=(PLAN_DEVICES[currentPlan]||[]).map(m=>{
-    const pulse=m.pulse?`<circle cx="${m.x}" cy="${m.y}" r="18" fill="${m.fill}" opacity=".2"><animate attributeName="r" values="12;22;12" dur="1.6s" repeatCount="indefinite"/></circle>`:'';
-    return `<g class="mk" onclick="planPick('${m.k}','${m.obj}')">${pulse}<circle cx="${m.x}" cy="${m.y}" r="10" fill="${m.fill}"/><text x="${m.x}" y="${m.y+24}" fill="var(--map-label)" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">${m.label}</text></g>`;
+  const plans=OBJ.plans||[];
+  const plan=plans.find(p=>p.id===(id||currentPlan))||plans[0];
+  if(!plan) return;
+  currentPlan=plan.id;
+  planDevices=plan.dev||[];
+  renderPlanTabs();
+  document.getElementById('planSub').textContent=plan.sub;
+  document.getElementById('planTitle').textContent=plan.title;
+  const marks=planDevices.map((m,i)=>{
+    const fill=markFill(m);
+    const pulse=(m.k==='fire'&&m.state==='alarm')
+      ? '<circle cx="'+m.x+'" cy="'+m.y+'" r="18" fill="'+fill+'" opacity=".2"><animate attributeName="r" values="12;22;12" dur="1.6s" repeatCount="indefinite"/></circle>' : '';
+    return '<g class="mk" onclick="planPick('+i+')">'+pulse
+      +'<circle cx="'+m.x+'" cy="'+m.y+'" r="10" fill="'+fill+'"/>'
+      +'<text x="'+m.x+'" y="'+(m.y+24)+'" fill="var(--map-label)" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">'+m.label+'</text></g>';
   }).join('');
-  document.getElementById('planRoot').innerHTML=`<svg class="map-svg" viewBox="0 0 640 400" role="img">${PLAN_MARK[currentPlan]}${marks}</svg>`;
+  document.getElementById('planRoot').innerHTML=
+    '<svg class="map-svg" viewBox="0 0 640 400" role="img">'+plan.svg+marks+'</svg>';
+  const alarmed=planDevices.findIndex(m=>m.k==='fire'&&m.state==='alarm');
+  planPick(alarmed>=0?alarmed:0);
 }
 
 setInterval(()=>{const t=hhmmss(now());document.querySelectorAll('.ct').forEach(e=>e.textContent=t)},1000);
 
 /* ---------- Активные вызовы ---------- */
-let activeCalls=[
-  {t:'10:14:22',panel:'П2 · входная дверь',sub:'Кв. 214 · Смирнов А. В.',st:'ringing',dur:12,obj:'panel-p2'}
-];
+let activeCalls=[];
 function callRow(c,full){
   const st = c.st==='ringing'
     ? '<span class="chip info"><span class="sd ok"></span>Вызов · early media</span>'
     : '<span class="chip ok"><span class="sd ok"></span>Разговор</span>';
   const acts='<button class="btn sm primary" onclick="openCallModal()">Открыть</button> '
     +'<button class="btn sm ghost" onclick="quickUnlock(\''+c.panel+'\')">Дверь</button> '
-    +videoBtn(c.obj||'panel-p2');
+    +videoBtn(c.obj||'panel-call');
   return '<tr><td class="t-mono">'+c.t+'</td><td><b>'+c.panel+'</b></td><td>'+c.sub+'</td>'
     +(full?'<td>'+st+'</td><td class="t-mono">'+pad(Math.floor(c.dur/60))+':'+pad(c.dur%60)+'</td>':'<td>'+st+'</td>')
     +'<td>'+acts+'</td></tr>';
@@ -2372,48 +3137,23 @@ function renderCalls(){
 setInterval(()=>{activeCalls.forEach(c=>c.dur++);if(activeCalls.length)renderCalls()},1000);
 
 /* ---------- История вызовов ---------- */
-const HISTORY=[
-  {t:'10:09:41',p:'П1 · входная дверь',f:'Кв. 106 · Ковалёва М. И.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, дверь открыта',len:'00:38'},
-  {t:'10:02:17',p:'Калитка двора',f:'Кв. 703 · Гуськов Д. П.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:21'},
-  {t:'09:57:03',p:'П2 · входная дверь',f:'Кв. 412 · Ершова Н. С.',d:'—',r:'miss',rt:'Не отвечен (30 с)',len:'00:30'},
-  {t:'09:51:55',p:'П3 · входная дверь',f:'Консьерж П3',d:'Планшет консьержа (SIP)',r:'ok',rt:'Отвечен, дверь открыта',len:'01:12'},
-  {t:'09:44:12',p:'Въезд на паркинг',f:'Кв. 214 · Смирнов А. В.',d:'iPhone (моб. приложение)',r:'ok',rt:'Отвечен, шлагбаум открыт',len:'00:26'},
-  {t:'09:31:08',p:'П1 · входная дверь',f:'Кв. 508 · Титова О. Р.',d:'—',r:'rej',rt:'Отклонён абонентом',len:'00:07'},
-  {t:'09:22:44',p:'П2 · входная дверь',f:'Кв. 214 · Смирнов А. В.',d:'Android (моб. приложение)',r:'ok',rt:'Отвечен',len:'00:44'}
-];
-document.getElementById('callHistory').innerHTML=HISTORY.map(h=>{
-  const chip = h.r==='ok'?'<span class="chip ok">'+h.rt+'</span>' : h.r==='miss'?'<span class="chip warn">'+h.rt+'</span>':'<span class="chip mut">'+h.rt+'</span>';
-  return '<tr><td class="t-mono">'+ddmm(now())+' '+h.t+'</td><td><b>'+h.p+'</b></td><td>'+h.f+'</td><td class="t-mut">'+h.d+'</td><td>'+chip+'</td><td class="t-mono">'+h.len+'</td>'
-    +'<td><button class="btn sm ghost ext-hide" onclick="openLinkedVideo(\''+panelObj(h.p)+'\')">Видео [Р]</button>'
-    +'<button class="btn sm ghost basic-only" onclick="toast(\'info\',\'Событие\',\'Метка времени '+h.t+', идентификатор панели — без видеоссылки\')">Событие</button></td></tr>';
-}).join('');
+function renderHistory(){
+  document.getElementById('callHistory').innerHTML=(OBJ.history||[]).map(h=>{
+    const chip = h.r==='ok'?'<span class="chip ok">'+h.rt+'</span>' : h.r==='miss'?'<span class="chip warn">'+h.rt+'</span>':'<span class="chip mut">'+h.rt+'</span>';
+    return '<tr><td class="t-mono">'+ddmm(now())+' '+h.t+'</td><td><b>'+h.p+'</b></td><td>'+h.f+'</td><td class="t-mut">'+h.d+'</td><td>'+chip+'</td><td class="t-mono">'+h.len+'</td>'
+      +'<td><button class="btn sm ghost ext-hide" onclick="openLinkedVideo(\''+(h.obj||'panel-call')+'\')">Видео [Р]</button>'
+      +'<button class="btn sm ghost basic-only" onclick="toast(\'info\',\'Событие\',\'Метка времени '+h.t+', идентификатор панели — без видеоссылки\')">Событие</button></td></tr>';
+  }).join('') || '<tr><td colspan="7" class="empty">История пуста</td></tr>';
+}
 
 /* ---------- SIP-дерево ---------- */
-const TREE=[
-  {l:1,n:'ЖК «Северный парк»',s:'ok'},
-  {l:2,n:'Корпус 3',s:'ok'},
-  {l:3,n:'Подъезд 1 · панель П1',s:'ok'},
-  {l:3,n:'Подъезд 2 · панель П2',s:'ok'},
-  {l:3,n:'Подъезд 3 · панель П3',s:'off'},
-  {l:3,n:'Калитка двора · панель К1',s:'ok'},
-  {l:3,n:'Въезд на паркинг · панель В1',s:'ok'},
-  {l:2,n:'Абоненты · 254 аккаунта',s:'ok'},
-  {l:3,n:'Кв. 101–199 · 62 аккаунта',s:'ok'},
-  {l:3,n:'Кв. 201–299 · 64 аккаунта',s:'ok'},
-  {l:3,n:'Кв. 301–399 · 63 аккаунта',s:'ok'},
-  {l:3,n:'Кв. 401–499 · 61 аккаунт',s:'warn'},
-  {l:2,n:'Консьержи · 3 аккаунта',s:'ok'},
-  {l:2,n:'Служебные зоны · 8 точек',s:'ok'}
-];
-document.getElementById('sipTree').innerHTML=TREE.map(t=>
-  '<div class="nd lvl'+t.l+'"><span class="sd '+t.s+'"></span><span>'+t.n+'</span></div>').join('');
+function renderTree(){
+  document.getElementById('sipTree').innerHTML=(OBJ.tree||[]).map(t=>
+    '<div class="nd lvl'+t.l+'"><span class="sd '+t.s+'"></span><span>'+t.n+'</span></div>').join('');
+}
 
 /* ---------- Тревоги ---------- */
-let ALARMS=[
-  {id:1,obj:'fire-sh14',lvl:'fire',ttl:'Пожар 1 · дымовой извещатель',src:'Подъезд 2 · 7 этаж · ШС-14 · Болид С2000-КДЛ',t:'10:11:38',pr:'ПОЖАР'},
-  {id:2,obj:'fire-sh9',lvl:'warn',ttl:'Неисправность шлейфа',src:'Подъезд 1 · ШС-9 · обрыв линии',t:'09:48:02',pr:'Неисправность'},
-  {id:3,obj:'panel-p3',lvl:'alarm',ttl:'Панель офлайн более 10 минут',src:'Подъезд 3 · панель П3 · нет REGISTER',t:'10:00:14',pr:'Связь'}
-];
+let ALARMS=[];
 function openAlarm(id){
   selectedAlarmId=id;
   go('alarms');
@@ -2464,7 +3204,7 @@ function renderAlarms(){
     const chip = a.lvl==='fire'?'<span class="chip fire">'+a.pr+'</span>':a.lvl==='warn'?'<span class="chip warn">'+a.pr+'</span>':'<span class="chip alarm">'+a.pr+'</span>';
     return '<tr class="'+(a.id===selectedAlarmId?'sel':'')+'" onclick="openAlarm('+a.id+')" style="cursor:pointer"><td class="t-mono">'+a.t+'</td><td>'+chip+'</td><td><b>'+a.ttl+'</b></td><td class="t-mut">'+a.src+'</td>'
       +'<td><button class="btn sm ok" onclick="event.stopPropagation();ack('+a.id+')">Подтвердить</button> '
-      +'<button class="btn sm ghost" onclick="event.stopPropagation();go(\'plan\');renderPlan(\'floor7\');planPick(\'fire\',\''+(a.obj||'')+'\')">На плане</button> '
+      +'<button class="btn sm ghost" onclick="event.stopPropagation();showOnPlan(\''+(a.obj||'')+'\')">На плане</button> '
       +videoBtn(a.obj)+'</td></tr>';
   }).join('') || '<tr><td colspan="5" class="empty">Очередь пуста</td></tr>';
 
@@ -2478,7 +3218,7 @@ function ack(id){
   const a=ALARMS.find(x=>x.id===id); if(!a)return;
   ALARMS=ALARMS.filter(x=>x.id!==id);
   renderAlarms();
-  toast('ok','Тревога подтверждена',a.ttl+' · оператор Полякова И.');
+  toast('ok','Тревога подтверждена',a.ttl+' · '+actor());
   pushEvent(a.lvl==='fire'?'fire':'acc','Тревога подтверждена оператором',a.src);
 }
 function ackAll(){ if(!ALARMS.length) return toast('info','Очередь пуста','Активных тревог нет'); const n=ALARMS.length; ALARMS=[]; renderAlarms(); toast('ok','Подтверждено',n+' тревог(и) приняты в работу'); }
@@ -2493,20 +3233,7 @@ const EV_META={
   video:{c:'video',n:'Видео',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'},
   park:{c:'park',n:'Паркинг',ic:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M9 16V8h3.5a2.5 2.5 0 010 5H9"/></svg>'}
 };
-let EVENTS=[
-  {ty:'sip',t:'10:14:22',ttl:'Входящий вызов',d:'П2 · входная дверь → кв. 214',src:'sipmanager',who:'Панель П2',obj:'panel-p2'},
-  {ty:'acc',t:'10:13:57',ttl:'Дверь открыта',d:'П1 · из мобильного приложения (REST unlock)',src:'Драйвер BEWARD',who:'Кв. 106',obj:'door-p1'},
-  {ty:'park',t:'10:12:04',ttl:'Проезд разрешён',d:'А123ВС 77 · белый список · кв. 214',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'},
-  {ty:'fire',t:'10:11:38',ttl:'ПОЖАР 1',d:'Подъезд 2 · 7 этаж · ШС-14',src:'Болид С2000-КДЛ',who:'ОПС',obj:'fire-sh14'},
-  {ty:'scada',t:'10:10:02',ttl:'Останов лифта между этажами',d:'П2 · Л2 · этажи 4–5',src:'Плагин Modbus TCP',who:'Лифт П2Л2',obj:'lift-p2'},
-  {ty:'acc',t:'10:08:47',ttl:'Проход по гостевому QR',d:'Калитка двора · гость кв. 106',src:'Ядро',who:'Гостевой код',obj:'door-gate'},
-  {ty:'sip',t:'10:09:41',ttl:'Вызов завершён',d:'П1 → кв. 106 · 00:38 · дверь открыта',src:'Kamailio',who:'Кв. 106',obj:'panel-p1'},
-  {ty:'video',t:'10:07:12',ttl:'Детектор: оставленный предмет',d:'Холл П2 · 1 этаж',src:'Интеллект X',who:'Видеоаналитика',obj:'cam-f7'},
-  {ty:'scada',t:'10:05:30',ttl:'Давление ХВС выше уставки',d:'PT-03 · 3.1 бар (уставка 3.0)',src:'Плагин Modbus TCP',who:'ИТП',obj:'itp'},
-  {ty:'acc',t:'10:03:19',ttl:'Отказ в доступе',d:'Техпомещение −1 · неизвестная карта',src:'ACFA-Интеллект',who:'СКУД',obj:'door-tech'},
-  {ty:'sip',t:'10:02:17',ttl:'Вызов завершён',d:'Калитка двора → кв. 703 · 00:21',src:'Kamailio',who:'Кв. 703',obj:'gate-k1'},
-  {ty:'park',t:'09:55:12',ttl:'Отказ в проезде',d:'Х004ММ 50 · нет в списках',src:'Авто-Интеллект',who:'LPR въезд',obj:'park-entry'}
-];
+let EVENTS=[];
 let sideF='all', logF='all';
 function evHtml(e){
   const m=EV_META[e.ty];
@@ -2558,62 +3285,84 @@ function renderLog(q){
 renderLog();
 
 /* ---------- Точки доступа ---------- */
-const DOORS=[
-  {n:'Подъезд 1 · входная дверь',dev:'BEWARD DKS15120 · П1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p1'},
-  {n:'Подъезд 2 · входная дверь',dev:'BEWARD DKS15120 · П2',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-p2'},
-  {n:'Подъезд 3 · входная дверь',dev:'BEWARD DKS15120 · П3',m:'HTTP/CGI',s:'off',st:'Нет связи',obj:'door-p3'},
-  {n:'Калитка двора',dev:'Fanvil i32 · К1',m:'HTTP/CGI',s:'ok',st:'Закрыта',obj:'door-gate'},
-  {n:'Тамбур П2 · 7 этаж',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tambur'},
-  {n:'Техпомещение −1',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'ok',st:'Закрыта',obj:'door-tech'},
-  {n:'Электрощитовая',dev:'Контроллер Болид С2000-2',m:'ACFA-Интеллект',s:'warn',st:'Открыта 6 мин',obj:'door-elec'}
-];
-document.getElementById('doorsTable').innerHTML=DOORS.map(d=>
-  '<tr><td><b>'+d.n+'</b></td><td class="t-mut">'+d.dev+'</td><td><span class="chip mut">'+d.m+'</span></td>'
-  +'<td><span class="sd '+d.s+'"></span> '+d.st+'</td>'
-  +'<td><button class="btn sm primary" '+(d.s==='off'?'disabled':'')+' onclick="quickUnlock(\''+d.n+'\')">Открыть</button> '
-  +'<button class="btn sm ghost" onclick="toast(\'warn\',\'Режим удержания\',\''+d.n+' удерживается открытой\')">Удержать</button> '
-  +videoBtn(d.obj)+'</td></tr>').join('');
+function renderDoors(){
+  document.getElementById('doorsTable').innerHTML=(OBJ.doors||[]).map(d=>
+    '<tr><td><b>'+d.n+'</b></td><td class="t-mut">'+d.dev+'</td><td><span class="chip mut">'+d.m+'</span></td>'
+    +'<td><span class="sd '+d.s+'"></span> '+d.st+'</td>'
+    +'<td><button class="btn sm primary" '+(d.s==='off'?'disabled':'')+' onclick="quickUnlock(\''+d.n+'\')">Открыть</button> '
+    +'<button class="btn sm ghost" onclick="toast(\'warn\',\'Режим удержания\',\''+d.n+' удерживается открытой\')">Удержать</button> '
+    +videoBtn(d.obj)+'</td></tr>').join('');
+  document.getElementById('guestTable').innerHTML=(OBJ.guests||[]).map(g=>
+    '<tr><td class="t-mono">'+g.c+'</td><td>'+g.w+'<div class="t-mut" style="font-size:11px">'+g.sub+'</div></td>'
+    +'<td><span class="chip '+g.s+'">'+g.left+'</span></td></tr>').join('')
+    || '<tr><td colspan="3" class="empty">Активных кодов нет</td></tr>';
+}
 
+function actor(){
+  return role==='concierge'
+    ? (OBJ.concierge.post.split('·')[0].trim()+' '+OBJ.concierge.who)
+    : 'оператор Полякова И.';
+}
 function quickUnlock(name){
-  toast('ok','Дверь открыта',name+' · REST unlock → драйвер панели · оператор Полякова И.');
-  pushEvent('acc','Дверь открыта оператором',name+' · REST unlock (вне звонка)','Драйвер панели');
+  toast('ok','Дверь открыта',name+' · REST unlock → драйвер панели · '+actor());
+  pushEvent('acc','Дверь открыта вручную',name+' · REST unlock (вне звонка) · '+actor(),'Драйвер панели');
 }
 function unlockFromCall(){
-  toast('ok','Дверь открыта','П2 · входная дверь · открыто из карточки вызова');
-  pushEvent('acc','Дверь открыта из вызова','П2 · входная дверь · оператор','Драйвер BEWARD');
+  const cmd=OBJ.concierge.call.cmd;
+  toast('ok','Дверь открыта',cmd+' · открыто из карточки вызова');
+  pushEvent('acc','Дверь открыта из вызова',cmd+' · '+actor(),'Драйвер панели');
 }
 
-/* ---------- SCADA-теги ---------- */
-const TAGS=[
-  {n:'TT-01 · Т1 подача',v:'72.4 °C',u:'60 – 80',s:'ok',obj:'itp'},
-  {n:'TT-02 · Т2 обратка',v:'46.1 °C',u:'40 – 55',s:'ok',obj:'itp'},
-  {n:'PT-03 · Давление ХВС',v:'3.1 бар',u:'2.0 – 3.0',s:'warn',obj:'itp'},
-  {n:'FT-04 · Расход ХВС',v:'2.7 м³/ч',u:'0 – 6',s:'ok',obj:'itp'},
-  {n:'EM-01 · Активная мощность',v:'184 кВт',u:'0 – 260',s:'ok',obj:'itp'},
-  {n:'PS-01 · Насос Н1',v:'работа',u:'—',s:'ok',obj:'itp'},
-  {n:'PS-02 · Насос Н2',v:'резерв',u:'—',s:'ok',obj:'itp'},
-  {n:'LV-01 · Лифт П2Л2',v:'авария',u:'—',s:'alarm',obj:'lift-p2'},
-  {n:'LK-01 · Протечка ИТП',v:'сухо',u:'—',s:'ok',obj:'itp'}
-];
-document.getElementById('tagsTable').innerHTML=TAGS.map(t=>
-  '<tr><td><span class="sd '+t.s+'"></span> '+t.n+'</td><td class="t-mono"'+(t.s==='warn'?' style="color:#efbb72"':t.s==='alarm'?' style="color:#ff8b8e"':'')+'>'+t.v+'</td><td class="t-mut">'+t.u+'</td><td>'+videoBtn(t.obj)+'</td></tr>').join('');
+/* ---------- SCADA-теги и лифты ---------- */
+function renderTags(){
+  document.getElementById('tagsTable').innerHTML=(OBJ.tags||[]).map(t=>
+    '<tr><td><span class="sd '+t.s+'"></span> '+t.n+'</td><td class="t-mono"'+(t.s==='warn'?' style="color:#efbb72"':t.s==='alarm'?' style="color:#ff8b8e"':'')+'>'+t.v+'</td><td class="t-mut">'+t.u+'</td><td>'+videoBtn(t.obj)+'</td></tr>').join('');
+  const itp=OBJ.itp||{};
+  [['itpT1',itp.t1],['itpT2',itp.t2],['itpPt',itp.pt],['itpEm',itp.em]].forEach(([id,v])=>{
+    const el=document.getElementById(id); if(el&&v!=null) el.textContent=v;
+  });
+  const lifts=OBJ.lifts||{rows:[]};
+  const chip=document.getElementById('liftsChip');
+  chip.textContent=lifts.chip||'—';
+  chip.className='chip '+(lifts.chipCls||'mut');
+  document.getElementById('liftsTable').innerHTML=lifts.rows.map(l=>
+    '<tr'+(l.s==='alarm'?' class="sel"':'')+'><td><b>'+l.n+'</b></td><td class="t-mono">'+l.f+'</td><td>'+l.dir+'</td><td>'+l.dr+'</td>'
+    +'<td><span class="chip '+(l.s==='alarm'?'alarm':l.s==='warn'?'warn':'ok')+'">'+l.st+'</span></td>'
+    +'<td>'+(l.s==='alarm'
+        ? '<button class="btn sm danger" onclick="toast(\'err\',\'Заявка создана\',\'Аварийная заявка передана в лифтовую службу · '+l.n+'\')">Заявка</button> '
+        : '<button class="btn sm ghost" onclick="toast(\'info\',\'Связь с кабиной\',\'SIP-вызов на переговорное устройство кабины '+l.n+'\')">Связь</button> ')
+      +videoBtn(l.obj)+'</td></tr>').join('');
+}
 
 /* ---------- Паркинг ---------- */
-let PARK=[
-  {t:'10:12:04',n:'А123ВС 77',b:'Белый список · кв. 214',r:'ok'},
-  {t:'10:08:47',n:'Е777КХ 77',b:'Гостевой QR · кв. 106',r:'ok'},
-  {t:'10:01:33',n:'О555ТТ 77',b:'Белый список · кв. 106',r:'ok'},
-  {t:'09:55:12',n:'Х004ММ 50',b:'Нет в списках',r:'no'},
-  {t:'09:47:20',n:'Р909НН 190',b:'Белый список · кв. 703',r:'ok'},
-  {t:'09:40:05',n:'К210ОР 77',b:'Ручное открытие оператором',r:'ok'}
-];
+let PARK=[];
 function renderPark(){
-  document.getElementById('parkTable').innerHTML=PARK.map(p=>
-    '<tr><td class="t-mono">'+p.t+'</td><td class="t-mono"><b>'+p.n+'</b></td><td class="t-mut">'+p.b+'</td>'
-    +'<td>'+(p.r==='ok'?'<span class="chip ok">Проезд</span>':'<span class="chip alarm">Отказ</span>')+'</td>'
-    +'<td>'+videoBtn('park-entry')+'</td></tr>').join('');
+  const p=OBJ.park;
+  const navItem=document.querySelector('.nav-item[data-view="parking"]');
+  if(navItem) navItem.hidden=!p;
+  document.getElementById('dashParkCard').hidden=!p;
+  if(!p) return;
+  const k=p.kpi, entry=p.entryObj;
+  document.getElementById('parkEntryTitle').textContent=p.title;
+  document.getElementById('parkKpi').innerHTML=
+     '<div class="kpi info"><div class="t">Занято мест</div><div class="v">'+k.busy+' <small>/ '+k.total+'</small></div><div class="d">'+k.freeNote+'</div></div>'
+    +'<div class="kpi ok"><div class="t">Проездов за сутки</div><div class="v">'+k.passes+'</div><div class="d">'+k.passNote+'</div></div>'
+    +'<div class="kpi ok"><div class="t">Точность LPR '+(p.lpr?'<span class="chip ext">Р</span>':'')+'</div><div class="v">'+k.acc+(p.lpr?' <small>%</small>':'')+'</div><div class="d">'+k.accNote+'</div></div>'
+    +'<div class="kpi warn"><div class="t">Отказов в проезде</div><div class="v">'+k.deny+'</div><div class="d">'+k.denyNote+'</div></div>';
+  document.getElementById('parkTable').innerHTML=PARK.map(r=>
+    '<tr><td class="t-mono">'+r.t+'</td><td class="t-mono"><b>'+r.n+'</b></td><td class="t-mut">'+r.b+'</td>'
+    +'<td>'+(r.r==='ok'?'<span class="chip ok">Проезд</span>':'<span class="chip alarm">Отказ</span>')+'</td>'
+    +'<td>'+videoBtn(entry)+'</td></tr>').join('');
+  document.getElementById('whiteTable').innerHTML=(p.white||[]).map(w=>
+    '<tr><td class="t-mono"><b>'+w.p+'</b></td><td>'+w.f+'</td><td>'+w.o+'</td><td>'+w.s+'</td>'
+    +'<td class="t-mut">'+w.u+'</td><td><span class="chip '+w.st+'">'+w.stt+'</span></td></tr>').join('');
+  document.getElementById('dashParkChip').textContent=k.busy+' / '+k.total+' занято';
+  document.getElementById('dashPark').innerHTML=
+    (p.dash||[]).map(d=>'<div class="gauge-row"><span class="sd '+d[0]+'"></span><span class="nm">'+d[1]+'</span><span class="chip '+d[2]+'">'+d[3]+'</span></div>').join('')
+    +'<div class="hr"></div><div class="t-mono" style="font-size:11.5px">'
+    +PARK.slice(0,3).map(r=>'<div>'+r.t+' · <b style="color:'+(r.r==='ok'?'#7cc4dd':'#ff8b8e')+'">'+r.n+'</b> · '+r.b.toLowerCase()+'</div>').join('')
+    +'</div>';
 }
-renderPark();
 
 /* ---------- Плагины ---------- */
 const PLUGINS=[
@@ -2633,18 +3382,13 @@ document.getElementById('pluginsTable').innerHTML=PLUGINS.map(p=>{
     +'<td><button class="btn sm ghost">Настроить</button></td></tr>';
 }).join('');
 
-const PANELS=[
-  {n:'П1 · входная дверь',m:'BEWARD DKS15120',a:'panel1@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p1'},
-  {n:'П2 · входная дверь',m:'BEWARD DKS15120',a:'panel2@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'ok',obj:'panel-p2'},
-  {n:'П3 · входная дверь',m:'BEWARD DKS15120',a:'panel3@integrator-7',r:'rtsp://…/live/ch1',u:'HTTP/CGI',s:'off',obj:'panel-p3'},
-  {n:'К1 · калитка двора',m:'Fanvil i32',a:'gate1@integrator-7',r:'rtsp://…/stream0',u:'HTTP API',s:'ok',obj:'gate-k1'},
-  {n:'В1 · въезд на паркинг',m:'BAS-IP AV-01',a:'entry1@integrator-7',r:'rtsp://…/h264',u:'Реле контроллера',s:'ok',obj:'entry-v1'}
-];
-document.getElementById('panelsTable').innerHTML=PANELS.map(p=>
-  '<tr><td><b>'+p.n+'</b></td><td class="t-mut">'+p.m+'</td><td class="t-mono" style="font-size:11px">'+p.a+'</td>'
-  +'<td class="t-mono" style="font-size:11px">'+p.r+'</td><td><span class="chip mut">'+p.u+'</span></td>'
-  +'<td>'+(p.s==='ok'?'<span class="chip ok"><span class="sd ok"></span>Онлайн</span>':'<span class="chip alarm"><span class="sd alarm"></span>Офлайн 14 мин</span>')+'</td>'
-  +'<td>'+videoBtn(p.obj)+'</td></tr>').join('');
+function renderPanels(){
+  document.getElementById('panelsTable').innerHTML=(OBJ.panels||[]).map(p=>
+    '<tr><td><b>'+p.n+'</b></td><td class="t-mut">'+p.m+'</td><td class="t-mono" style="font-size:11px">'+p.a+'</td>'
+    +'<td class="t-mono" style="font-size:11px">'+p.r+'</td><td><span class="chip mut">'+p.u+'</span></td>'
+    +'<td>'+(p.s==='ok'?'<span class="chip ok"><span class="sd ok"></span>Онлайн</span>':'<span class="chip alarm"><span class="sd alarm"></span>Офлайн</span>')+'</td>'
+    +'<td>'+videoBtn(p.obj)+'</td></tr>').join('');
+}
 
 /* ---------- Сценарии ---------- */
 const RULES=[
@@ -2663,42 +3407,62 @@ document.getElementById('rulesList').innerHTML=RULES.map((r,i)=>
   +'<button class="btn sm ghost">Изменить</button></div></div>').join('');
 
 /* ---------- Жильцы ---------- */
-const RESIDENTS=[
-  {f:'214',n:'Смирнов Алексей Викторович',u:'214@integrator-7.axxoncloud.local',d:'iPhone 14, Pixel 7',p:'Жилец + авто',s:'ok'},
-  {f:'106',n:'Ковалёва Мария Игоревна',u:'106@integrator-7.axxoncloud.local',d:'iPhone 13',p:'Жилец',s:'ok'},
-  {f:'703',n:'Гуськов Дмитрий Павлович',u:'703@integrator-7.axxoncloud.local',d:'Samsung S23, iPad, Redmi',p:'Жилец + камеры [Р]',s:'ok'},
-  {f:'412',n:'Ершова Наталья Сергеевна',u:'412@integrator-7.axxoncloud.local',d:'Xiaomi 13',p:'Жилец',s:'warn'},
-  {f:'508',n:'Титова Ольга Романовна',u:'508@integrator-7.axxoncloud.local',d:'iPhone 15 Pro',p:'Жилец',s:'ok'},
-  {f:'—',n:'Консьерж подъезда 2',u:'concierge2@integrator-7.axxoncloud.local',d:'Планшет Lenovo (SIP UA)',p:'Консьерж / оператор',s:'ok'}
-];
-document.getElementById('residentsTable').innerHTML=RESIDENTS.map(r=>
-  '<tr><td><b>'+r.f+'</b></td><td>'+r.n+'</td><td class="t-mono" style="font-size:11px">'+r.u+'</td>'
-  +'<td class="t-mut">'+r.d+'</td><td><span class="chip mut">'+r.p+'</span></td>'
-  +'<td>'+(r.s==='ok'?'<span class="chip ok"><span class="sd ok"></span>Онлайн</span>':'<span class="chip warn"><span class="sd warn"></span>Офлайн</span>')+'</td>'
-  +'<td><button class="btn sm ghost">Карточка</button> <button class="btn sm ghost">Блок</button></td></tr>').join('');
-
-/* ---------- Карточка на плане ---------- */
-const PLAN_CARDS={
-  fire:{ttl:'Извещатель ШС-14',sub:'Дымовой · Болид С2000-КДЛ · подъезд 2, 7 этаж',chip:'<span class="chip fire">ПОЖАР 1</span>',rows:[['Состояние','Тревога с 10:11:38'],['Адрес прибора','1.14'],['Зона','Холл 7 этажа'],['Последний тест','12.08.2026']],acts:'<button class="btn ok" onclick="ack(1)">Подтвердить</button><button class="btn danger" onclick="toast(\'err\',\'Эвакуация\',\'Двери подъезда 2 разблокированы\')">Двери на эвакуацию</button>'},
-  sensor:{ttl:'Извещатель ШС-15',sub:'Дымовой · Болид С2000-КДЛ',chip:'<span class="chip ok">Норма</span>',rows:[['Состояние','Норма'],['Адрес прибора','1.15'],['Зона','Холл 7 этажа'],['Последний тест','12.08.2026']],acts:'<button class="btn ghost">История</button>'},
-  door:{ttl:'Дверь тамбура · 7 этаж',sub:'Контроллер Болид С2000-2 · через ACFA',chip:'<span class="chip mut">Закрыта</span>',rows:[['Способ открытия','ACFA-Интеллект'],['Последний проход','09:58 · кв. 703'],['Режим','Штатный']],acts:'<button class="btn primary" onclick="quickUnlock(\'Тамбур П2 · 7 этаж\')">Открыть</button><button class="btn ghost">Удержать открытой</button>'},
-  cam:{ttl:'Камера холла 7 этажа',sub:'Интеллект X · канал 14 · H.264 1920×1080',chip:'<span class="chip ext">Расширенная [Р]</span>',rows:[['Запись','Идёт · глубина 30 сут'],['Детекторы','Движение, оставленный предмет'],['Битрейт','4.2 Мбит/с']],acts:'<button class="btn primary" onclick="openVideo([\'cam-f7\'],\'1x1\')">Однокадровый</button>'},
-  leak:{ttl:'Датчик протечки',sub:'Стояк ХВС · плагин Modbus TCP',chip:'<span class="chip ok">Сухо</span>',rows:[['Тег','LK-01'],['Опрос','1 с'],['Последнее срабатывание','нет']],acts:'<button class="btn ghost">Тренд</button>'}
-};
-function planPick(k,objId){
-  const c=PLAN_CARDS[k]; if(!c) return;
-  const obj=objId || {fire:'fire-sh14',sensor:'fire-sh14',door:'door-tambur',cam:'cam-f7',leak:'leak'}[k];
-  document.getElementById('planCard').innerHTML=
-    c.chip+'<div style="font-weight:600;font-size:14px;margin:9px 0 3px">'+c.ttl+'</div>'
-    +'<div style="color:var(--txt-2);font-size:12px;margin-bottom:12px">'+c.sub+'</div>'
-    +'<div class="kv">'+c.rows.map(r=>'<div class="k">'+r[0]+'</div><div>'+r[1]+'</div>').join('')+'</div>'
-    +'<div class="hr"></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+c.acts+videoBtn(obj)+'</div>';
+function renderResidents(){
+  document.getElementById('residentsTable').innerHTML=(OBJ.residents||[]).map(r=>
+    '<tr><td><b>'+r.f+'</b></td><td>'+r.n+'</td><td class="t-mono" style="font-size:11px">'+r.u+'</td>'
+    +'<td class="t-mut">'+r.d+'</td><td><span class="chip mut">'+r.p+'</span></td>'
+    +'<td>'+(r.s==='ok'?'<span class="chip ok"><span class="sd ok"></span>Онлайн</span>':'<span class="chip warn"><span class="sd warn"></span>Офлайн</span>')+'</td>'
+    +'<td><button class="btn sm ghost">Карточка</button> <button class="btn sm ghost">Блок</button></td></tr>').join('');
+  const s=OBJ.resStats||{};
+  document.getElementById('resTotal').textContent=s.total||'—';
+  document.getElementById('resOnline').textContent=s.online||'—';
+  document.getElementById('resOffline').textContent=s.offline||'—';
+  document.getElementById('resPush').textContent=s.push||'—';
 }
-planPick('fire');
+
+/* ---------- Карточка устройства на плане ---------- */
+const KIND_TPL={
+  fire:{ttl:'Извещатель ',sub:'Пожарный извещатель ОПС',rows:[['Тип','Адресный, дымовой'],['Опрос','приборный, 1 с'],['Последний тест','12.08.2026']]},
+  sensor:{ttl:'Извещатель ',sub:'Пожарный извещатель ОПС',rows:[['Состояние','Норма'],['Тип','Адресный, дымовой'],['Последний тест','12.08.2026']]},
+  door:{ttl:'Точка доступа · ',sub:'Контроллер СКУД / вызывная панель',rows:[['Способ открытия','REST unlock вне звонка'],['Режим','Штатный']]},
+  cam:{ttl:'Камера · ',sub:'Видеомодуль · привязка объект ↔ камера',rows:[['Запись','Идёт · глубина 30 сут'],['Детекторы','Движение, оставленный предмет']]},
+  eng:{ttl:'Инженерный датчик · ',sub:'Плагин Modbus TCP',rows:[['Опрос','1 с'],['Последнее срабатывание','нет']]}
+};
+function planPick(i){
+  const m=planDevices[Number(i)||0];
+  const el=document.getElementById('planCard');
+  if(!m){ el.innerHTML='<div class="empty">Выберите маркер на плане</div>'; return; }
+  const tpl=KIND_TPL[m.k]||KIND_TPL.sensor;
+  const alarmed=m.k==='fire'&&m.state==='alarm';
+  const chip=alarmed?'<span class="chip fire">ПОЖАР 1</span>'
+    :m.k==='door'?'<span class="chip mut">Закрыта</span>'
+    :m.k==='cam'?'<span class="chip ext">Расширенная [Р]</span>'
+    :'<span class="chip ok">Норма</span>';
+  const linked=ALARMS.find(a=>a.obj===m.obj);
+  const acts=alarmed
+    ? '<button class="btn ok" onclick="ack('+(linked?linked.id:0)+')">Подтвердить</button>'
+      +'<button class="btn danger" onclick="toast(\'err\',\'Эвакуация\',\'Двери на пути эвакуации разблокированы\')">Двери на эвакуацию</button>'
+    : m.k==='door'
+      ? '<button class="btn primary" onclick="quickUnlock(\''+(m.cmd||m.label)+'\')">Открыть</button>'
+        +'<button class="btn ghost" onclick="toast(\'warn\',\'Режим удержания\',\''+(m.cmd||m.label)+'\')">Удержать открытой</button>'
+      : m.k==='cam'
+        ? '<button class="btn primary ext-hide" onclick="openLinkedVideo(\''+m.obj+'\')">Однокадровый</button>'
+        : '<button class="btn ghost" onclick="toast(\'info\',\'Тренд\',\''+m.label+' · история значений за сутки\')">Тренд</button>';
+  el.innerHTML=chip
+    +'<div style="font-weight:600;font-size:14px;margin:9px 0 3px">'+tpl.ttl+m.label+'</div>'
+    +'<div style="color:var(--txt-2);font-size:12px;margin-bottom:12px">'+(m.sub||tpl.sub)+'</div>'
+    +'<div class="kv">'+(m.rows||tpl.rows).map(r=>'<div class="k">'+r[0]+'</div><div>'+r[1]+'</div>').join('')+'</div>'
+    +'<div class="hr"></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+acts+videoBtn(m.obj)+'</div>';
+}
 
 /* ---------- Модальное окно вызова ---------- */
 let callTimer=null, callSec=12;
 function openCallModal(){
+  const c=OBJ.concierge.call;
+  document.getElementById('callRingTitle').textContent=c.panel+' вызывает '+c.flat;
+  document.getElementById('callMetaPanel').textContent=c.panel;
+  document.getElementById('callMetaFlat').textContent=c.flat.replace('кв.','Кв.');
+  document.getElementById('callMetaWho').textContent=c.who;
   document.getElementById('callOverlay').classList.add('on');
   refreshWidget('call');
   clearInterval(callTimer);
@@ -2707,24 +3471,33 @@ function openCallModal(){
 function closeCall(){
   document.getElementById('callOverlay').classList.remove('on');
   clearInterval(callTimer);
+  if(role==='concierge') renderConcierge();
 }
 function answerCall(){
   document.getElementById('callState').textContent='Разговор · RTP через RTPEngine';
   document.getElementById('callState').className='chip ok';
   if(activeCalls[0]) activeCalls[0].st='talking';
   renderCalls();
+  if(role==='concierge'){
+    const box=document.getElementById('cIncoming');
+    box.classList.remove('ringing');
+    const sd=box.querySelector('.sd'); if(sd) sd.className='sd ok';
+    const ttl=box.querySelector('b'); if(ttl) ttl.textContent='Разговор';
+    const chip=box.querySelector('.chip'); if(chip){chip.className='chip ok';chip.textContent='RTP · G.711u';}
+  }
   toast('ok','Вызов принят','Медиа установлено · H.264 + G.711u · задержка 178 мс');
-  pushEvent('sip','Вызов принят оператором','П2 · входная дверь → рабочее место диспетчера','Kamailio');
+  pushEvent('sip','Вызов принят',OBJ.concierge.call.panel+' → '+(role==='concierge'?'пост консьержа':'рабочее место диспетчера'),'Kamailio');
 }
 function simulateCall(){
   callSec=0;
-  if(!activeCalls.length) activeCalls.push({t:hhmmss(now()),panel:'П2 · входная дверь',sub:'Кв. 214 · Смирнов А. В.',st:'ringing',dur:0,obj:'panel-p2'});
+  const c=OBJ.concierge.call;
+  if(!activeCalls.length) activeCalls.push({t:hhmmss(now()),panel:c.panel,sub:c.flat+' · '+c.who,st:'ringing',dur:0,obj:'panel-call'});
   document.getElementById('callState').textContent='Early media · 183 Session Progress';
   document.getElementById('callState').className='chip info';
   renderCalls();
-  pushEvent('sip','Входящий вызов','П2 · входная дверь → кв. 214 · push доставлен 0.9 с','sipmanager');
-  toast('info','Входящий вызов','Панель П2 вызывает кв. 214 · early media доступно');
-  if(document.getElementById('app').classList.contains('concierge')){
+  pushEvent('sip','Входящий вызов',c.panel+' → '+c.flat+' · push доставлен 0.9 с','sipmanager');
+  toast('info','Входящий вызов',c.panel+' вызывает '+c.flat+' · early media доступно');
+  if(role==='concierge'){
     goC('call');
     return;
   }
@@ -2735,14 +3508,21 @@ document.addEventListener('keydown',onHotkey);
 /* ---------- Демо-события ---------- */
 function simulateFire(){
   const id=Date.now();
-  ALARMS.unshift({id,obj:'fire-sh7',lvl:'fire',ttl:'Пожар 1 · дымовой извещатель',src:'Подъезд 1 · 3 этаж · ШС-7 · Болид С2000-КДЛ',t:hhmmss(now()),pr:'ПОЖАР'});
+  let dev=null, plan=null;
+  (OBJ.plans||[]).forEach(p=>(p.dev||[]).forEach(d=>{ if(!dev && (d.k==='fire'||d.k==='sensor')){dev=d;plan=p;} }));
+  const src=(plan?plan.label+' · ':'')+(dev?dev.label:'ШС-1')+' · Болид С2000-КДЛ';
+  ALARMS.unshift({id,obj:dev?dev.obj:'panel-call',lvl:'fire',ttl:'Пожар 1 · дымовой извещатель',src,t:hhmmss(now()),pr:'ПОЖАР'});
   selectedAlarmId=id;
   renderAlarms(); openSide('alarms');
-  pushEvent('fire','ПОЖАР 1','Подъезд 1 · 3 этаж · ШС-7','Болид С2000-КДЛ');
-  toast('err','ПОЖАР 1','Подъезд 1 · 3 этаж · ШС-7. Требуется подтверждение оператора');
+  pushEvent('fire','ПОЖАР 1',src,'Болид С2000-КДЛ');
+  toast('err','ПОЖАР 1',src+'. Требуется подтверждение оператора');
 }
 const PLATES=['М456ТУ 77','В890РР 50','Н112СК 77','У345АА 190','К678ЕЕ 77'];
 function simulateLpr(){
+  if(!OBJ.park){
+    toast('info','Въездная группа отсутствует',OBJ.name+' · '+OBJ.unit.toLowerCase()+' — паркинг и шлагбаумы на объекте не установлены');
+    return;
+  }
   const p=PLATES[Math.floor(Math.random()*PLATES.length)];
   const ok=Math.random()>.35;
   PARK.unshift({t:hhmmss(now()),n:p,b:ok?'Белый список · кв. '+(100+Math.floor(Math.random()*600)):'Нет в списках',r:ok?'ok':'no'});
@@ -2771,14 +3551,14 @@ function toggleWan(){
 
 /* ---------- Автогенерация ленты ---------- */
 const AUTO=[
-  ['acc','Дверь открыта','П1 · из мобильного приложения (REST unlock)','Драйвер BEWARD'],
-  ['acc','Проход по гостевому PIN','Калитка двора · курьер кв. 214','Ядро'],
-  ['sip','Вызов завершён','П1 → кв. 508 · 00:19 · дверь открыта','Kamailio'],
-  ['scada','Опрос тегов ИТП','46 тегов · отклонений нет','Плагин Modbus TCP'],
-  ['sip','Регистрация абонента','Кв. 412 · re-REGISTER после пробуждения push','Kamailio'],
-  ['video','Детектор движения','Двор · детская площадка','Интеллект X'],
-  ['acc','Отказ в доступе','Электрощитовая · карта заблокирована','ACFA-Интеллект'],
-  ['scada','Счётчик э/э · показание','Корпус 3 · 184 кВт·ч','Плагин Modbus TCP']
+  ['acc','Дверь открыта','Из мобильного приложения (REST unlock)','Драйвер панели'],
+  ['acc','Проход по гостевому PIN','Курьер · одноразовый код','Ядро'],
+  ['sip','Вызов завершён','Панель подъезда → квартира · 00:19 · дверь открыта','Kamailio'],
+  ['scada','Опрос тегов ИТП','Отклонений нет','Плагин Modbus TCP'],
+  ['sip','Регистрация абонента','re-REGISTER после пробуждения push','Kamailio'],
+  ['video','Детектор движения','Придомовая территория','Видеомодуль'],
+  ['acc','Отказ в доступе','Служебная зона · карта заблокирована','ACFA-Интеллект'],
+  ['scada','Счётчик э/э · показание','Плановый опрос узла учёта','Плагин Modbus TCP']
 ];
 setInterval(()=>{
   if(Math.random()>.55){
@@ -2790,6 +3570,147 @@ setInterval(()=>{
 /* ---------- Тема, меню, сплиттеры, консьерж (как в Incident Manager) ---------- */
 let themeMode='dark', onBreak=false, role='dispatcher';
 const VIEW_KEYS={1:'dash',2:'calls',3:'alarms',4:'plan',5:'log'};
+
+/* =========================================================
+   Переключение объектов
+   ========================================================= */
+function showOnPlan(objId){
+  const plans=OBJ.plans||[];
+  const plan=plans.find(p=>(p.dev||[]).some(d=>d.obj===objId));
+  go('plan');
+  renderPlan(plan?plan.id:currentPlan);
+  if(plan){
+    const i=(plan.dev||[]).findIndex(d=>d.obj===objId);
+    if(i>=0) planPick(i);
+  }
+}
+function renderDash(){
+  const k=OBJ.kpi;
+  document.getElementById('dashSub').textContent=OBJ.name+' · '+OBJ.unit+' · '+OBJ.facts;
+  document.getElementById('dashKpi').innerHTML=
+     '<div class="kpi ok"><div class="t"><span class="sd ok"></span>SIP-устройства онлайн</div>'
+    +'<div class="v">'+k.sipOn+' <small>/ '+k.sipAll+'</small></div><div class="d">'+k.sipNote+'</div></div>'
+    +'<div class="kpi info"><div class="t"><span class="sd ok"></span>Активные вызовы</div>'
+    +'<div class="v" id="kpiCalls">0</div><div class="d">'+k.callNote+'</div></div>'
+    +'<div class="kpi alarm"><div class="t"><span class="sd alarm"></span>Активные тревоги</div>'
+    +'<div class="v" id="kpiAlarms">0</div><div class="d">'+k.alarmNote+'</div></div>'
+    +'<div class="kpi warn"><div class="t"><span class="sd warn"></span>Заявки в работе</div>'
+    +'<div class="v">'+k.tasks+' <small>'+k.tasksSub+'</small></div><div class="d">'+k.taskNote+'</div></div>';
+
+  const e=OBJ.eng, chip=document.getElementById('dashEngChip');
+  chip.textContent=e.chip; chip.className='chip '+(e.chipCls||'mut');
+  const metric=(id,t,v,u,color)=>'<div><div class="t-mut" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">'+t+'</div>'
+    +'<div style="font:600 19px var(--mono)'+(color?';color:'+color:'')+'">'+v+' <span style="font-size:12px;color:var(--txt-3)">'+u+'</span></div>'
+    +'<svg class="spark" id="'+id+'"></svg></div>';
+  document.getElementById('dashEng').innerHTML=
+     '<div class="grid g-2" style="gap:10px">'
+    +metric('sp1','ИТП · подача Т1',e.t1,'°C','#57cf90')+metric('sp2','Давление ХВС',e.press,'бар','#efbb72')
+    +metric('sp3','Потребление э/э',e.power,'кВт·ч')+metric('sp4','Расход ХВС',e.water,'м³/ч')
+    +'</div><div class="hr"></div>'
+    +e.rows.map(r=>'<div class="gauge-row"><span class="sd '+r[0]+'"></span><span class="nm">'+r[1]+'</span><span class="chip '+r[2]+'">'+r[3]+'</span></div>').join('');
+  spark('sp1',rnd(parseFloat(e.t1),2.2,24),'#2ea865');
+  spark('sp2',rnd(parseFloat(e.press),.5,24),'#e8a33d');
+  spark('sp3',rnd(parseFloat(e.power),parseFloat(e.power)*.18,24),'#3d8bfd');
+  spark('sp4',rnd(parseFloat(e.water),.9,24),'#7d5bd6');
+
+  document.getElementById('dashAccess').innerHTML=(OBJ.access||[]).map(a=>
+    '<div class="gauge-row"><span class="nm">'+a[0]+'</span><span class="vl"'+(a[2]==='bad'?' style="color:#ff8b8e"':'')+'>'+a[1]+'</span></div>').join('');
+  document.getElementById('dashShift').innerHTML=(OBJ.shift||[]).map(s=>
+    '<div class="k">'+s[0]+'</div><div>'+s[1]+'</div>').join('');
+}
+function renderContacts(){
+  document.getElementById('contactsSub').textContent='Справочник '+OBJ.name+', '+OBJ.unit.toLowerCase()+'. Список подтягивается из карточки объекта.';
+  document.getElementById('contactsTable').innerHTML=(OBJ.contacts||[]).map(c=>
+    '<tr><td>'+c[0]+'</td><td>'+c[1]+'</td><td><b>'+c[2]+'</b></td><td>'+c[3]+'</td></tr>').join('');
+  document.getElementById('evacTitle').textContent=OBJ.evac.title;
+  document.getElementById('evacSub').textContent='План, привязанный к карточке объекта. '+OBJ.evac.sub;
+}
+function renderObjectList(){
+  document.getElementById('objList').innerHTML=OBJECTS.map(o=>
+    '<button type="button" class="obj-item'+(o.id===OBJ.id?' on':'')+'" onclick="pickObject(\''+o.id+'\')">'
+    +'<span class="ic"><span class="material-symbols-outlined">apartment</span></span>'
+    +'<span class="bd"><b>'+o.name+' · '+o.unit.toLowerCase()+'</b>'
+    +'<span class="ad">'+o.addr+' · '+o.facts+'</span>'
+    +'<span class="st">'+o.chips.map(c=>'<span class="chip '+c[0]+'">'+c[1]+'</span>').join('')+'</span></span></button>').join('');
+}
+function openObjects(){
+  renderObjectList();
+  showModal('modalObjects');
+}
+function pickObject(id){
+  closeModals();
+  if(id===OBJ.id) return;
+  applyObject(id);
+  toast('info','Объект переключён',OBJ.name+' · '+OBJ.unit.toLowerCase()+' — загружены камеры, планы, ОПС и журнал объекта');
+}
+function applyObject(id){
+  OBJ=OBJECTS.find(o=>o.id===id)||OBJECTS[0];
+
+  CAMERAS=OBJ.cameras;
+  CAM_IDS=Object.keys(CAMERAS);
+  CAM_LINKS=Object.assign({},OBJ.links);
+  CAM_IDS.forEach(c=>{ if(!CAM_LINKS[c]) CAM_LINKS[c]=[c]; });
+
+  ALARMS=OBJ.alarms.map(a=>Object.assign({},a));
+  EVENTS=OBJ.events.map(e=>Object.assign({},e));
+  activeCalls=OBJ.calls.map(c=>Object.assign({},c));
+  PARK=(OBJ.park&&OBJ.park.rows||[]).map(r=>Object.assign({},r));
+  selectedAlarmId=ALARMS.length?ALARMS[0].id:0;
+  videoSet=null; videoIdx=0;
+  Object.keys(carouselIdx).forEach(k=>delete carouselIdx[k]);
+  currentPlan=OBJ.plans[0].id;
+
+  sideF='all'; logF='all'; logQuery='';
+  document.querySelectorAll('#pane-events .fchip, #view-log .fchip')
+    .forEach(b=>b.classList.toggle('on', b.dataset.t==='all'||b.textContent.trim()==='Все'));
+  const logSearch=document.querySelector('#view-log .searchbox input');
+  if(logSearch) logSearch.value='';
+  document.getElementById('videoSub').textContent='Подключённый видеомодуль · '+(OBJ.stat.vms||'—');
+
+  const full=OBJ.name+' · '+OBJ.unit.toLowerCase();
+  document.getElementById('topObjName').textContent=full;
+  document.getElementById('railObjName').textContent=OBJ.name;
+  document.getElementById('railObjSub').textContent=OBJ.unit+' · '+OBJ.addr.split(',').slice(1).join(',').trim();
+  document.querySelector('.obj-btn').title='Объект: '+full;
+
+  document.getElementById('stKam').textContent=OBJ.stat.kam;
+  setConfig(OBJ.config,true);
+
+  renderDash();
+  renderTree();
+  renderHistory();
+  renderCalls();
+  renderAlarms();
+  renderSideEvents();
+  renderLog();
+  renderDoors();
+  renderTags();
+  renderPark();
+  renderPanels();
+  renderResidents();
+  renderDashCams();
+  renderPlan(currentPlan);
+  renderVideoWall();
+  renderContacts();
+  renderConcierge();
+  refreshWidget('park');
+  refreshWidget('call');
+  refreshWidget('concierge');
+
+  const cur=document.querySelector('.view.on');
+  if(cur && cur.id==='view-parking' && !OBJ.park) go('dash');
+}
+
+/* =========================================================
+   Мобильные панели
+   ========================================================= */
+function isMobile(){ return window.matchMedia('(max-width:860px)').matches; }
+function openRailDrawer(){
+  document.getElementById('mid').classList.remove('rail-collapsed');
+  document.body.classList.add('rail-open','drawer-open');
+}
+function openSideDrawer(){ document.body.classList.add('side-open','drawer-open'); }
+function closeDrawers(){ document.body.classList.remove('rail-open','side-open','drawer-open'); }
 
 function applyTheme(mode){
   themeMode=mode==='light'?'light':'dark';
@@ -2823,16 +3744,47 @@ function closeMenus(){
   });
 }
 
+function renderConcierge(){
+  const c=OBJ.concierge;
+  document.getElementById('cPost').textContent=c.post;
+  document.getElementById('cObject').textContent=OBJ.name+' · '+OBJ.unit.toLowerCase();
+  document.getElementById('cDoorsTitle').textContent=c.doorsTitle;
+  document.getElementById('cLogTitle').textContent=c.logTitle;
+  document.getElementById('cDoorsList').innerHTML=c.doors.map(d=>
+    '<div class="c-door"><span class="sd ok"></span><b>'+d.n+'</b>'
+    +'<button class="btn sm ghost ext-hide" onclick="openLinkedVideo(\''+d.obj+'\')">Видео</button>'
+    +'<button class="btn primary sm" onclick="quickUnlock(\''+d.cmd+'\')">Открыть</button></div>').join('');
+  document.getElementById('cIncoming').innerHTML=
+     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+    +'<span class="sd alarm"></span><b>Входящий вызов</b>'
+    +'<span class="chip info" style="margin-left:auto">Early media</span></div>'
+    +'<div id="cCam" style="margin-bottom:10px;aspect-ratio:16/9"></div>'
+    +'<div style="font-size:13px;margin-bottom:12px">'+c.call.panel+' вызывает <b>'+c.call.flat+'</b> · '
+    +c.call.who+' не ответил 12 с, вызов переведён на пост.</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    +'<button class="btn ok" onclick="answerCall();goC(\'call\')">Ответить</button>'
+    +'<button class="btn danger" onclick="closeCall()">Отклонить</button>'
+    +'<button class="btn primary" style="grid-column:1/-1" onclick="quickUnlock(\''+c.call.cmd+'\')">Открыть дверь</button></div>';
+  refreshWidget('concierge');
+  if(role==='concierge') applyRoleIdentity();
+}
+function applyRoleIdentity(){
+  const c=OBJ.concierge;
+  document.getElementById('userAvatar').textContent=role==='concierge'?c.init:'ИП';
+  document.getElementById('userName').textContent=role==='concierge'?c.who:'Ирина Полякова';
+  document.getElementById('userRole').textContent=role==='concierge'
+    ? c.post+' · '+c.hours : 'Диспетчер УК · смена 08:00–20:00';
+  document.getElementById('roleBtnLabel').textContent=role==='concierge'
+    ? 'Вернуться в АРМ диспетчера' : 'Перейти в АРМ консьержа';
+}
 function setRole(next){
   role=next;
-  const app=document.getElementById('app');
-  app.classList.toggle('concierge', role==='concierge');
-  document.getElementById('userAvatar').textContent=role==='concierge'?'СВ':'ИП';
-  document.getElementById('userName').textContent=role==='concierge'?'Сергей Волков':'Ирина Полякова';
-  document.getElementById('userRole').textContent=role==='concierge'?'Консьерж · подъезд 2 · 08:00–22:00':'Диспетчер УК · смена 08:00–20:00';
-  document.getElementById('roleBtnLabel').textContent=role==='concierge'?'Вернуться в АРМ диспетчера':'Перейти в АРМ консьержа';
+  closeDrawers();
+  document.getElementById('app').classList.toggle('concierge', role==='concierge');
+  applyRoleIdentity();
+  if(role==='concierge') goC('call');
   toast('info', role==='concierge'?'АРМ консьержа':'АРМ диспетчера УК',
-    role==='concierge'?'Планшет / телефон: вызов, двери, журнал своего подъезда':'Полный web-UI объекта');
+    role==='concierge'?'Телефон / планшет: вызов, двери, журнал своего поста':'Полный web-UI объекта');
 }
 function goC(name){
   ['call','doors','log','help'].forEach(v=>{
@@ -2840,6 +3792,8 @@ function goC(name){
     if(pane) pane.hidden=v!==name;
   });
   document.querySelectorAll('.c-nav button').forEach(b=>b.classList.toggle('on', b.dataset.cview===name));
+  const body=document.querySelector('.phone-b:not([hidden])');
+  if(body) body.scrollTop=0;
   if(name==='call') refreshWidget('concierge');
 }
 
@@ -2858,7 +3812,7 @@ function onHotkey(e){
   const tag=(e.target&&e.target.tagName||'').toLowerCase();
   const typing=tag==='input'||tag==='textarea'||tag==='select';
   if(e.key==='Escape'){
-    closeCall(); closeModals(); closeMenus();
+    closeCall(); closeModals(); closeMenus(); closeDrawers();
     return;
   }
   if(e.key==='?' && !e.ctrlKey && !typing){ e.preventDefault(); showModal('modalHotkeys'); return; }
@@ -3005,13 +3959,19 @@ document.getElementById('planTabs').addEventListener('click',e=>{
   renderPlan(b.dataset.plan);
 });
 
-renderCalls();
-renderDashCams();
-renderVideoWall();
-renderPlan('floor7');
-refreshWidget('park');
-refreshWidget('call');
-refreshWidget('concierge');
+let wasMobile=isMobile();
+window.addEventListener('resize',()=>{
+  const now=isMobile();
+  if(now===wasMobile) return;
+  wasMobile=now;
+  closeDrawers();
+  if(now) document.getElementById('mid').classList.remove('rail-collapsed');
+  syncPanelButtons();
+  renderVideoWall();
+});
+
+applyObject(OBJECTS[0].id);
+go('dash');
 </script>
 </body>
 </html>
