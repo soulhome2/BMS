@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Экосистема управления МКД — мобильное приложение жильца | ITV | AxxonSoft</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<style>
+/* ============================================================
+   Мобильное приложение жильца МКД — прототип виртуального экрана
+   ITV | AxxonSoft
+
+   Палитра и типографика — как в АРМ оператора (prototypes/operator),
+   чтобы продукты читались одной линейкой.
+   ============================================================ */
+
+:root,
+[data-theme="light"]{
+  --font:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+  --bg:#f1f5f9;
+  --panel:#ffffff;
+  --panel-2:#f8fafc;
+  --stroke:#e2e8f0;
+  --stroke-2:#cbd5e1;
+  --text:#1e293b;
+  --muted:#64748b;
+  --faint:#94a3b8;
+  --accent:#1976d2;
+  --accent-dim:#e3f2fd;
+  --accent-ring:rgba(25,118,210,.12);
+  --on-accent:#ffffff;
+  --ok:#16a34a;
+  --warn:#d97706;
+  --crit:#dc2626;
+  --info:#1976d2;
+  --ext:#b45309;
+  --hover:#f1f5f9;
+  --ok-bg:#dcfce7;
+  --ok-text:#15803d;
+  --warn-bg:#fff7ed;
+  --warn-text:#c2410c;
+  --crit-bg:#fee2e2;
+  --crit-text:#dc2626;
+  --ext-bg:#fef3c7;
+  --overlay:rgba(15,23,42,.42);
+  --input-bg:#ffffff;
+  --video-bg:#0f172a;
+  --cam-scan:rgba(0,0,0,.16);
+  --hud:#e2e8f0;
+  --tag-bg:#0f172a;
+  --tag-border:#475569;
+  --stage-bg:#e2e8f0;
+  --shell:#0f172a;
+  --shell-2:#1e293b;
+  --radius:16px;
+  --radius-sm:12px;
+  color-scheme:light;
+}
+
+[data-theme="dark"]{
+  --bg:#0f172a;
+  --panel:#1e293b;
+  --panel-2:#162032;
+  --stroke:#334155;
+  --stroke-2:#475569;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+  --faint:#64748b;
+  --accent:#42a5f5;
+  --accent-dim:rgba(25,118,210,.28);
+  --accent-ring:rgba(66,165,245,.18);
+  --on-accent:#0f172a;
+  --ok:#4ade80;
+  --warn:#fbbf24;
+  --crit:#f87171;
+  --info:#42a5f5;
+  --ext:#fbbf24;
+  --hover:#334155;
+  --ok-bg:rgba(22,163,74,.2);
+  --ok-text:#86efac;
+  --warn-bg:rgba(194,65,12,.22);
+  --warn-text:#fdba74;
+  --crit-bg:rgba(220,38,38,.2);
+  --crit-text:#fca5a5;
+  --ext-bg:rgba(180,83,9,.24);
+  --overlay:rgba(2,6,23,.66);
+  --input-bg:#0b1220;
+  --video-bg:#020617;
+  --cam-scan:rgba(0,0,0,.22);
+  --hud:#e2e8f0;
+  --tag-bg:#020617;
+  --tag-border:#475569;
+  --stage-bg:#0b1220;
+  --shell:#020617;
+  --shell-2:#111c2e;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font);font-size:14px;line-height:1.45;
+  background:var(--stage-bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;min-height:100vh;
+}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+input{background:var(--input-bg);border:1px solid var(--stroke);border-radius:10px;padding:9px 11px;color:var(--text);width:100%}
+input:focus{outline:2px solid var(--accent-ring);border-color:var(--accent)}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20;font-size:20px;line-height:1;user-select:none}
+[hidden]{display:none!important}
+::-webkit-scrollbar{width:0;height:0}
+
+/* ---------- Сцена: телефон + демо-панель ---------- */
+.stage{display:flex;gap:26px;align-items:flex-start;justify-content:center;padding:26px 20px 40px;flex-wrap:wrap}
+.rail{width:320px;flex:0 0 320px;display:flex;flex-direction:column;gap:12px}
+.rail-card{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius);padding:14px}
+.rail-card h2{font-size:13px;font-weight:600;margin-bottom:4px}
+.rail-card p{font-size:12px;color:var(--muted);line-height:1.55}
+.rail-brand{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.brand-mark{width:20px;height:20px;flex:0 0 20px;background:var(--accent);clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)}
+.rail-brand strong{font-size:15px;font-weight:600;display:block}
+.rail-brand span{font-size:12px;color:var(--faint)}
+.rail-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+.rail-btns .wide{grid-column:1/-1}
+.dbtn{
+  display:flex;align-items:center;gap:7px;justify-content:center;text-align:center;
+  border:1px solid var(--stroke-2);border-radius:10px;padding:9px 8px;
+  font-size:12px;font-weight:500;color:var(--muted);background:var(--panel-2);transition:.14s;
+}
+.dbtn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.dbtn .material-symbols-outlined{font-size:17px}
+.rail ul{list-style:none;font-size:12px;color:var(--muted);line-height:1.7}
+.rail ul li{padding-left:16px;position:relative}
+.rail ul li::before{content:"";position:absolute;left:3px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.rail ul li b{color:var(--text);font-weight:600}
+.rail-foot{font-size:11px;color:var(--faint);line-height:1.6}
+
+/* ---------- Корпус телефона ---------- */
+.phone{
+  position:relative;width:392px;height:846px;flex:0 0 392px;
+  background:var(--shell);border-radius:52px;padding:13px;
+  box-shadow:0 30px 70px rgba(2,6,23,.45),0 0 0 2px var(--shell-2);
+}
+.screen{
+  position:relative;height:100%;border-radius:40px;overflow:hidden;background:var(--bg);
+  display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;
+}
+.notch{
+  position:absolute;top:13px;left:50%;transform:translateX(-50%);
+  width:120px;height:26px;background:var(--shell);border-radius:0 0 16px 16px;z-index:30;
+}
+
+/* ---------- Системная строка ---------- */
+.sysbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 22px 5px;font-size:12.5px;font-weight:600;color:var(--text);background:var(--panel);
+}
+.sysbar .icons{display:flex;align-items:center;gap:5px;color:var(--muted)}
+.sysbar .material-symbols-outlined{font-size:15px}
+
+/* ---------- Шапка приложения ---------- */
+.apptop{background:var(--panel);border-bottom:1px solid var(--stroke);padding:4px 14px 10px}
+.apptop .r1{display:flex;align-items:center;gap:9px}
+.obj{
+  flex:1;min-width:0;display:flex;align-items:center;gap:8px;
+  background:var(--panel-2);border:1px solid var(--stroke);border-radius:12px;padding:6px 10px;text-align:left;
+}
+.obj .t{min-width:0}
+.obj strong{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.obj span{display:block;font-size:11px;color:var(--faint)}
+.icon-btn{
+  width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;
+  color:var(--muted);border:1px solid transparent;position:relative;
+}
+.icon-btn:hover{background:var(--hover);color:var(--text)}
+.icon-btn .dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--crit);border:1.5px solid var(--panel)}
+.statusline{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+
+/* ---------- Общие элементы ---------- */
+.chip{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:50px;
+  font-size:10.5px;font-weight:600;background:var(--panel-2);border:1px solid var(--stroke);color:var(--muted);white-space:nowrap;
+}
+.chip.ok{background:var(--ok-bg);color:var(--ok-text);border-color:transparent}
+.chip.warn{background:var(--warn-bg);color:var(--warn-text);border-color:transparent}
+.chip.crit{background:var(--crit-bg);color:var(--crit-text);border-color:transparent}
+.chip.acc{background:var(--accent-dim);color:var(--accent);border-color:transparent}
+.chip.ext{background:var(--ext-bg);color:var(--ext);border-color:transparent}
+.sd{width:7px;height:7px;border-radius:50%;background:var(--muted);flex:0 0 7px}
+.sd.ok{background:var(--ok)}
+.sd.warn{background:var(--warn)}
+.sd.crit{background:var(--crit);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+.scroll{overflow-y:auto;overflow-x:hidden;padding:13px 14px 22px;background:var(--bg)}
+.tab{display:none;flex-direction:column;gap:12px}
+.tab.on{display:flex}
+.sect{display:flex;align-items:center;gap:8px;margin:2px 0 -4px}
+.sect h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--faint)}
+.sect .spacer{flex:1}
+.sect button{font-size:11.5px;font-weight:600;color:var(--accent)}
+
+.card{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden}
+.card-b{padding:13px}
+.card-h{display:flex;align-items:center;gap:9px;padding:11px 13px;border-bottom:1px solid var(--stroke)}
+.card-h h4{font-size:13px;font-weight:600}
+.card-h .spacer{flex:1}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 14px;border-radius:12px;font-size:13px;font-weight:600;
+  background:var(--panel-2);border:1px solid var(--stroke);color:var(--text);transition:.14s;
+}
+.btn:hover{border-color:var(--stroke-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#04150c}
+.btn.danger{background:var(--crit);border-color:var(--crit);color:#fff}
+.btn.ghost{background:transparent}
+.btn.sm{padding:7px 10px;font-size:12px;border-radius:10px}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn .material-symbols-outlined{font-size:18px}
+
+.row{display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:1px solid var(--stroke)}
+.row:last-child{border-bottom:none}
+.row .ic{
+  width:36px;height:36px;flex:0 0 36px;border-radius:11px;display:grid;place-items:center;
+  background:var(--panel-2);color:var(--muted);
+}
+.row .ic.acc{background:var(--accent-dim);color:var(--accent)}
+.row .ic.ok{background:var(--ok-bg);color:var(--ok-text)}
+.row .ic.warn{background:var(--warn-bg);color:var(--warn-text)}
+.row .ic.crit{background:var(--crit-bg);color:var(--crit-text)}
+.row .bd{flex:1;min-width:0}
+.row .bd b{display:block;font-size:13px;font-weight:600}
+.row .bd span{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+.row .bd .t-mono{font-variant-numeric:tabular-nums}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+
+.quick{
+  display:flex;flex-direction:column;align-items:center;gap:7px;padding:13px 6px;
+  background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius);
+  font-size:11.5px;font-weight:600;line-height:1.3;text-align:center;color:var(--text);transition:.14s;
+}
+.quick:hover{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.quick .material-symbols-outlined{font-size:24px;color:var(--accent)}
+.quick.busy{border-color:var(--ok);background:var(--ok-bg);color:var(--ok-text)}
+.quick.busy .material-symbols-outlined{color:var(--ok-text)}
+
+.sw{
+  width:42px;height:24px;flex:0 0 42px;border-radius:14px;background:var(--stroke-2);position:relative;transition:.18s;
+}
+.sw i{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.18s}
+.sw.on{background:var(--accent)}
+.sw.on i{left:21px}
+
+.fchips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin:0 -14px;padding-left:14px;padding-right:14px}
+.fchip{
+  padding:6px 11px;border-radius:50px;font-size:11.5px;font-weight:600;white-space:nowrap;
+  background:var(--panel);border:1px solid var(--stroke);color:var(--muted);
+}
+.fchip.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.empty{padding:22px 14px;text-align:center;font-size:12px;color:var(--faint)}
+.hr{height:1px;background:var(--stroke);margin:11px 0}
+.note{
+  font-size:11px;line-height:1.6;color:var(--muted);
+  background:var(--panel-2);border:1px dashed var(--stroke-2);border-radius:11px;padding:9px 11px;
+}
+
+/* ---------- Видеотайлы ---------- */
+.cam{position:relative;overflow:hidden;border-radius:var(--radius-sm);background:var(--video-bg);border:1px solid var(--stroke);aspect-ratio:16/9}
+.cam.tall{aspect-ratio:3/4}
+.cam-scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cam::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,var(--cam-scan) 2px,var(--cam-scan) 4px),
+    radial-gradient(ellipse at 50% 45%,transparent 42%,rgba(2,6,23,.55) 100%);
+}
+.cam-hud{position:absolute;inset:0;z-index:2;padding:8px 9px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
+.cam-hud .top,.cam-hud .bot{display:flex;align-items:center;gap:5px}
+.cam-hud b{font-size:11px;font-weight:600;color:var(--hud);background:rgba(2,6,23,.6);padding:2px 6px;border-radius:6px}
+.cam-hud .ct{font-size:10.5px;font-weight:500;color:var(--hud);background:rgba(2,6,23,.6);padding:2px 6px;border-radius:6px;font-variant-numeric:tabular-nums;margin-left:auto}
+.tag{
+  font-size:9.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  padding:2px 6px;border-radius:6px;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--hud);
+}
+.tag.live{color:#fca5a5;border-color:#fca5a5}
+.cam .rec{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;color:#ff8b8e;background:rgba(2,6,23,.6);padding:2px 6px;border-radius:6px}
+.cam .rec i{width:5px;height:5px;border-radius:50%;background:#f87171;animation:pulse 1.5s infinite}
+.cam-lock{
+  position:absolute;inset:0;z-index:3;display:none;place-items:center;text-align:center;padding:12px;
+  background:rgba(2,6,23,.82);backdrop-filter:blur(2px);color:#e2e8f0;font-size:11px;line-height:1.5;
+}
+body.basic .cam-lock{display:grid}
+body.basic .ext-only{display:none!important}
+body.ext .basic-only{display:none!important}
+
+/* ---------- Нижняя навигация ---------- */
+.tabbar{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  background:var(--panel);border-top:1px solid var(--stroke);padding:7px 4px 16px;
+}
+.tabbtn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;color:var(--faint);font-size:10px;font-weight:600;position:relative}
+.tabbtn.on{color:var(--accent)}
+.tabbtn .material-symbols-outlined{font-size:23px}
+.tabbtn.on .material-symbols-outlined{font-variation-settings:'FILL' 1}
+.tabbtn .badge{
+  position:absolute;top:0;right:50%;transform:translateX(18px);
+  min-width:16px;height:16px;padding:0 4px;border-radius:9px;background:var(--crit);color:#fff;
+  font-size:9.5px;font-weight:700;display:grid;place-items:center;
+}
+
+/* ---------- Слои поверх экрана ---------- */
+.layer{position:absolute;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .26s ease;visibility:hidden}
+.layer.on{transform:none;visibility:visible}
+.layer-h{display:flex;align-items:center;gap:10px;padding:14px 14px 10px;border-bottom:1px solid var(--stroke);background:var(--panel)}
+.layer-h h3{font-size:14px;font-weight:600;flex:1;min-width:0}
+.layer-b{flex:1;min-height:0;overflow-y:auto;padding:13px 14px 20px;display:flex;flex-direction:column;gap:12px}
+
+.backdrop{position:absolute;inset:0;z-index:70;background:var(--overlay);opacity:0;visibility:hidden;transition:.2s}
+.backdrop.on{opacity:1;visibility:visible}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;z-index:80;background:var(--panel);
+  border-radius:24px 24px 0 0;padding:8px 16px 24px;max-height:78%;overflow-y:auto;
+  transform:translateY(102%);transition:transform .26s ease;
+}
+.sheet.on{transform:none}
+.sheet .grip{width:38px;height:4px;border-radius:3px;background:var(--stroke-2);margin:4px auto 12px}
+.sheet h3{font-size:15px;font-weight:600;margin-bottom:3px}
+.sheet .sub{font-size:12px;color:var(--muted);margin-bottom:13px}
+
+/* ---------- Экран вызова ---------- */
+.call{position:absolute;inset:0;z-index:90;background:#060b16;color:#e8eef8;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .26s ease;visibility:hidden}
+.call.on{transform:none;visibility:visible}
+.call-video{position:relative;flex:1;min-height:0;overflow:hidden;background:#020617;display:grid;place-items:center}
+.call-video .cam{width:100%;aspect-ratio:4/3;border:0;border-radius:0}
+.call-top{position:absolute;top:0;left:0;right:0;z-index:5;padding:38px 18px 18px;background:linear-gradient(180deg,rgba(2,6,23,.92),rgba(2,6,23,.55) 62%,transparent)}
+.call-top .who{font-size:19px;font-weight:600;margin-top:8px}
+.call-top .where{font-size:12.5px;color:#a8bad4;margin-top:3px}
+.call-top .state{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:#a8bad4}
+.call-top .timer{font-variant-numeric:tabular-nums}
+.call-bot{padding:14px 16px 22px;background:#060b16;border-top:1px solid rgba(148,163,184,.18)}
+.call-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cbtn{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;font-weight:600;color:#cbd5e1}
+.cbtn .circle{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:rgba(148,163,184,.16);color:#e8eef8;transition:.15s}
+.cbtn .circle .material-symbols-outlined{font-size:25px}
+.cbtn:hover .circle{background:rgba(148,163,184,.28)}
+.cbtn.on .circle{background:#e8eef8;color:#0f172a}
+.cbtn.answer .circle{background:#16a34a;color:#fff}
+.cbtn.decline .circle{background:#dc2626;color:#fff}
+.cbtn.unlock .circle{background:#1976d2;color:#fff}
+.cbtn[disabled]{opacity:.4;pointer-events:none}
+.dtmf{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.dtmf button{padding:12px 0;border-radius:12px;background:rgba(148,163,184,.14);font-size:16px;font-weight:600;color:#e8eef8}
+.dtmf button:hover{background:rgba(148,163,184,.26)}
+
+/* ---------- Тосты ---------- */
+.toasts{position:absolute;top:56px;left:12px;right:12px;z-index:120;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{
+  background:var(--panel);border:1px solid var(--stroke);border-left:3px solid var(--accent);
+  border-radius:12px;padding:9px 12px;box-shadow:0 12px 30px rgba(2,6,23,.3);animation:drop .22s ease;
+}
+.toast.ok{border-left-color:var(--ok)}
+.toast.warn{border-left-color:var(--warn)}
+.toast.err{border-left-color:var(--crit)}
+.toast b{display:block;font-size:12.5px;font-weight:600}
+.toast span{display:block;font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.45}
+@keyframes drop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+
+/* ---------- Прочее ---------- */
+.timeline{position:relative;height:44px;border-radius:10px;background:var(--panel-2);border:1px solid var(--stroke);overflow:hidden;cursor:pointer}
+.timeline .fill{position:absolute;top:0;bottom:0;left:0;background:var(--accent-dim)}
+.timeline .cursor{position:absolute;top:0;bottom:0;width:2px;background:var(--accent)}
+.timeline .mk{position:absolute;top:6px;width:3px;height:14px;border-radius:2px;background:var(--warn)}
+.timeline .mk.crit{background:var(--crit)}
+.timeline .lbl{position:absolute;bottom:4px;left:7px;font-size:10px;color:var(--faint)}
+.timeline .lbl.r{left:auto;right:7px}
+
+.meter-in{display:flex;align-items:center;gap:9px}
+.meter-in input{flex:1;font-variant-numeric:tabular-nums}
+.qr{background:#fff;border-radius:12px;padding:10px;width:150px;margin:0 auto}
+.qr svg{display:block;width:100%;height:auto}
+
+.wan-banner{padding:8px 14px;font-size:11.5px;font-weight:600;background:var(--warn-bg);color:var(--warn-text);text-align:center;display:none}
+body.wan-down .wan-banner{display:block}
+
+@media (max-width:900px){
+  .stage{padding:0;gap:0}
+  .phone{width:100vw;height:100dvh;flex:1 1 100%;border-radius:0;padding:0;box-shadow:none}
+  .screen{border-radius:0}
+  .notch{display:none}
+  .rail{width:100%;flex:1 1 100%;padding:16px;order:2}
+}
+</style>
+</head>
+<body class="ext">
+
+<div class="stage">
+
+  <!-- ======================= ДЕМО-ПАНЕЛЬ ======================= -->
+  <aside class="rail">
+    <div class="rail-card">
+      <div class="rail-brand">
+        <span class="brand-mark"></span>
+        <div>
+          <strong>Мой дом</strong>
+          <span>Прототип приложения жильца · ITV | AxxonSoft</span>
+        </div>
+      </div>
+      <p>Виртуальный экран мобильного приложения. Всё внутри телефона кликабельно: домофония, камеры, СКУД, датчики, счётчики и сервисы УК работают на демо-данных.</p>
+    </div>
+
+    <div class="rail-card">
+      <h2>Сценарии для показа</h2>
+      <p>Кнопки имитируют события, которые в бою приходят VoIP-push и WebSocket из облачного ядра.</p>
+      <div class="rail-btns">
+        <button class="dbtn wide" data-demo="callP2"><span class="material-symbols-outlined">doorbell</span>Вызов с панели П2</button>
+        <button class="dbtn" data-demo="callGate"><span class="material-symbols-outlined">fence</span>Калитка</button>
+        <button class="dbtn" data-demo="fire"><span class="material-symbols-outlined">local_fire_department</span>Пожар ОПС</button>
+        <button class="dbtn" data-demo="leak"><span class="material-symbols-outlined">water_drop</span>Протечка</button>
+        <button class="dbtn" data-demo="analytic"><span class="material-symbols-outlined">person_search</span>Аналитика</button>
+        <button class="dbtn wide" data-demo="wan"><span class="material-symbols-outlined">wifi_off</span><span id="wanLabel">Обрыв WAN</span></button>
+        <button class="dbtn" data-demo="cfg"><span class="material-symbols-outlined">workspace_premium</span><span id="cfgLabel">Базовая</span></button>
+        <button class="dbtn" data-demo="theme"><span class="material-symbols-outlined">light_mode</span>Тема</button>
+      </div>
+    </div>
+
+    <div class="rail-card">
+      <h2>Что закрыто из разбора конкурентов</h2>
+      <ul>
+        <li><b>Домофоны и открытие двери</b> — приоритет 1 из анализа: приём вызова, early media, DTMF и REST-unlock, исходящий вызов на панель.</li>
+        <li><b>События отдельной вкладкой</b> — фильтры по типу, привязанный фрагмент архива, подтверждение «ложное/реальное».</li>
+        <li><b>Группировка камер</b> по подъезду, двору и паркингу вместо плоского списка.</li>
+        <li><b>Датчики, реле и счётчики</b> — «лёгкий умный дом» вместо только камер.</li>
+        <li><b>Сценарии и режимы</b> «Дома / Охрана / Гости», расписание постановки.</li>
+        <li><b>Сервисы УК</b> — заявки, чат, новости и опросы.</li>
+        <li><b>Вкладка «Я»</b> — профиль, устройства, альбом кадров, справочный центр.</li>
+        <li><b>Тёмная тема</b> и крупные зоны нажатия.</li>
+      </ul>
+    </div>
+
+    <div class="rail-card rail-foot">
+      Демо-данные вымышлены. Пометка <b>[Р]</b> — расширенная конфигурация с видеомодулем: без неё камеры и видеоаналитика недоступны, а домофония и доступ работают.
+    </div>
+  </aside>
+
+  <!-- ======================= ТЕЛЕФОН ======================= -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen" id="screen">
+
+      <div class="sysbar">
+        <span id="sysTime">10:14</span>
+        <span class="icons">
+          <span class="material-symbols-outlined">signal_cellular_alt</span>
+          <span class="material-symbols-outlined" id="sysWifi">wifi</span>
+          <span class="material-symbols-outlined">battery_5_bar</span>
+        </span>
+      </div>
+
+      <header class="apptop">
+        <div class="r1">
+          <button class="obj" data-act="objects">
+            <span class="material-symbols-outlined" style="color:var(--accent)">apartment</span>
+            <span class="t">
+              <strong id="objName">ЖК «Северный парк», к3</strong>
+              <span id="objFlat">Квартира 214 · подъезд 2</span>
+            </span>
+            <span class="material-symbols-outlined" style="font-size:18px;color:var(--faint)">expand_more</span>
+          </button>
+          <button class="icon-btn" data-act="tab" data-arg="events" title="Уведомления">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="dot" id="bellDot"></span>
+          </button>
+          <button class="icon-btn" data-act="theme" title="Тема">
+            <span class="material-symbols-outlined" id="themeIcon">light_mode</span>
+          </button>
+        </div>
+        <div class="statusline" id="statusLine"></div>
+      </header>
+
+      <div class="wan-banner">Нет связи с облаком · работает локальный контур дома</div>
+
+      <main class="scroll" id="scroll">
+        <section class="tab on" id="tab-home"></section>
+        <section class="tab" id="tab-intercom"></section>
+        <section class="tab" id="tab-cams"></section>
+        <section class="tab" id="tab-events"></section>
+        <section class="tab" id="tab-more"></section>
+      </main>
+
+      <nav class="tabbar">
+        <button class="tabbtn on" data-act="tab" data-arg="home"><span class="material-symbols-outlined">home</span>Главная</button>
+        <button class="tabbtn" data-act="tab" data-arg="intercom"><span class="material-symbols-outlined">doorbell</span>Домофон</button>
+        <button class="tabbtn" data-act="tab" data-arg="cams"><span class="material-symbols-outlined">videocam</span>Камеры</button>
+        <button class="tabbtn" data-act="tab" data-arg="events"><span class="material-symbols-outlined">notifications</span>События<span class="badge" id="tabBadge" hidden>0</span></button>
+        <button class="tabbtn" data-act="tab" data-arg="more"><span class="material-symbols-outlined">person</span>Я</button>
+      </nav>
+
+      <!-- слои -->
+      <div class="layer" id="layer">
+        <div class="layer-h">
+          <button class="icon-btn" data-act="closeLayer"><span class="material-symbols-outlined">arrow_back</span></button>
+          <h3 id="layerTitle">—</h3>
+          <div id="layerTools"></div>
+        </div>
+        <div class="layer-b" id="layerBody"></div>
+      </div>
+
+      <div class="backdrop" id="backdrop" data-act="closeSheet"></div>
+      <div class="sheet" id="sheet"><div class="grip"></div><div id="sheetBody"></div></div>
+
+      <div class="call" id="call"></div>
+      <div class="toasts" id="toasts"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Мобильное приложение жильца — демо-логика прототипа
+   ========================================================= */
+
+const pad = n => String(n).padStart(2,'0');
+const now = () => new Date();
+const hhmm = d => pad(d.getHours())+':'+pad(d.getMinutes());
+const hhmmss = d => hhmm(d)+':'+pad(d.getSeconds());
+const mmss = s => pad(Math.floor(s/60))+':'+pad(s%60);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const $ = id => document.getElementById(id);
+
+/* ---------- Векторные сцены камер (как в АРМ оператора) ---------- */
+const SCENES={
+  entrance:`<rect width="320" height="180" fill="#232b3d"/><rect width="320" height="100" fill="#2b3448"/><polygon points="0,180 320,180 288,100 32,100" fill="#414b61"/><rect x="88" y="14" width="144" height="86" fill="#0f1725"/><g fill="#a6c2e4" opacity=".45"><rect x="94" y="20" width="64" height="80"/><rect x="162" y="20" width="64" height="80"/></g><g stroke="#c9d8ee" stroke-width="3" opacity=".8"><line x1="160" y1="14" x2="160" y2="100"/></g><g fill="#141a26" opacity=".85"><ellipse cx="158" cy="146" rx="12" ry="4.5"/><path d="M150 146c0-21 4-33 8-33s8 12 8 33z"/><circle cx="158" cy="106" r="7.5"/></g>`,
+  hall:`<rect width="320" height="180" fill="#20283a"/><rect width="320" height="94" fill="#2a3448"/><polygon points="0,180 320,180 246,94 74,94" fill="#3d465c"/><rect x="128" y="38" width="64" height="56" fill="#8fa3c6" opacity=".4"/><g fill="#131a28" opacity=".85"><ellipse cx="142" cy="150" rx="11" ry="4"/><path d="M135 150c0-17 3.5-28 7-28s7 11 7 28z"/><circle cx="142" cy="116" r="6.5"/><ellipse cx="198" cy="167" rx="12" ry="4.5"/><path d="M190 167c0-19 4-31 8-31s8 12 8 31z"/><circle cx="198" cy="129" r="7.5"/></g>`,
+  corridor:`<rect width="320" height="180" fill="#283145"/><polygon points="118,54 202,54 202,126 118,126" fill="#161d2b"/><polygon points="0,0 118,54 118,126 0,180" fill="#38425a"/><polygon points="320,0 202,54 202,126 320,180" fill="#333c53"/><polygon points="0,180 320,180 202,126 118,126" fill="#454f68"/><g fill="#b04a5a" opacity=".85"><polygon points="202,58 250,36 250,146 202,124"/></g><g fill="#131a28" opacity=".8"><path d="M154 128c0-15 2.5-24 6-24s6 9 6 24z"/><circle cx="160" cy="99" r="5.5"/></g>`,
+  gate:`<rect width="320" height="180" fill="#1e2534"/><rect width="320" height="104" fill="#28303f"/><polygon points="0,180 320,180 288,104 32,104" fill="#3b4252"/><rect x="84" y="18" width="152" height="86" fill="#4a5364"/><g stroke="#38404f" stroke-width="3"><line x1="84" y1="30" x2="236" y2="30"/><line x1="84" y1="58" x2="236" y2="58"/><line x1="84" y1="86" x2="236" y2="86"/></g><g fill="#d9a13a" opacity=".75"><rect x="30" y="112" width="260" height="4"/></g><g fill="#141a26" opacity=".85"><path d="M188 150c0-20 4-32 8-32s8 12 8 32z"/><circle cx="196" cy="112" r="7"/></g>`,
+  barrier:`<rect width="320" height="180" fill="#5b7290"/><rect width="320" height="72" fill="#7d9bbd"/><polygon points="0,180 320,180 296,78 24,78" fill="#3f4653"/><g stroke="#e8eef8" stroke-width="4" stroke-dasharray="16 14" opacity=".8"><line x1="160" y1="78" x2="160" y2="180"/></g><g><rect x="100" y="58" width="120" height="8" rx="4" fill="#e8443c"/></g><g fill="#2a3140"><rect x="176" y="96" width="96" height="42" rx="6"/><rect x="192" y="80" width="64" height="22" rx="5"/></g><g fill="#151b26"><circle cx="198" cy="140" r="10"/><circle cx="252" cy="140" r="10"/></g>`,
+  checkpoint:`<rect width="320" height="180" fill="#222a3c"/><rect width="320" height="84" fill="#2b3448"/><polygon points="0,180 320,180 272,84 48,84" fill="#414b61"/><rect x="18" y="16" width="104" height="68" fill="#1a2334"/><rect x="26" y="24" width="88" height="52" fill="#7d93b8" opacity=".45"/><g fill="#8ff0c0" opacity=".85"><circle cx="101" cy="92" r="4"/></g><g fill="#141a26" opacity=".9"><path d="M154 150c0-21 4-33 8-33s8 12 8 33z"/><circle cx="162" cy="110" r="7.5"/></g>`,
+  server:`<rect width="320" height="180" fill="#131a28"/><polygon points="0,180 320,180 250,84 70,84" fill="#232b3c"/><g fill="#0d131d"><rect x="6" y="40" width="58" height="130"/><rect x="256" y="40" width="58" height="130"/></g><g fill="#3ddc84" opacity=".85"><rect x="12" y="50" width="14" height="4"/><rect x="12" y="74" width="10" height="4"/><rect x="12" y="122" width="14" height="4"/><rect x="288" y="52" width="18" height="4"/><rect x="288" y="104" width="20" height="4"/></g>`,
+  dock:`<rect width="320" height="180" fill="#1a2130"/><rect width="320" height="96" fill="#101724"/><polygon points="0,180 320,180 300,96 20,96" fill="#39414f"/><rect x="96" y="14" width="150" height="96" rx="4" fill="#54606f"/><g fill="#d9a13a"><rect x="96" y="110" width="150" height="6"/></g><g fill="#141a26" opacity=".9"><path d="M256 152c0-21 4-33 8-33s8 12 8 33z"/><circle cx="264" cy="113" r="7"/></g>`,
+  yard:`<rect width="320" height="180" fill="#1c2434"/><rect width="320" height="22" fill="#141b28"/><rect x="20" y="22" width="280" height="76" fill="#0b111d"/><g fill="#4a7f5a"><ellipse cx="80" cy="86" rx="28" ry="16"/><ellipse cx="240" cy="80" rx="36" ry="18"/></g><polygon points="0,180 320,180 304,104 16,104" fill="#39435a"/><g fill="#1a2333"><path d="M79 142c0-27 4-42 8-42s8 15 8 42z"/><circle cx="87" cy="95" r="8"/></g>`
+};
+
+/* ---------- Камеры и их группировка ---------- */
+const CAMERAS={
+  'cam-p2':   {name:'Панель П2 · вход',    scene:'entrance',  grp:'Мой подъезд', res:'H.264 · 1920×1080'},
+  'cam-hall': {name:'Холл 1 этажа',        scene:'hall',      grp:'Мой подъезд', res:'H.264 · 1280×720'},
+  'cam-f7':   {name:'Холл 7 этажа',        scene:'corridor',  grp:'Мой подъезд', res:'H.264 · 1920×1080'},
+  'cam-gate': {name:'Калитка двора',       scene:'gate',      grp:'Двор',        res:'H.264 · 1920×1080'},
+  'cam-yard': {name:'Детская площадка',    scene:'yard',      grp:'Двор',        res:'H.265 · 2560×1440'},
+  'cam-kpp':  {name:'КПП двора',           scene:'checkpoint',grp:'Двор',        res:'H.264 · 1920×1080'},
+  'cam-park': {name:'Въезд на паркинг',    scene:'barrier',   grp:'Паркинг',     res:'H.264 · 1920×1080'},
+  'cam-ramp': {name:'Рампа −1',            scene:'dock',      grp:'Паркинг',     res:'H.264 · 1920×1080'}
+};
+const CAM_IDS=Object.keys(CAMERAS);
+
+/* ---------- Панели домофонии (SIP-агенты ядра) ---------- */
+const PANELS=[
+  {id:'panel-p2',  name:'Подъезд 2 · входная дверь', sip:'panel2@integrator-7', cam:'cam-p2',   dev:'BEWARD DKS15120', online:true},
+  {id:'gate-k1',   name:'Калитка двора',             sip:'gate1@integrator-7',  cam:'cam-gate', dev:'Fanvil i32',      online:true},
+  {id:'entry-v1',  name:'Въезд на паркинг',          sip:'entry1@integrator-7', cam:'cam-park', dev:'BAS-IP AV-01',    online:true},
+  {id:'concierge', name:'Консьерж подъезда 2',       sip:'concierge2@integrator-7', cam:'cam-hall', dev:'Планшет SIP', online:true},
+  {id:'dispatch',  name:'Диспетчер УК · круглосуточно', sip:'dispatcher@integrator-7', cam:null,  dev:'АРМ оператора', online:true}
+];
+
+/* ---------- Точки доступа (СКУД) ---------- */
+const DOORS=[
+  {id:'door-p2',   name:'Подъезд 2 · входная дверь', how:'HTTP/CGI · драйвер BEWARD',  cam:'cam-p2',   local:true,  fav:true},
+  {id:'door-gate', name:'Калитка двора',             how:'HTTP API · драйвер Fanvil',  cam:'cam-gate', local:true,  fav:true},
+  {id:'door-bar',  name:'Шлагбаум · въезд',          how:'Реле контроллера',           cam:'cam-park', local:false, fav:true},
+  {id:'door-f7',   name:'Тамбур 7 этажа',            how:'ACFA · Болид С2000-2',       cam:'cam-f7',   local:false, fav:false},
+  {id:'door-park', name:'Дверь в паркинг −1',        how:'ACFA · Болид С2000-2',       cam:'cam-ramp', local:false, fav:false}
+];
+
+/* ---------- Датчики и реле («лёгкий умный дом») ---------- */
+let DEVICES=[
+  {id:'leak-kitchen', kind:'sensor', name:'Протечка · кухня',        state:'Сухо',    st:'ok',   ic:'water_drop'},
+  {id:'smoke-hall',   kind:'sensor', name:'Дым · прихожая',          state:'Норма',   st:'ok',   ic:'detector_smoke'},
+  {id:'door-flat',    kind:'sensor', name:'Открытие входной двери',  state:'Закрыта', st:'ok',   ic:'sensor_door'},
+  {id:'relay-light',  kind:'relay',  name:'Свет в прихожей',         on:false,        ic:'lightbulb'},
+  {id:'relay-socket', kind:'relay',  name:'Розетка · бойлер',        on:true,         ic:'power'}
+];
+
+/* ---------- Счётчики ---------- */
+let METERS=[
+  {id:'hvs', name:'ХВС · холодная вода', unit:'м³',   last:'123.4', sent:false},
+  {id:'gvs', name:'ГВС · горячая вода',  unit:'м³',   last:'87.2',  sent:false},
+  {id:'el',  name:'Электроэнергия',      unit:'кВт·ч',last:'6421',  sent:false}
+];
+
+/* ---------- Гостевые коды ---------- */
+let GUESTS=[
+  {id:'g1', code:'7734', kind:'PIN', who:'Курьер · продукты', doors:'Подъезд 2', left:28*60, uses:1}
+];
+
+/* ---------- История вызовов ---------- */
+let CALLS=[
+  {t:'09:41:12', panel:'Подъезд 2 · входная дверь', res:'answered', note:'Отвечен, дверь открыта', dur:'00:38', cam:'cam-p2'},
+  {t:'08:57:03', panel:'Калитка двора',             res:'missed',   note:'Пропущен · 30 с',        dur:'00:30', cam:'cam-gate'},
+  {t:'Вчера 19:22', panel:'Подъезд 2 · входная дверь', res:'answered', note:'Отвечен',             dur:'00:44', cam:'cam-p2'},
+  {t:'Вчера 14:05', panel:'Въезд на паркинг',       res:'outgoing', note:'Исходящий на панель',    dur:'00:12', cam:'cam-park'}
+];
+
+/* ---------- События ---------- */
+const EV_KIND={
+  intercom:{n:'Домофон',   ic:'doorbell',                cls:'acc'},
+  access:  {n:'Доступ',    ic:'lock_open',               cls:'ok'},
+  fire:    {n:'ОПС',       ic:'local_fire_department',   cls:'crit'},
+  video:   {n:'Видео',     ic:'person_search',           cls:'acc'},
+  utility: {n:'Инженерия', ic:'water_drop',              cls:'warn'},
+  parking: {n:'Паркинг',   ic:'directions_car',          cls:'acc'}
+};
+let EVENTS=[
+  {id:1, kind:'intercom', t:'09:41:12', ttl:'Вызов с панели П2',        d:'Отвечен · дверь открыта из звонка (DTMF)', cam:'cam-p2',  archive:true},
+  {id:2, kind:'access',   t:'09:38:20', ttl:'Дверь открыта',            d:'Подъезд 2 · из приложения (REST unlock)',  cam:'cam-p2',  archive:true},
+  {id:3, kind:'video',    t:'09:12:44', ttl:'Человек в зоне · площадка',d:'Видеоаналитика · требуется подтверждение', cam:'cam-yard',archive:true, confirm:true},
+  {id:4, kind:'parking',  t:'08:50:19', ttl:'Проезд разрешён',          d:'А123ВС 77 · белый список · ваше авто',     cam:'cam-park',archive:true},
+  {id:5, kind:'access',   t:'08:31:07', ttl:'Проход по гостевому PIN',  d:'Курьер · подъезд 2 · код 7734',            cam:'cam-p2',  archive:true},
+  {id:6, kind:'utility',  t:'Вчера 21:14', ttl:'Плановое отключение ГВС', d:'25 сентября 09:00–17:00 · стояк 3',      cam:null,      archive:false}
+];
+let evFilter='all', unread=2;
+
+/* ---------- Сценарии и режимы ---------- */
+let MODE='home';
+let SCENARIOS=[
+  {id:'s1', on:true,  ttl:'Ночной свет в прихожей',   d:'Если открыта входная дверь после 23:00 → включить реле света'},
+  {id:'s2', on:true,  ttl:'Тревога при протечке',     d:'Если датчик протечки сработал → push мне и заявка в УК'},
+  {id:'s3', on:false, ttl:'Охрана по расписанию',     d:'Будни 09:00–18:00 → режим «Охрана», уведомления о движении'},
+  {id:'s4', on:true,  ttl:'Гость у калитки',          d:'Вызов с калитки без ответа 20 с → перевод на консьержа'}
+];
+
+/* ---------- Новости и заявки УК ---------- */
+const NEWS=[
+  {t:'Сегодня', ttl:'Плановое отключение ГВС 25 сентября', d:'С 09:00 до 17:00, стояк 3. Просьба закрыть краны.'},
+  {t:'Вчера',   ttl:'Опрос: детская площадка',             d:'Выберите оборудование для площадки во дворе.', poll:true},
+  {t:'22 сент', ttl:'Уборка паркинга',                     d:'Просьба освободить места 30–40 в субботу с 08:00.'}
+];
+let TICKETS=[
+  {id:'4412', ttl:'Не работает лифт П2', st:'В работе', when:'сегодня 08:12'},
+  {id:'4388', ttl:'Перегорела лампа на 7 этаже', st:'Выполнена', when:'22 сентября'}
+];
+let CHAT=[
+  {me:false, txt:'Здравствуйте! Заявка 4412 передана в лифтовую службу, мастер будет до 14:00.', t:'09:02'},
+  {me:true,  txt:'Спасибо, буду дома после 13:00.', t:'09:05'}
+];
+
+/* ---------- Состояние ---------- */
+let state={
+  tab:'home', theme:'dark', cfg:'ext', wan:true,
+  call:null, callTimer:null, camView:null, archive:false, archivePos:.72,
+  album:[]
+};
+
+/* =========================================================
+   Утилиты отображения
+   ========================================================= */
+function toast(kind,title,text){
+  const el=document.createElement('div');
+  el.className='toast '+(kind||'');
+  el.innerHTML='<b>'+esc(title)+'</b>'+(text?'<span>'+esc(text)+'</span>':'');
+  $('toasts').appendChild(el);
+  setTimeout(()=>{el.style.transition='opacity .3s,transform .3s';el.style.opacity='0';el.style.transform='translateY(-8px)';setTimeout(()=>el.remove(),320)},3600);
+}
+
+function camMarkup(id,opts){
+  opts=opts||{};
+  const c=CAMERAS[id]||{name:id,scene:'hall'};
+  const scene=SCENES[c.scene]||SCENES.hall;
+  const live=!opts.archive;
+  const fit=opts.fit==='meet'?'xMidYMid meet':'xMidYMid slice';
+  const hud=opts.nohud?'':'<div class="cam-hud">'
+      +'<div class="top"><span class="tag'+(live?' live':'')+'">'+(live?'LIVE':'АРХИВ')+'</span>'
+      +(opts.rec===false?'':'<span class="rec"><i></i>REC</span>')
+      +'<span class="ct">'+(opts.time||hhmmss(now()))+'</span></div>'
+      +'<div class="bot"><b>'+esc(c.name)+'</b></div>'
+    +'</div>';
+  return '<div class="cam'+(opts.cls?' '+opts.cls:'')+'"'+(opts.attr||'')+'>'
+    +'<svg class="cam-scene" viewBox="0 0 320 180" preserveAspectRatio="'+fit+'" aria-hidden="true">'+scene+'</svg>'
+    +hud
+    +(opts.nolock?'':'<div class="cam-lock"><div><span class="material-symbols-outlined">lock</span><br>Видео доступно в расширенной конфигурации [Р]</div></div>')
+    +'</div>';
+}
+
+function qrSvg(seed){
+  let h=0; for(let i=0;i<seed.length;i++) h=(h*31+seed.charCodeAt(i))>>>0;
+  const N=21, cells=[];
+  const rnd=()=>{h^=h<<13;h>>>=0;h^=h>>17;h^=h<<5;h>>>=0;return h/4294967296};
+  const finder=(x,y)=>(x<7&&y<7)||(x>N-8&&y<7)||(x<7&&y>N-8);
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    let on;
+    if(finder(x,y)){
+      const fx=x<7?x:x-(N-7), fy=y<7?y:y-(N-7);
+      const b=Math.max(Math.abs(fx-3),Math.abs(fy-3));
+      on=(b!==2);
+    } else on=rnd()>.52;
+    if(on) cells.push('<rect x="'+x+'" y="'+y+'" width="1" height="1"/>');
+  }
+  return '<svg viewBox="0 0 '+N+' '+N+'" shape-rendering="crispEdges"><g fill="#0f172a">'+cells.join('')+'</g></svg>';
+}
+
+/* =========================================================
+   Шапка и статусы
+   ========================================================= */
+function renderStatus(){
+  const sip = state.wan
+    ? '<span class="chip ok"><span class="sd ok"></span>SIP: зарегистрирован</span>'
+    : '<span class="chip warn"><span class="sd warn"></span>Локальный контур дома</span>';
+  const modeMap={home:['Дома','ok'],guard:['Охрана','acc'],guest:['Гости','warn']};
+  const m=modeMap[MODE];
+  const cfg = state.cfg==='ext'
+    ? '<span class="chip ext">Видео [Р]</span>'
+    : '<span class="chip">Базовая</span>';
+  $('statusLine').innerHTML=sip
+    +'<span class="chip '+m[1]+'">Режим: '+m[0]+'</span>'
+    +cfg;
+  $('sysWifi').textContent = state.wan?'wifi':'wifi_off';
+  $('bellDot').hidden = unread===0;
+  const b=$('tabBadge');
+  b.hidden = unread===0;
+  b.textContent = unread;
+}
+
+/* =========================================================
+   Вкладка «Главная»
+   ========================================================= */
+function renderHome(){
+  const favs=DOORS.filter(d=>d.fav);
+  const alerts=EVENTS.filter(e=>e.kind==='fire'||e.kind==='utility'&&e.st==='crit');
+
+  const quick=favs.map(d=>
+    '<button class="quick" data-act="unlock" data-arg="'+d.id+'">'
+    +'<span class="material-symbols-outlined">'+(d.id==='door-bar'?'garage':'lock_open')+'</span>'
+    +esc(d.name.replace(' · входная дверь','').replace(' · въезд',''))+'</button>'
+  ).join('');
+
+  const camPreview = CAM_IDS.slice(0,2).map(id=>
+    '<div data-act="openCam" data-arg="'+id+'">'+camMarkup(id)+'</div>').join('');
+
+  const sensors=DEVICES.filter(d=>d.kind==='sensor').map(d=>
+    '<div class="row">'
+    +'<span class="ic '+(d.st==='ok'?'ok':'crit')+'"><span class="material-symbols-outlined">'+d.ic+'</span></span>'
+    +'<span class="bd"><b>'+esc(d.name)+'</b><span>'+esc(d.state)+'</span></span>'
+    +'<span class="chip '+(d.st==='ok'?'ok':'crit')+'">'+(d.st==='ok'?'норма':'тревога')+'</span>'
+    +'</div>').join('');
+
+  const relays=DEVICES.filter(d=>d.kind==='relay').map(d=>
+    '<div class="row">'
+    +'<span class="ic '+(d.on?'acc':'')+'"><span class="material-symbols-outlined">'+d.ic+'</span></span>'
+    +'<span class="bd"><b>'+esc(d.name)+'</b><span>'+(d.on?'включено':'выключено')+'</span></span>'
+    +'<button class="sw'+(d.on?' on':'')+'" data-act="relay" data-arg="'+d.id+'"><i></i></button>'
+    +'</div>').join('');
+
+  $('tab-home').innerHTML=
+    (alerts.length?'<div class="card" style="border-color:var(--crit)"><div class="card-b" style="display:flex;gap:11px;align-items:flex-start">'
+      +'<span class="material-symbols-outlined" style="color:var(--crit)">warning</span>'
+      +'<div><b style="font-size:13px">'+esc(alerts[0].ttl)+'</b><div style="font-size:11.5px;color:var(--muted);margin-top:2px">'+esc(alerts[0].d)+'</div></div>'
+      +'</div></div>':'')
+
+    +'<div class="sect"><h3>Быстрое открытие</h3></div>'
+    +'<div class="grid3">'+quick+'</div>'
+    +'<div class="note">Открытие вне звонка идёт по REST-команде <b>unlock</b> в драйвер панели — SIP в этом пути не участвует, поэтому кнопка работает и без активного вызова.</div>'
+
+    +'<div class="sect"><h3>Камеры дома</h3><div class="spacer"></div><button data-act="tab" data-arg="cams">Все →</button></div>'
+    +'<div class="grid2">'+camPreview+'</div>'
+
+    +'<div class="sect"><h3>Домофония</h3><div class="spacer"></div><button data-act="tab" data-arg="intercom">История →</button></div>'
+    +'<div class="card">'
+      +'<div class="row"><span class="ic acc"><span class="material-symbols-outlined">phone_forwarded</span></span>'
+      +'<span class="bd"><b>Позвонить на панель</b><span>Посмотреть и поговорить, не дожидаясь вызова</span></span>'
+      +'<button class="btn sm primary" data-act="dialList">Вызов</button></div>'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">key</span></span>'
+      +'<span class="bd"><b>Гостевой доступ</b><span>'+GUESTS.length+' активн. код(ов) · PIN и QR</span></span>'
+      +'<button class="btn sm" data-act="guestList">Открыть</button></div>'
+    +'</div>'
+
+    +'<div class="sect"><h3>Датчики квартиры</h3></div>'
+    +'<div class="card">'+sensors+'</div>'
+
+    +'<div class="sect"><h3>Управление</h3></div>'
+    +'<div class="card">'+relays+'</div>'
+
+    +'<div class="sect"><h3>Счётчики</h3><div class="spacer"></div><button data-act="meters">Передать →</button></div>'
+    +'<div class="card">'+METERS.map(m=>
+        '<div class="row"><span class="ic"><span class="material-symbols-outlined">speed</span></span>'
+        +'<span class="bd"><b>'+esc(m.name)+'</b><span>последнее: '+esc(m.last)+' '+esc(m.unit)+'</span></span>'
+        +(m.sent?'<span class="chip ok">передано</span>':'<span class="chip warn">до 25 числа</span>')
+        +'</div>').join('')+'</div>'
+
+    +'<div class="sect"><h3>От управляющей компании</h3></div>'
+    +'<div class="card">'+NEWS.slice(0,2).map(n=>
+        '<div class="row"><span class="ic '+(n.poll?'acc':'')+'"><span class="material-symbols-outlined">'+(n.poll?'ballot':'campaign')+'</span></span>'
+        +'<span class="bd"><b>'+esc(n.ttl)+'</b><span>'+esc(n.d)+'</span></span>'
+        +'<span class="chip">'+esc(n.t)+'</span></div>').join('')+'</div>';
+}
+
+/* =========================================================
+   Вкладка «Домофон»
+   ========================================================= */
+function renderIntercom(){
+  const panels=PANELS.map(p=>
+    '<div class="row">'
+    +'<span class="ic acc"><span class="material-symbols-outlined">'+(p.id==='concierge'?'support_agent':p.id==='dispatch'?'headset_mic':'doorbell')+'</span></span>'
+    +'<span class="bd"><b>'+esc(p.name)+'</b><span>'+esc(p.dev)+' · '+esc(p.sip)+'</span></span>'
+    +'<button class="btn sm primary" data-act="dial" data-arg="'+p.id+'"><span class="material-symbols-outlined">call</span></button>'
+    +'</div>').join('');
+
+  const doors=DOORS.map(d=>
+    '<div class="row">'
+    +'<span class="ic"><span class="material-symbols-outlined">'+(d.id==='door-bar'?'garage':'meeting_room')+'</span></span>'
+    +'<span class="bd"><b>'+esc(d.name)+'</b><span>'+esc(d.how)+(d.local?' · работает без облака':'')+'</span></span>'
+    +'<button class="btn sm primary" data-act="unlock" data-arg="'+d.id+'">Открыть</button>'
+    +'</div>').join('');
+
+  const hist=CALLS.map((c,i)=>{
+    const icon=c.res==='missed'?'call_missed':c.res==='outgoing'?'call_made':'call_received';
+    const cls=c.res==='missed'?'crit':c.res==='outgoing'?'acc':'ok';
+    return '<div class="row">'
+      +'<span class="ic '+cls+'"><span class="material-symbols-outlined">'+icon+'</span></span>'
+      +'<span class="bd"><b>'+esc(c.panel)+'</b><span>'+esc(c.note)+' · '+esc(c.dur)+'</span></span>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
+        +'<span style="font-size:11px;color:var(--faint)">'+esc(c.t)+'</span>'
+        +(c.cam?'<button class="btn sm ghost ext-only" data-act="openCam" data-arg="'+c.cam+'" data-arch="1">Архив</button>':'')
+      +'</div></div>';
+  }).join('');
+
+  $('tab-intercom').innerHTML=
+    '<div class="sect"><h3>Позвонить</h3></div>'
+    +'<div class="card">'+panels+'</div>'
+    +'<div class="note">Исходящий вызов из приложения — это <b>POST /calls/outgoing</b> к ядру: приложение выступает SIP UA и звонит на аккаунт панели. В концепции этот call control помечен как объём разработки, здесь показано целевое поведение.</div>'
+
+    +'<div class="sect"><h3>Точки доступа</h3></div>'
+    +'<div class="card">'+doors+'</div>'
+
+    +'<div class="sect"><h3>Гостевой доступ</h3><div class="spacer"></div><button data-act="guestNew">Создать →</button></div>'
+    +'<div class="card" id="guestCard">'+guestRows()+'</div>'
+
+    +'<div class="sect"><h3>История вызовов</h3></div>'
+    +'<div class="card">'+hist+'</div>';
+}
+
+function guestRows(){
+  if(!GUESTS.length) return '<div class="empty">Активных кодов нет</div>';
+  return GUESTS.map(g=>
+    '<div class="row">'
+    +'<span class="ic acc"><span class="material-symbols-outlined">'+(g.kind==='QR'?'qr_code_2':'password')+'</span></span>'
+    +'<span class="bd"><b>'+g.kind+' '+esc(g.code)+'</b><span>'+esc(g.who)+' · '+esc(g.doors)+' · '+g.uses+' проход(а)</span></span>'
+    +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
+      +'<span class="chip warn">'+mmss(g.left)+'</span>'
+      +'<button class="btn sm ghost" data-act="guestShow" data-arg="'+g.id+'">Показать</button>'
+    +'</div></div>').join('');
+}
+
+/* =========================================================
+   Вкладка «Камеры»
+   ========================================================= */
+function renderCams(){
+  const groups={};
+  CAM_IDS.forEach(id=>{(groups[CAMERAS[id].grp]=groups[CAMERAS[id].grp]||[]).push(id)});
+  let html='<div class="note basic-only">В базовой конфигурации видеомодуль не подключён: домофония, открытие дверей и события работают, а живое видео и архив — функции расширенной поставки <b>[Р]</b>.</div>';
+  Object.keys(groups).forEach(g=>{
+    html+='<div class="sect"><h3>'+esc(g)+'</h3><div class="spacer"></div><span class="chip">'+groups[g].length+'</span></div>'
+      +'<div class="grid2">'+groups[g].map(id=>
+        '<div data-act="openCam" data-arg="'+id+'">'+camMarkup(id)+'</div>').join('')+'</div>';
+  });
+  html+='<div class="note">Доступ к камерам выдаёт УК: жильцу видны общедомовые камеры своего подъезда, двора и паркинга. Камеры чужих подъездов и квартир в список не попадают.</div>';
+  $('tab-cams').innerHTML=html;
+}
+
+/* =========================================================
+   Вкладка «События»
+   ========================================================= */
+function renderEvents(){
+  const kinds=[['all','Все'],['intercom','Домофон'],['access','Доступ'],['fire','ОПС'],['video','Видео'],['utility','Инженерия'],['parking','Паркинг']];
+  const chips=kinds.map(k=>'<button class="fchip'+(evFilter===k[0]?' on':'')+'" data-act="evFilter" data-arg="'+k[0]+'">'+k[1]+'</button>').join('');
+  const list=EVENTS.filter(e=>evFilter==='all'||e.kind===evFilter);
+
+  const rows=list.map(e=>{
+    const m=EV_KIND[e.kind];
+    const acts=[];
+    if(e.cam&&e.archive) acts.push('<button class="btn sm ghost ext-only" data-act="openCam" data-arg="'+e.cam+'" data-arch="1">Фрагмент</button>');
+    if(e.confirm) acts.push('<button class="btn sm ghost" data-act="evFalse" data-arg="'+e.id+'">Ложное</button>');
+    return '<div class="row">'
+      +'<span class="ic '+m.cls+'"><span class="material-symbols-outlined">'+m.ic+'</span></span>'
+      +'<span class="bd"><b>'+esc(e.ttl)+'</b><span>'+esc(e.d)+'</span>'
+      +(acts.length?'<span style="display:flex;gap:6px;margin-top:7px">'+acts.join('')+'</span>':'')
+      +'</span>'
+      +'<span style="font-size:11px;color:var(--faint);white-space:nowrap">'+esc(e.t)+'</span>'
+      +'</div>';
+  }).join('');
+
+  $('tab-events').innerHTML=
+    '<div class="fchips">'+chips+'</div>'
+    +'<div class="card">'+(rows||'<div class="empty">Событий этого типа нет</div>')+'</div>'
+    +'<div class="note">Push приходит с миниатюрой и быстрым действием: «Открыть дверь» для домофона и «Ложное срабатывание» для видеоаналитики — можно ответить, не открывая приложение.</div>';
+}
+
+/* =========================================================
+   Вкладка «Я»
+   ========================================================= */
+function renderMore(){
+  const modes=[['home','Дома','home'],['guard','Охрана','shield'],['guest','Гости','group']];
+  const modeBtns=modes.map(m=>
+    '<button class="quick'+(MODE===m[0]?' busy':'')+'" data-act="mode" data-arg="'+m[0]+'">'
+    +'<span class="material-symbols-outlined">'+m[2]+'</span>'+m[1]+'</button>').join('');
+
+  const scen=SCENARIOS.map(s=>
+    '<div class="row"><span class="ic '+(s.on?'acc':'')+'"><span class="material-symbols-outlined">bolt</span></span>'
+    +'<span class="bd"><b>'+esc(s.ttl)+'</b><span>'+esc(s.d)+'</span></span>'
+    +'<button class="sw'+(s.on?' on':'')+'" data-act="scenario" data-arg="'+s.id+'"><i></i></button></div>').join('');
+
+  $('tab-more').innerHTML=
+    '<div class="card"><div class="card-b" style="display:flex;gap:12px;align-items:center">'
+      +'<span class="ic acc" style="width:48px;height:48px;flex:0 0 48px;border-radius:15px;display:grid;place-items:center;background:var(--accent-dim);color:var(--accent)"><span class="material-symbols-outlined" style="font-size:26px">person</span></span>'
+      +'<div style="flex:1;min-width:0"><b style="font-size:15px">Смирнов Алексей</b>'
+      +'<div style="font-size:11.5px;color:var(--muted)">Квартира 214 · собственник</div>'
+      +'<div style="font-size:11.5px;color:var(--muted)">SIP 214@integrator-7</div></div>'
+    +'</div></div>'
+
+    +'<div class="sect"><h3>Режим</h3></div>'
+    +'<div class="grid3">'+modeBtns+'</div>'
+
+    +'<div class="sect"><h3>Сценарии</h3></div>'
+    +'<div class="card">'+scen+'</div>'
+
+    +'<div class="sect"><h3>Сервисы УК</h3></div>'
+    +'<div class="card">'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">build</span></span>'
+      +'<span class="bd"><b>Заявки</b><span>'+TICKETS.filter(t=>t.st==='В работе').length+' в работе · '+TICKETS.length+' всего</span></span>'
+      +'<button class="btn sm" data-act="tickets">Открыть</button></div>'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">forum</span></span>'
+      +'<span class="bd"><b>Чат с УК</b><span>Диспетчер отвечает круглосуточно</span></span>'
+      +'<button class="btn sm" data-act="chat">Написать</button></div>'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">campaign</span></span>'
+      +'<span class="bd"><b>Новости и опросы</b><span>'+NEWS.length+' публикации</span></span>'
+      +'<button class="btn sm" data-act="news">Читать</button></div>'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">speed</span></span>'
+      +'<span class="bd"><b>Показания счётчиков</b><span>Передать до 25 числа</span></span>'
+      +'<button class="btn sm" data-act="meters">Ввести</button></div>'
+    +'</div>'
+
+    +'<div class="sect"><h3>Устройства и связь</h3></div>'
+    +'<div class="card">'
+      +'<div class="row"><span class="ic ok"><span class="material-symbols-outlined">smartphone</span></span>'
+      +'<span class="bd"><b>iPhone 14 · это устройство</b><span>SIP зарегистрирован · VoIP push (PushKit)</span></span>'
+      +'<span class="chip ok">онлайн</span></div>'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">tablet_android</span></span>'
+      +'<span class="bd"><b>Планшет на кухне</b><span>Второй SIP-аккаунт · приоритет 2</span></span>'
+      +'<span class="chip">офлайн</span></div>'
+      +'<div class="row"><span class="ic '+(state.wan?'ok':'warn')+'"><span class="material-symbols-outlined">cloud</span></span>'
+      +'<span class="bd"><b>Связь с облаком</b><span>'+(state.wan?'Доставка push 0.9 с · установка вызова 1.8 с':'WAN недоступен · домофония работает локально')+'</span></span>'
+      +'<span class="chip '+(state.wan?'ok':'warn')+'">'+(state.wan?'норма':'резерв')+'</span></div>'
+    +'</div>'
+
+    +'<div class="sect"><h3>Личное</h3></div>'
+    +'<div class="card">'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">photo_library</span></span>'
+      +'<span class="bd"><b>Мои кадры</b><span>'+state.album.length+' снимок(ов) с камер</span></span>'
+      +'<button class="btn sm" data-act="album">Открыть</button></div>'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">help</span></span>'
+      +'<span class="bd"><b>Справочный центр</b><span>Как открыть дверь, выдать код, ответить на вызов</span></span>'
+      +'<button class="btn sm" data-act="help">Читать</button></div>'
+      +'<div class="row"><span class="ic"><span class="material-symbols-outlined">logout</span></span>'
+      +'<span class="bd"><b>Сменить пользователя</b><span>Выход с сохранением объекта</span></span>'
+      +'<button class="btn sm ghost" data-act="logout">Выйти</button></div>'
+    +'</div>';
+}
+
+function renderAll(){
+  renderStatus(); renderHome(); renderIntercom(); renderCams(); renderEvents(); renderMore();
+}
+
+/* =========================================================
+   Навигация
+   ========================================================= */
+function go(tab){
+  state.tab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.id==='tab-'+tab));
+  document.querySelectorAll('.tabbtn').forEach(b=>b.classList.toggle('on', b.dataset.arg===tab));
+  $('scroll').scrollTop=0;
+  if(tab==='events'&&unread){ unread=0; renderStatus(); }
+}
+
+function openLayer(title,body,tools){
+  $('layerTitle').textContent=title;
+  $('layerBody').innerHTML=body;
+  $('layerTools').innerHTML=tools||'';
+  $('layer').classList.add('on');
+}
+function closeLayer(){ $('layer').classList.remove('on'); state.camView=null; }
+
+function openSheet(html){
+  $('sheetBody').innerHTML=html;
+  $('sheet').classList.add('on');
+  $('backdrop').classList.add('on');
+}
+function closeSheet(){ $('sheet').classList.remove('on'); $('backdrop').classList.remove('on'); }
+
+/* =========================================================
+   СКУД — открытие двери
+   ========================================================= */
+function unlock(id){
+  const d=DOORS.find(x=>x.id===id); if(!d) return;
+  if(!state.wan && !d.local){
+    toast('err','Недоступно без облака', d.name+' открывается через облачное ядро. Локально работают только двери подъезда и калитка.');
+    return;
+  }
+  const btn=document.querySelector('[data-act="unlock"][data-arg="'+id+'"]');
+  if(btn&&btn.classList.contains('quick')){
+    btn.classList.add('busy');
+    setTimeout(()=>btn.classList.remove('busy'),2200);
+  }
+  toast('ok','Дверь открыта', d.name+' · REST unlock → '+d.how+(state.wan?'':' · локальный контур'));
+  pushEvent('access','Дверь открыта', d.name+' · из приложения (REST unlock)', d.cam);
+}
+
+/* =========================================================
+   Домофония: входящий и исходящий вызовы
+   ========================================================= */
+function callHtml(){
+  const c=state.call; if(!c) return '';
+  const p=PANELS.find(x=>x.id===c.panel)||{name:c.panel,cam:null};
+  const stage=c.stage;
+  const stateTxt={
+    incoming:'Входящий вызов · early media (183 Session Progress)',
+    dialing:'Исходящий вызов · ожидание ответа панели',
+    talking:'Разговор · RTP через RTPEngine',
+    ended:'Вызов завершён'
+  }[stage];
+
+  const video = p.cam
+    ? camMarkup(p.cam,{nolock:true,nohud:true})
+    : '<div class="cam"><div class="cam-hud"><div class="bot"><b>Голосовой вызов без видео</b></div></div></div>';
+
+  let actions='';
+  if(stage==='incoming'){
+    actions=''
+      +'<button class="cbtn decline" data-act="hangup"><span class="circle"><span class="material-symbols-outlined">call_end</span></span>Отклонить</button>'
+      +'<button class="cbtn unlock" data-act="callUnlock"><span class="circle"><span class="material-symbols-outlined">lock_open</span></span>Открыть</button>'
+      +'<button class="cbtn answer" data-act="answer"><span class="circle"><span class="material-symbols-outlined">call</span></span>Ответить</button>';
+  } else if(stage==='talking'){
+    actions=''
+      +'<button class="cbtn'+(c.mute?' on':'')+'" data-act="mute"><span class="circle"><span class="material-symbols-outlined">'+(c.mute?'mic_off':'mic')+'</span></span>'+(c.mute?'Микр. выкл':'Микрофон')+'</button>'
+      +'<button class="cbtn unlock" data-act="callUnlock"><span class="circle"><span class="material-symbols-outlined">lock_open</span></span>Открыть</button>'
+      +'<button class="cbtn decline" data-act="hangup"><span class="circle"><span class="material-symbols-outlined">call_end</span></span>Завершить</button>';
+  } else if(stage==='dialing'){
+    actions=''
+      +'<button class="cbtn" data-act="mute" disabled><span class="circle"><span class="material-symbols-outlined">mic</span></span>Микрофон</button>'
+      +'<button class="cbtn unlock" data-act="callUnlock"><span class="circle"><span class="material-symbols-outlined">lock_open</span></span>Открыть</button>'
+      +'<button class="cbtn decline" data-act="hangup"><span class="circle"><span class="material-symbols-outlined">call_end</span></span>Отмена</button>';
+  }
+
+  const extra = stage==='talking'
+    ? '<div class="dtmf">'
+      +'<button data-act="dtmf" data-arg="1">1</button><button data-act="dtmf" data-arg="2">2</button><button data-act="dtmf" data-arg="3">3</button>'
+      +'<button data-act="dtmf" data-arg="*">*</button><button data-act="dtmf" data-arg="0">0</button><button data-act="dtmf" data-arg="#">#</button>'
+      +'</div>'
+      +'<div style="font-size:10.5px;color:#8ea3c0;margin-top:9px;line-height:1.5">Тон <b>#</b> — открытие двери сигналом DTMF внутри разговора. Кнопка «Открыть» использует независимый путь REST unlock.</div>'
+    : (stage==='incoming'
+      ? '<div style="font-size:10.5px;color:#8ea3c0;margin-top:12px;line-height:1.5">Видео с панели доступно <b>до</b> ответа: панель прислала early media. Дверь можно открыть, не принимая вызов.</div>'
+      : '<div style="font-size:10.5px;color:#8ea3c0;margin-top:12px;line-height:1.5">Приложение выступает SIP UA и отправляет INVITE на аккаунт панели через ядро.</div>');
+
+  return '<div class="call-video">'+video
+    +'<div class="call-top">'
+      +'<div class="state"><span class="sd '+(stage==='talking'?'ok':'crit')+'"></span>'+esc(stateTxt)
+      +(stage==='talking'||stage==='dialing'?'<span class="timer" style="margin-left:auto">'+mmss(c.sec)+'</span>':'')
+      +'</div>'
+      +'<div class="who">'+esc(p.name)+'</div>'
+      +'<div class="where">'+(c.dir==='in'?'вызывает квартиру 214':'вы звоните на панель')+' · Call-ID a7f3c9…e12b</div>'
+    +'</div></div>'
+    +'<div class="call-bot"><div class="call-actions">'+actions+'</div>'+extra+'</div>';
+}
+
+function renderCall(){ $('call').innerHTML=callHtml(); }
+
+function startCall(panelId,dir){
+  const p=PANELS.find(x=>x.id===panelId); if(!p) return;
+  state.call={panel:panelId,dir:dir,stage:dir==='in'?'incoming':'dialing',sec:0,mute:false};
+  renderCall();
+  $('call').classList.add('on');
+  clearInterval(state.callTimer);
+  state.callTimer=setInterval(()=>{
+    if(!state.call) return;
+    state.call.sec++;
+    const t=document.querySelector('#call .timer');
+    if(t) t.textContent=mmss(state.call.sec);
+  },1000);
+  if(dir==='in'){
+    toast('info','Входящий вызов', p.name+' · VoIP push доставлен за 0.9 с');
+  } else {
+    setTimeout(()=>{ if(state.call&&state.call.stage==='dialing') answerCall(true); },2200);
+  }
+}
+function answerCall(auto){
+  if(!state.call) return;
+  state.call.stage='talking';
+  state.call.sec=0;
+  renderCall();
+  if(!auto) toast('ok','Соединение установлено','Аудио G.711 · видео H.264 · медиа через RTPEngine');
+}
+function hangup(){
+  const c=state.call;
+  if(c){
+    const p=PANELS.find(x=>x.id===c.panel)||{name:c.panel,cam:null};
+    const answered=c.stage==='talking';
+    CALLS.unshift({
+      t:hhmmss(now()), panel:p.name,
+      res: c.dir==='out'?'outgoing':(answered?'answered':'missed'),
+      note: c.dir==='out'?'Исходящий на панель':(answered?'Отвечен':'Отклонён'),
+      dur: mmss(answered?c.sec:0), cam:p.cam
+    });
+    pushEvent('intercom', c.dir==='out'?'Исходящий вызов на панель':'Вызов с панели', p.name+' · '+(answered?'разговор '+mmss(c.sec):'без ответа'), p.cam, true);
+  }
+  state.call=null;
+  clearInterval(state.callTimer);
+  $('call').classList.remove('on');
+  renderIntercom();
+}
+function callUnlock(){
+  const c=state.call; if(!c) return;
+  const p=PANELS.find(x=>x.id===c.panel)||{};
+  const door=DOORS.find(d=>d.cam===p.cam);
+  toast('ok','Дверь открыта', (door?door.name:p.name)+' · REST unlock из карточки вызова');
+  pushEvent('access','Дверь открыта', (door?door.name:p.name)+' · из вызова (REST unlock)', p.cam);
+}
+function dtmf(k){
+  if(k==='#'){
+    toast('ok','Сигнал DTMF «#»','Панель приняла тон и открыла дверь внутри разговора');
+    pushEvent('access','Дверь открыта','Из звонка · DTMF «#»', (PANELS.find(x=>x.id===state.call.panel)||{}).cam);
+  } else {
+    toast('info','DTMF «'+k+'»','Тон отправлен на панель (RFC 2833)');
+  }
+}
+
+/* =========================================================
+   Камера: живой просмотр и архив
+   ========================================================= */
+function openCam(id,archive){
+  if(state.cfg!=='ext'){
+    toast('warn','Нужна расширенная конфигурация','Живое видео и архив доступны при подключённом видеомодуле [Р]');
+    return;
+  }
+  const c=CAMERAS[id]; if(!c) return;
+  state.camView=id; state.archive=!!archive;
+  renderCamLayer();
+  $('layer').classList.add('on');
+}
+function renderCamLayer(){
+  const id=state.camView; if(!id) return;
+  const c=CAMERAS[id];
+  const arch=state.archive;
+  const t=new Date(now().getTime()-(arch?Math.round((1-state.archivePos)*3600*1000):0));
+  const marks=EVENTS.filter(e=>e.cam===id).map((e,i)=>
+    '<div class="mk'+(e.kind==='fire'?' crit':'')+'" style="left:'+(18+i*17)+'%" title="'+esc(e.ttl)+'"></div>').join('');
+
+  const body=camMarkup(id,{nolock:true,archive:arch,time:hhmmss(t)})
+    +'<div style="display:flex;gap:7px">'
+      +'<button class="btn sm '+(arch?'':'primary')+'" data-act="camLive" style="flex:1">Live</button>'
+      +'<button class="btn sm '+(arch?'primary':'')+'" data-act="camArchive" style="flex:1">Архив</button>'
+    +'</div>'
+    +(arch?'<div class="timeline" data-act="scrub">'
+      +'<div class="fill" style="width:'+Math.round(state.archivePos*100)+'%"></div>'
+      +marks
+      +'<div class="cursor" style="left:'+Math.round(state.archivePos*100)+'%"></div>'
+      +'<span class="lbl">−60 мин</span><span class="lbl r">сейчас</span>'
+      +'</div>':'')
+    +'<div class="grid3">'
+      +'<button class="quick" data-act="snapshot"><span class="material-symbols-outlined">photo_camera</span>Кадр</button>'
+      +'<button class="quick" data-act="camDoor"><span class="material-symbols-outlined">lock_open</span>Дверь</button>'
+      +'<button class="quick" data-act="camCall"><span class="material-symbols-outlined">call</span>Вызов</button>'
+    +'</div>'
+    +'<div class="card"><div class="card-h"><h4>О камере</h4></div>'
+      +'<div class="row"><span class="bd"><b>Расположение</b><span>'+esc(c.grp)+'</span></span></div>'
+      +'<div class="row"><span class="bd"><b>Поток</b><span>'+esc(c.res)+' · RTSP в видеомодуль</span></span></div>'
+      +'<div class="row"><span class="bd"><b>Архив</b><span>Глубина 30 суток · запись постоянная</span></span></div>'
+    +'</div>'
+    +'<div class="sect"><h3>События этой камеры</h3></div>'
+    +'<div class="card">'+(EVENTS.filter(e=>e.cam===id).map(e=>{
+        const m=EV_KIND[e.kind];
+        return '<div class="row"><span class="ic '+m.cls+'"><span class="material-symbols-outlined">'+m.ic+'</span></span>'
+          +'<span class="bd"><b>'+esc(e.ttl)+'</b><span>'+esc(e.d)+'</span></span>'
+          +'<span style="font-size:11px;color:var(--faint)">'+esc(e.t)+'</span></div>';
+      }).join('')||'<div class="empty">Событий нет</div>')+'</div>';
+
+  openLayer(c.name, body, '<span class="chip ext">[Р]</span>');
+}
+
+/* =========================================================
+   Листы: гости, счётчики, УК
+   ========================================================= */
+function guestNew(){
+  openSheet(
+    '<h3>Гостевой доступ</h3>'
+    +'<div class="sub">Код действует ограниченное время и число проходов. Работает и без интернета у гостя.</div>'
+    +'<div style="display:flex;flex-direction:column;gap:9px">'
+      +'<div><div style="font-size:11.5px;color:var(--muted);margin-bottom:5px">Кому</div><input id="gWho" value="Курьер" placeholder="Курьер, гость, мастер"></div>'
+      +'<div><div style="font-size:11.5px;color:var(--muted);margin-bottom:5px">Срок действия</div>'
+        +'<div class="grid3"><button class="quick" data-act="gTtl" data-arg="60">1 час</button><button class="quick busy" data-act="gTtl" data-arg="240">4 часа</button><button class="quick" data-act="gTtl" data-arg="1440">Сутки</button></div></div>'
+      +'<div class="grid2" style="margin-top:4px">'
+        +'<button class="btn primary" data-act="gMake" data-arg="PIN">Создать PIN</button>'
+        +'<button class="btn" data-act="gMake" data-arg="QR">Создать QR</button>'
+      +'</div>'
+    +'</div>');
+}
+let gTtlMin=240;
+function guestMake(kind){
+  const who=($('gWho')&&$('gWho').value||'Гость').trim()||'Гость';
+  const code=kind==='PIN'?String(1000+Math.floor(Math.random()*8999)):Math.random().toString(16).slice(2,10);
+  GUESTS.unshift({id:'g'+Date.now(), code, kind, who, doors:'Подъезд 2 + калитка', left:gTtlMin*60, uses:1});
+  closeSheet();
+  renderIntercom(); renderHome();
+  toast('ok','Код создан', kind+' '+code+' · '+who+' · '+(gTtlMin>=1440?'сутки':(gTtlMin/60)+' ч'));
+  guestShow(GUESTS[0].id);
+}
+function guestShow(id){
+  const g=GUESTS.find(x=>x.id===id); if(!g) return;
+  openSheet(
+    '<h3>'+g.kind+' '+esc(g.code)+'</h3>'
+    +'<div class="sub">'+esc(g.who)+' · '+esc(g.doors)+' · осталось '+mmss(g.left)+'</div>'
+    +(g.kind==='QR'?'<div class="qr">'+qrSvg(g.code)+'</div>':
+      '<div style="text-align:center;font-size:38px;font-weight:700;letter-spacing:8px;padding:14px 0;font-variant-numeric:tabular-nums">'+esc(g.code)+'</div>')
+    +'<div class="note" style="margin-top:12px">Гость набирает код на панели или показывает QR считывателю. Каждое использование пишется в журнал с временем и точкой доступа.</div>'
+    +'<div class="grid2" style="margin-top:12px">'
+      +'<button class="btn" data-act="closeSheet">Закрыть</button>'
+      +'<button class="btn danger" data-act="gRevoke" data-arg="'+g.id+'">Отозвать</button>'
+    +'</div>');
+}
+function meters(){
+  openSheet(
+    '<h3>Показания счётчиков</h3>'
+    +'<div class="sub">Передайте до 25 числа. Значение не может быть меньше предыдущего.</div>'
+    +METERS.map(m=>
+      '<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;margin-bottom:5px">'+esc(m.name)+'</div>'
+      +'<div class="meter-in"><input id="mt-'+m.id+'" inputmode="decimal" value="'+esc(m.last)+'">'
+      +'<span class="chip">'+esc(m.unit)+'</span></div>'
+      +'<div style="font-size:11px;color:var(--faint);margin-top:4px">предыдущее: '+esc(m.last)+'</div></div>').join('')
+    +'<button class="btn primary wide" data-act="metersSend">Передать показания</button>');
+}
+function metersSend(){
+  let bad=null;
+  METERS.forEach(m=>{
+    const v=parseFloat(($('mt-'+m.id)||{}).value);
+    if(isNaN(v)||v<parseFloat(m.last)) bad=bad||m.name;
+  });
+  if(bad){ toast('err','Проверьте значение', bad+': показание меньше предыдущего'); return; }
+  METERS.forEach(m=>{ m.last=String(parseFloat($('mt-'+m.id).value)); m.sent=true; });
+  closeSheet(); renderHome();
+  toast('ok','Показания переданы','Данные ушли в УК · квитанция придёт в новостях');
+}
+function tickets(){
+  openLayer('Заявки в УК',
+    '<button class="btn primary wide" data-act="ticketNew">Создать заявку</button>'
+    +'<div class="card">'+TICKETS.map(t=>
+      '<div class="row"><span class="ic '+(t.st==='В работе'?'warn':'ok')+'"><span class="material-symbols-outlined">'+(t.st==='В работе'?'pending':'task_alt')+'</span></span>'
+      +'<span class="bd"><b>№'+t.id+' · '+esc(t.ttl)+'</b><span>'+esc(t.when)+'</span></span>'
+      +'<span class="chip '+(t.st==='В работе'?'warn':'ok')+'">'+esc(t.st)+'</span></div>').join('')+'</div>'
+    +'<div class="note">Заявка создаётся из события: например, из тревоги протечки в один тап — с автоподстановкой адреса, времени и привязанного фрагмента архива.</div>');
+}
+function ticketNew(){
+  const id=String(4400+Math.floor(Math.random()*99));
+  TICKETS.unshift({id, ttl:'Заявка из приложения', st:'В работе', when:'сегодня '+hhmm(now())});
+  tickets(); renderMore();
+  toast('ok','Заявка создана','№'+id+' передана диспетчеру УК');
+}
+function chat(){
+  openLayer('Чат с УК',
+    '<div class="card"><div class="card-b" style="display:flex;flex-direction:column;gap:9px">'
+    +CHAT.map(m=>
+      '<div style="align-self:'+(m.me?'flex-end':'flex-start')+';max-width:82%;background:'+(m.me?'var(--accent-dim)':'var(--panel-2)')+';border:1px solid var(--stroke);border-radius:14px;padding:9px 11px">'
+      +'<div style="font-size:12.5px">'+esc(m.txt)+'</div>'
+      +'<div style="font-size:10px;color:var(--faint);margin-top:3px;text-align:right">'+esc(m.t)+'</div></div>').join('')
+    +'</div></div>'
+    +'<div style="display:flex;gap:8px"><input id="chatIn" placeholder="Сообщение диспетчеру…"><button class="btn primary" data-act="chatSend"><span class="material-symbols-outlined">send</span></button></div>');
+}
+function chatSend(){
+  const v=($('chatIn')&&$('chatIn').value||'').trim();
+  if(!v) return;
+  CHAT.push({me:true,txt:v,t:hhmm(now())});
+  setTimeout(()=>{ CHAT.push({me:false,txt:'Принято, передал в работу.',t:hhmm(now())}); chat(); },900);
+  chat();
+}
+function news(){
+  openLayer('Новости и опросы',
+    '<div class="card">'+NEWS.map(n=>
+      '<div class="row"><span class="ic '+(n.poll?'acc':'')+'"><span class="material-symbols-outlined">'+(n.poll?'ballot':'campaign')+'</span></span>'
+      +'<span class="bd"><b>'+esc(n.ttl)+'</b><span>'+esc(n.d)+'</span>'
+      +(n.poll?'<span style="display:flex;gap:6px;margin-top:7px"><button class="btn sm ghost" data-act="vote" data-arg="Горка">Горка</button><button class="btn sm ghost" data-act="vote" data-arg="Батут">Батут</button></span>':'')
+      +'</span><span class="chip">'+esc(n.t)+'</span></div>').join('')+'</div>');
+}
+function album(){
+  openLayer('Мои кадры',
+    state.album.length
+      ? '<div class="grid2">'+state.album.map(a=>camMarkup(a.cam,{nolock:true,archive:true,time:a.t,rec:false})).join('')+'</div>'
+      : '<div class="empty">Пока пусто. Откройте камеру и нажмите «Кадр» — снимок сохранится сюда.</div>');
+}
+function help(){
+  openLayer('Справочный центр',
+    '<div class="card">'
+    +[['Как ответить на вызов','Вызов приходит VoIP-push и показывается поверх блокировки. Видео с панели видно до ответа.'],
+      ['Два способа открыть дверь','Из звонка тоном DTMF «#» и вне звонка кнопкой в приложении по REST unlock.'],
+      ['Гостевой код','Создайте PIN или QR на нужный срок. Каждый проход попадёт в журнал.'],
+      ['Если нет интернета','Домофония подъезда и открытие двери продолжат работать через локальный контур дома.'],
+      ['Доступ к камерам','Список камер настраивает УК: видны общедомовые камеры вашего подъезда и двора.']]
+      .map(r=>'<div class="row"><span class="ic acc"><span class="material-symbols-outlined">help</span></span>'
+        +'<span class="bd"><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></span></div>').join('')
+    +'</div>');
+}
+function objects(){
+  openSheet('<h3>Мои объекты</h3><div class="sub">Один аккаунт может обслуживать несколько адресов</div>'
+    +'<div class="card">'
+    +'<div class="row"><span class="ic acc"><span class="material-symbols-outlined">apartment</span></span>'
+    +'<span class="bd"><b>ЖК «Северный парк», к3</b><span>Квартира 214 · подъезд 2</span></span><span class="chip ok">активен</span></div>'
+    +'<div class="row"><span class="ic"><span class="material-symbols-outlined">holiday_village</span></span>'
+    +'<span class="bd"><b>Дача · СНТ «Восход»</b><span>Участок 42 · калитка и ворота</span></span><button class="btn sm" data-act="closeSheet">Выбрать</button></div>'
+    +'</div>');
+}
+
+/* =========================================================
+   События и демо-генерация
+   ========================================================= */
+function pushEvent(kind,ttl,d,cam,silent){
+  EVENTS.unshift({id:Date.now(),kind,t:hhmmss(now()),ttl,d,cam:cam||null,archive:!!cam,confirm:kind==='video'});
+  if(EVENTS.length>40) EVENTS.pop();
+  if(state.tab!=='events'){ unread++; }
+  renderEvents(); renderStatus();
+  if(!silent && kind==='fire') toast('err',ttl,d);
+}
+
+/* =========================================================
+   Обработчик действий
+   ========================================================= */
+const ACTIONS={
+  tab:go,
+  theme:()=>applyTheme(state.theme==='dark'?'light':'dark'),
+  objects,
+  closeLayer, closeSheet,
+  unlock,
+  dialList:()=>{
+    openSheet('<h3>Кому позвонить</h3><div class="sub">Приложение звонит на SIP-аккаунт панели или консьержа</div>'
+      +'<div class="card">'+PANELS.map(p=>
+        '<div class="row"><span class="ic acc"><span class="material-symbols-outlined">'+(p.id==='concierge'?'support_agent':p.id==='dispatch'?'headset_mic':'doorbell')+'</span></span>'
+        +'<span class="bd"><b>'+esc(p.name)+'</b><span>'+esc(p.sip)+'</span></span>'
+        +'<button class="btn sm primary" data-act="dial" data-arg="'+p.id+'">Вызов</button></div>').join('')+'</div>');
+  },
+  dial:(id)=>{ closeSheet(); startCall(id,'out'); },
+  answer:()=>answerCall(false),
+  hangup, callUnlock,
+  dtmf,
+  mute:()=>{ if(state.call){ state.call.mute=!state.call.mute; renderCall(); } },
+  openCam:(id,el)=>openCam(id, el&&el.dataset.arch==='1'),
+  camLive:()=>{ state.archive=false; renderCamLayer(); },
+  camArchive:()=>{ state.archive=true; renderCamLayer(); },
+  scrub:(a,el)=>{},
+  snapshot:()=>{
+    state.album.unshift({cam:state.camView,t:hhmmss(now())});
+    renderMore();
+    toast('ok','Кадр сохранён','Снимок добавлен в «Мои кадры»');
+  },
+  camDoor:()=>{
+    const d=DOORS.find(x=>x.cam===state.camView);
+    if(d) unlock(d.id); else toast('warn','Нет связанной двери','К этой камере не привязана точка доступа');
+  },
+  camCall:()=>{
+    const p=PANELS.find(x=>x.cam===state.camView);
+    if(p){ closeLayer(); startCall(p.id,'out'); }
+    else toast('warn','Нет связанной панели','С этой камеры нельзя инициировать вызов');
+  },
+  relay:(id)=>{
+    const d=DEVICES.find(x=>x.id===id); if(!d) return;
+    d.on=!d.on; renderHome();
+    toast(d.on?'ok':'info', d.name, d.on?'Включено · команда на реле':'Выключено');
+  },
+  scenario:(id)=>{
+    const s=SCENARIOS.find(x=>x.id===id); if(!s) return;
+    s.on=!s.on; renderMore();
+    toast('info','Сценарий '+(s.on?'включён':'выключен'), s.ttl);
+  },
+  mode:(m)=>{
+    MODE=m; renderStatus(); renderMore();
+    const txt={home:'Уведомления о движении отключены',guard:'Камеры и датчики на охране, push при движении',guest:'Гостям открыт доступ в подъезд до 23:00'}[m];
+    toast('ok','Режим переключён', txt);
+  },
+  evFilter:(k)=>{ evFilter=k; renderEvents(); },
+  evFalse:(id)=>{
+    const e=EVENTS.find(x=>String(x.id)===String(id)); if(!e) return;
+    e.confirm=false; e.d='Отмечено как ложное срабатывание · передано в аналитику';
+    renderEvents();
+    toast('ok','Отмечено как ложное','Событие уйдёт в обучение детектора');
+  },
+  guestList:()=>go('intercom'),
+  guestNew, guestShow,
+  gTtl:(v,el)=>{
+    gTtlMin=parseInt(v,10);
+    document.querySelectorAll('[data-act="gTtl"]').forEach(b=>b.classList.toggle('busy',b===el));
+  },
+  gMake:guestMake,
+  gRevoke:(id)=>{
+    GUESTS=GUESTS.filter(g=>g.id!==id);
+    closeSheet(); renderIntercom(); renderHome();
+    toast('warn','Код отозван','Доступ по коду прекращён немедленно');
+  },
+  meters, metersSend,
+  tickets, ticketNew, chat, chatSend, news, album, help,
+  vote:(v)=>toast('ok','Голос учтён','Ваш выбор: '+v),
+  logout:()=>toast('info','Выход','Смена пользователя без потери привязки к объекту')
+};
+
+document.getElementById('screen').addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');
+  if(!el) return;
+  const fn=ACTIONS[el.dataset.act];
+  if(fn) fn(el.dataset.arg, el);
+});
+
+/* Перемотка архива — отдельно, нужны координаты клика */
+document.getElementById('layerBody').addEventListener('click',e=>{
+  const tl=e.target.closest('.timeline'); if(!tl) return;
+  const r=tl.getBoundingClientRect();
+  state.archivePos=Math.min(Math.max((e.clientX-r.left)/r.width,0),1);
+  renderCamLayer();
+});
+
+/* =========================================================
+   Демо-панель
+   ========================================================= */
+const DEMO={
+  callP2:()=>startCall('panel-p2','in'),
+  callGate:()=>startCall('gate-k1','in'),
+  fire:()=>{
+    pushEvent('fire','ПОЖАР 1 · подъезд 2','Дымовой извещатель ШС-14 · 7 этаж. Следуйте плану эвакуации.','cam-f7');
+    go('events');
+  },
+  leak:()=>{
+    const d=DEVICES.find(x=>x.id==='leak-kitchen');
+    d.state='Протечка!'; d.st='crit';
+    renderHome();
+    pushEvent('utility','Протечка на кухне','Датчик LK-01 · подача воды перекрыта сценарием',null);
+    toast('err','Протечка на кухне','Кран перекрыт автоматически, заявка в УК создана');
+  },
+  analytic:()=>{
+    pushEvent('video','Человек в зоне · площадка','Видеоаналитика · подтвердите, ложное или реальное','cam-yard');
+    go('events');
+  },
+  wan:()=>{
+    state.wan=!state.wan;
+    document.body.classList.toggle('wan-down',!state.wan);
+    $('wanLabel').textContent=state.wan?'Обрыв WAN':'Вернуть WAN';
+    renderStatus(); renderMore();
+    toast(state.wan?'ok':'warn', state.wan?'Связь с облаком восстановлена':'Переход на локальный контур',
+      state.wan?'События досланы в облако':'Домофония подъезда и открытие двери работают локально');
+  },
+  cfg:()=>{
+    state.cfg = state.cfg==='ext'?'basic':'ext';
+    document.body.className = state.cfg==='ext'?'ext':'basic';
+    if(!state.wan) document.body.classList.add('wan-down');
+    $('cfgLabel').textContent = state.cfg==='ext'?'Базовая':'Расширенная';
+    renderAll();
+    toast(state.cfg==='ext'?'ok':'warn',
+      state.cfg==='ext'?'Расширенная конфигурация':'Базовая конфигурация',
+      state.cfg==='ext'?'Видеомодуль подключён: камеры, архив и видеоаналитика доступны'
+                       :'Без лицензий VMS: домофония, доступ и события работают, видео скрыто');
+  },
+  theme:()=>applyTheme(state.theme==='dark'?'light':'dark')
+};
+document.querySelectorAll('[data-demo]').forEach(b=>{
+  b.addEventListener('click',()=>{ const f=DEMO[b.dataset.demo]; if(f) f(); });
+});
+
+/* =========================================================
+   Тема, часы, старт
+   ========================================================= */
+function applyTheme(mode){
+  state.theme=mode==='light'?'light':'dark';
+  document.documentElement.dataset.theme=state.theme;
+  $('themeIcon').textContent=state.theme==='light'?'dark_mode':'light_mode';
+  try{localStorage.setItem('mkd-app-theme',state.theme)}catch(e){}
+}
+
+setInterval(()=>{
+  const d=now();
+  $('sysTime').textContent=hhmm(d);
+  document.querySelectorAll('.ct').forEach(e=>{ if(!state.archive||!e.closest('.layer')) e.textContent=hhmmss(d); });
+  GUESTS.forEach(g=>{ if(g.left>0) g.left--; });
+  const gc=$('guestCard'); if(gc) gc.innerHTML=guestRows();
+},1000);
+
+try{
+  const saved=localStorage.getItem('mkd-app-theme');
+  applyTheme(saved==='light'?'light':'dark');
+}catch(e){ applyTheme('dark'); }
+
+renderAll();
+go('home');
+</script>
+</body>
+</html>
