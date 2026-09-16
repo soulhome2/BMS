@@ -288,6 +288,85 @@ kbd{
   padding:2px 6px;border-radius:6px;background:var(--panel-2);color:var(--muted);
 }
 
+/* ---------- Меню «О системе» (замечания 1 и 5) ---------- */
+.brand{border-radius:10px;text-align:left;transition:background .15s}
+.brand:hover{background:var(--hover)}
+.brand .chevron{font-size:18px;color:var(--faint)}
+.menu-pop.left{right:auto;left:0}
+.about-pop{min-width:344px;max-width:392px}
+.about-head{display:flex;align-items:center;gap:11px;padding:10px 14px 12px}
+.about-head .brand-mark{width:22px;height:22px;flex:0 0 22px}
+.about-head b{display:block;font-size:14px;font-weight:600}
+.about-head span{display:block;font-size:11.5px;color:var(--faint);margin-top:2px}
+.about-cfg{padding:0 14px 10px}
+.about-cfg .seg{width:100%}
+.about-cfg .seg button{flex:1;text-align:center}
+.about-cfg p{margin-top:8px;font-size:11.5px;line-height:1.5;color:var(--muted)}
+.about-foot{padding:6px 14px 8px;font-size:11px;line-height:1.55;color:var(--faint)}
+.menu-item.two{align-items:flex-start}
+.menu-item .tx{display:block;min-width:0}
+.menu-item .tx b{display:block;font-size:13.5px;font-weight:600}
+.menu-item .tx small{display:block;font-size:11.5px;font-weight:500;line-height:1.4;color:var(--faint);margin-top:1px}
+
+/* ---------- Подсказка поиска (замечание 4) ---------- */
+.search-pop{
+  position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;padding:6px;
+  background:var(--panel);border:1px solid var(--stroke);border-radius:14px;
+  box-shadow:var(--shadow);max-height:min(62vh,440px);overflow-y:auto;
+}
+.sp-label{padding:8px 12px 5px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--faint)}
+.sp-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border-radius:10px;text-align:left;color:var(--text)}
+.sp-item:hover{background:var(--panel-2)}
+.sp-item > .material-symbols-outlined{font-size:19px;flex:0 0 19px;color:var(--faint)}
+.sp-item .bd{flex:1;min-width:0}
+.sp-item .bd b{display:block;font-size:13px;font-weight:600}
+.sp-item .bd span{display:block;font-size:11.5px;color:var(--muted)}
+.sp-item .go{font-size:11px;color:var(--faint);white-space:nowrap}
+.sp-note{padding:9px 12px 11px;font-size:11.5px;line-height:1.5;color:var(--faint)}
+
+/* ---------- Часы как кнопка формата (замечание 9) ---------- */
+.clock{display:block;padding:4px 8px;border-radius:10px;transition:background .15s}
+.clock:hover{background:var(--hover);color:var(--text)}
+
+/* ---------- Управление правой панелью у самой панели (замечания 2, 6, 14) ---------- */
+.side-tabs .side-collapse{flex:0 0 34px;width:34px;padding:0;color:var(--faint);border-bottom:2px solid transparent}
+.side-tabs .side-collapse:hover{color:var(--text)}
+/* На десктопе мобильная кнопка «закрыть» ничего не делает — прячем её здесь,
+   в узком макете её возвращает медиазапрос 860px */
+.side-tabs .m-close{display:none}
+.side-handle{
+  display:none;position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:35;
+  flex-direction:column;align-items:center;gap:8px;padding:13px 7px;color:var(--muted);
+  background:var(--panel);border:1px solid var(--stroke);border-right:0;
+  border-radius:12px 0 0 12px;box-shadow:var(--shadow);
+}
+.side-handle:hover{color:var(--text);border-color:var(--accent)}
+.side-handle .material-symbols-outlined{font-size:19px}
+.side-handle .n{
+  font:700 10px/1 var(--font);padding:3px 5px;border-radius:8px;
+  background:var(--danger-bg);color:var(--danger-text);
+}
+.side-handle .n:empty,.side-handle .n.zero{display:none}
+.side-handle .tx{writing-mode:vertical-rl;font-size:11px;font-weight:600;letter-spacing:.3px}
+.mid.side-hidden .side-handle{display:flex}
+
+/* ---------- Возврат из контекстного экрана ---------- */
+.back-link{
+  order:-1;flex-basis:100%;width:max-content;display:inline-flex;align-items:center;gap:5px;
+  padding:3px 8px 3px 5px;margin-bottom:-2px;border-radius:8px;
+  font-size:12px;font-weight:600;color:var(--muted);
+}
+.back-link:hover{background:var(--hover);color:var(--text)}
+.back-link .material-symbols-outlined{font-size:16px}
+
+/* ---------- Вкладки внутри раздела ---------- */
+.sub-pane{display:none}
+.sub-pane.on{display:block}
+
+@media (max-width:860px){
+  .side-handle{display:none!important}
+}
+
 .break-banner{
   display:none;background:var(--break-bg);color:var(--break-text);
   padding:8px 24px;font-size:13px;font-weight:500;border-bottom:1px solid var(--break-border);
@@ -792,8 +871,11 @@ body.wan-down .wan-banner{display:flex}
 }
 .obj-item .bd{flex:1;min-width:0}
 .obj-item .bd b{display:block;font-size:13.5px;font-weight:600}
-.obj-item .bd .ad{font-size:12px;color:var(--txt-3);margin:1px 0 7px}
+.obj-item .bd .ad{font-size:12px;color:var(--txt-3);margin:1px 0 5px}
+.obj-item .bd .cfg{display:block;font-size:11.5px;line-height:1.5;color:var(--muted);margin-bottom:7px}
 .obj-item .bd .st{display:flex;flex-wrap:wrap;gap:6px}
+.menu-item.on{font-weight:600}
+.menu-item.on::after{content:'✓';margin-left:auto;font-size:13px;color:var(--muted)}
 
 /* ---------- Мобильные элементы ---------- */
 #mBurger{display:none}
@@ -919,6 +1001,10 @@ body.drawer-open .m-backdrop{display:block}
   .grid.g-4{grid-template-columns:minmax(0,1fr)}
 }
 </style>
+
+<!-- Визуальное семейство ONE PSIM. Подключается последним, после собственных
+     стилей прототипа: см. bridge.css и README.md рядом с этим файлом. -->
+<link rel="stylesheet" href="bridge.css">
 </head>
 <body class="ext">
 
@@ -926,11 +1012,51 @@ body.drawer-open .m-backdrop{display:block}
 
   <!-- ======================= ВЕРХНЯЯ ПАНЕЛЬ ======================= -->
   <header class="topbar">
-    <div class="brand">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <div class="names">
-        <div class="app-name">Экосистема управления МКД</div>
-        <div class="vendor">ITV | AxxonSoft</div>
+    <div class="menu" id="aboutMenu">
+      <button type="button" class="brand" id="aboutBtn" aria-haspopup="menu" aria-expanded="false"
+              title="О системе, техподдержка, конфигурация поставки">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div class="names">
+          <div class="app-name">Экосистема управления МКД</div>
+          <div class="vendor">ITV | AxxonSoft</div>
+        </div>
+        <span class="material-symbols-outlined chevron">expand_more</span>
+      </button>
+
+      <div class="menu-pop left about-pop" role="menu" hidden>
+        <div class="about-head">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div>
+            <b>Экосистема управления МКД</b>
+            <span>Версия 1.0 · сборка 2026.09 · демонстрационный прототип</span>
+          </div>
+        </div>
+
+        <div class="menu-label">Конфигурация поставки</div>
+        <div class="about-cfg">
+          <div class="seg" role="group" aria-label="Конфигурация поставки">
+            <button type="button" id="cfgBasic" onclick="setConfig('basic')">Базовая</button>
+            <button type="button" id="cfgExt" class="on ext" onclick="setConfig('ext')">Расширенная [Р]</button>
+          </div>
+          <p id="cfgHint">—</p>
+        </div>
+
+        <div class="menu-sep"></div>
+        <div class="menu-label">Техническая поддержка</div>
+        <button type="button" class="menu-item two" role="menuitem" onclick="copyText('8 800 250-10-50','Телефон техподдержки скопирован')">
+          <span class="material-symbols-outlined">support_agent</span>
+          <span class="tx"><b>8 800 250-10-50</b><small>круглосуточно, звонок по России бесплатный</small></span>
+        </button>
+        <button type="button" class="menu-item two" role="menuitem" onclick="copyText('support@itv.ru','Адрес поддержки скопирован')">
+          <span class="material-symbols-outlined">alternate_email</span>
+          <span class="tx"><b>support@itv.ru</b><small>ответ в течение рабочего дня</small></span>
+        </button>
+
+        <div class="menu-sep"></div>
+        <div class="about-foot">
+          ITV | AxxonSoft — российский разработчик систем видеонаблюдения и безопасности.<br>
+          Правообладатель ООО «АксонСофт». Лицензия и состав поставки — в договоре с управляющей компанией.
+        </div>
       </div>
     </div>
 
@@ -938,40 +1064,17 @@ body.drawer-open .m-backdrop{display:block}
       <button type="button" class="icon-btn" id="mBurger" title="Меню разделов" onclick="openRailDrawer()">
         <span class="material-symbols-outlined">menu</span>
       </button>
-      <button type="button" class="icon-btn on" id="toggleRail" title="Меню разделов" aria-pressed="true" onclick="toggleRail()">
-        <span class="material-symbols-outlined">left_panel_close</span>
-      </button>
-      <button type="button" class="icon-btn on" id="toggleSideBtn" title="Панель тревог и событий" aria-pressed="true" onclick="toggleSide()">
-        <span class="material-symbols-outlined">right_panel_close</span>
-      </button>
 
-      <div class="obj-picker" onclick="openObjects()" title="Переключить объект">
-        <span class="material-symbols-outlined" style="font-size:18px;color:var(--faint)">apartment</span>
-        <div style="min-width:0">
-          <div class="lbl">Объект</div>
-          <div class="val" id="topObjName">—</div>
-        </div>
-        <span class="material-symbols-outlined" style="font-size:18px;color:var(--faint)">expand_more</span>
-      </div>
-
-      <div class="search-wrapper">
+      <div class="search-wrapper" id="searchWrap">
         <span class="material-symbols-outlined">search</span>
-        <input id="globalSearch" placeholder="Поиск: квартира, панель, автономер, событие…">
+        <input id="globalSearch" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="searchPop"
+               placeholder="Поиск по объекту: квартира, абонент, панель, камера, событие">
         <kbd>Ctrl K</kbd>
+        <div class="search-pop" id="searchPop" role="listbox" hidden></div>
       </div>
     </div>
 
     <div class="top-right">
-      <div class="seg dispatcher-only" title="Конфигурация поставки согласно §0 концепции">
-        <button type="button" id="cfgBasic" onclick="setConfig('basic')">Базовая</button>
-        <button type="button" id="cfgExt" class="on ext" onclick="setConfig('ext')">Расширенная [Р]</button>
-      </div>
-
-      <button type="button" class="icon-btn dispatcher-only" title="Тревоги" onclick="openSide('alarms')">
-        <span class="material-symbols-outlined">notifications</span>
-        <span class="dot" id="alarmDot">3</span>
-      </button>
-
       <button type="button" class="icon-btn theme-btn" id="themeToggle" title="Тёмная тема" aria-label="Тёмная тема" aria-pressed="false">
         <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
           <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
@@ -1010,12 +1113,46 @@ body.drawer-open .m-backdrop{display:block}
             <span class="material-symbols-outlined">local_police</span>
             Контакты МЧС и полиции
           </button>
+          <div class="menu-sep"></div>
+          <div class="menu-label">Документация</div>
+          <button type="button" class="menu-item two" role="menuitem" data-doc="modalDocs">
+            <span class="material-symbols-outlined">menu_book</span>
+            <span class="tx"><b>Руководство оператора</b><small>разделы АРМ, обработка тревог, вызовы, доступ</small></span>
+          </button>
         </div>
       </div>
 
-      <div class="clock">
-        <span id="clockTime">00:00:00</span>
-        <small id="clockDate">—</small>
+      <div class="menu" id="clockMenu">
+        <button type="button" class="clock" id="clockBtn" aria-haspopup="menu" aria-expanded="false"
+                title="Дата и время · формат представления">
+          <span id="clockTime">00:00:00</span>
+          <small id="clockDate">—</small>
+        </button>
+        <div class="menu-pop" role="menu" hidden>
+          <div class="menu-label">Формат даты</div>
+          <button type="button" class="menu-item" role="menuitem" data-datefmt="long">
+            <span class="material-symbols-outlined">calendar_month</span>
+            Понедельник, 14 сентября
+          </button>
+          <button type="button" class="menu-item" role="menuitem" data-datefmt="dmy">
+            <span class="material-symbols-outlined">event</span>
+            14.09.2026 — день, месяц
+          </button>
+          <button type="button" class="menu-item" role="menuitem" data-datefmt="mdy">
+            <span class="material-symbols-outlined">event</span>
+            09/14/2026 — месяц, день
+          </button>
+          <div class="menu-sep"></div>
+          <div class="menu-label">Формат времени</div>
+          <button type="button" class="menu-item" role="menuitem" data-timefmt="24">
+            <span class="material-symbols-outlined">schedule</span>
+            24 часа · 14:47:06
+          </button>
+          <button type="button" class="menu-item" role="menuitem" data-timefmt="12">
+            <span class="material-symbols-outlined">schedule</span>
+            12 часов · 2:47:06 PM
+          </button>
+        </div>
       </div>
 
       <div class="menu" id="userMenu">
@@ -1075,20 +1212,15 @@ body.drawer-open .m-backdrop{display:block}
         </button>
       </div>
       <div class="rail-scroll">
-        <div class="group-title">Оперативная работа</div>
         <div class="nav-item on" data-view="dash" onclick="go('dash')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
           <span class="cap">Оперативная обстановка</span>
+          <span class="cnt alarm" id="navAlarms">3</span>
         </div>
         <div class="nav-item" data-view="calls" onclick="go('calls')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
-          <span class="cap">Вызовы и домофония</span>
+          <span class="cap">Вызовы</span>
           <span class="cnt live" id="navCalls">1</span>
-        </div>
-        <div class="nav-item" data-view="alarms" onclick="go('alarms')">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h16.9a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-          <span class="cap">Тревоги и ОПС</span>
-          <span class="cnt alarm" id="navAlarms">3</span>
         </div>
         <div class="nav-item" data-view="plan" onclick="go('plan')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 20l-6-3V4l6 3m0 13l6-3m-6 3V7m6 10l6 3V7l-6-3m0 13V4"/></svg>
@@ -1098,8 +1230,6 @@ body.drawer-open .m-backdrop{display:block}
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
           <span class="cap">Журнал событий</span>
         </div>
-
-        <div class="group-title">Подсистемы</div>
         <div class="nav-item" data-view="video" onclick="go('video')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
           <span class="cap">Видеонаблюдение</span>
@@ -1107,30 +1237,11 @@ body.drawer-open .m-backdrop{display:block}
         </div>
         <div class="nav-item" data-view="access" onclick="go('access')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
-          <span class="cap">Доступ и СКУД</span>
-        </div>
-        <div class="nav-item" data-view="scada" onclick="go('scada')">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l5-6 4 4 4-7 5 9"/><path d="M3 21h18"/></svg>
-          <span class="cap">Инженерия (SCADA)</span>
-          <span class="cnt" id="navScada">1</span>
-        </div>
-        <div class="nav-item" data-view="parking" onclick="go('parking')">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M9 16V8h3.5a2.5 2.5 0 010 5H9"/></svg>
-          <span class="cap">Паркинг и въезд</span>
-        </div>
-
-        <div class="group-title">Администрирование</div>
-        <div class="nav-item" data-view="devices" onclick="go('devices')">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
-          <span class="cap">Устройства и плагины</span>
-        </div>
-        <div class="nav-item" data-view="rules" onclick="go('rules')">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6a3 3 0 003 3h6"/></svg>
-          <span class="cap">Сценарии ЕСЛИ → ТО</span>
+          <span class="cap">Доступ</span>
         </div>
         <div class="nav-item" data-view="residents" onclick="go('residents')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9"/></svg>
-          <span class="cap">Жильцы и аккаунты</span>
+          <span class="cap">Абоненты</span>
         </div>
       </div>
       <div class="rail-demo">
@@ -1310,8 +1421,12 @@ body.drawer-open .m-backdrop{display:block}
       <!-- ============ ТРЕВОГИ ============ -->
       <section class="view" id="view-alarms">
         <div class="view-head">
-          <h1>Тревоги и пожарная сигнализация</h1>
-          <div class="sub">Обработка по регламенту · подтверждение и сброс</div>
+          <button type="button" class="back-link" onclick="go('dash')">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Оперативная обстановка
+          </button>
+          <h1>Обработка тревоги</h1>
+          <div class="sub">Карточка реагирования по регламенту · подтверждение и сброс</div>
           <div class="spacer"></div>
           <button class="btn sm" onclick="ackAll()">Подтвердить все</button>
         </div>
@@ -1472,31 +1587,79 @@ body.drawer-open .m-backdrop{display:block}
       <!-- ============ ДОСТУП ============ -->
       <section class="view" id="view-access">
         <div class="view-head">
-          <h1>Доступ и СКУД</h1>
-          <div class="sub">Точки доступа, гостевые коды, служебные зоны</div>
+          <h1>Доступ</h1>
+          <div class="sub" id="accessSub">Точки доступа, гостевые коды, служебные зоны</div>
           <div class="spacer"></div>
-          <button class="btn sm primary" onclick="toast('ok','Гостевой код создан','PIN 4821 · действует 4 часа · 1 проход · подъезд 2')">Выдать гостевой код</button>
+          <div class="seg" id="accessTabs" role="group" aria-label="Разделы доступа">
+            <button type="button" class="on" onclick="accessTab('points')">Точки доступа</button>
+            <button type="button" onclick="accessTab('levels')">Уровни доступа</button>
+            <button type="button" onclick="accessTab('ids')">Идентификаторы</button>
+          </div>
         </div>
 
-        <div class="grid g-2-1">
+        <div class="sub-pane on" id="acc-points">
+          <div class="grid g-2-1">
+            <div class="card">
+              <div class="card-h"><h3>Точки доступа объекта</h3><div class="spacer"></div><span class="hint">открытие вне звонка: REST unlock → драйвер панели</span></div>
+              <div class="card-b flush">
+                <table class="tbl">
+                  <thead><tr><th>Точка доступа</th><th>Устройство</th><th>Способ открытия</th><th>Состояние</th><th style="width:210px">Управление</th></tr></thead>
+                  <tbody id="doorsTable"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><h3>Активные гостевые коды</h3><div class="spacer"></div>
+                <button class="btn sm primary" onclick="toast('ok','Гостевой код создан','PIN 4821 · действует 4 часа · 1 проход · подъезд 2')">Выдать код</button>
+              </div>
+              <div class="card-b flush">
+                <table class="tbl">
+                  <thead><tr><th>Код</th><th>Кому</th><th>Осталось</th></tr></thead>
+                  <tbody id="guestTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-pane" id="acc-levels">
           <div class="card">
-            <div class="card-h"><h3>Точки доступа объекта</h3><div class="spacer"></div><span class="hint">открытие вне звонка: REST unlock → драйвер панели</span></div>
+            <div class="card-h">
+              <h3>Уровни доступа</h3>
+              <div class="spacer"></div>
+              <span class="hint">уровень = набор точек доступа + расписание; назначается абоненту или сотруднику</span>
+              <button class="btn sm primary" onclick="toast('info','Конструктор уровня','Выберите точки доступа и расписание, затем назначьте уровень абонентам или сотрудникам')">Создать уровень</button>
+            </div>
             <div class="card-b flush">
               <table class="tbl">
-                <thead><tr><th>Точка доступа</th><th>Устройство</th><th>Способ открытия</th><th>Состояние</th><th style="width:210px">Управление</th></tr></thead>
-                <tbody id="doorsTable"></tbody>
+                <thead><tr><th>Уровень</th><th>Точки доступа</th><th>Расписание</th><th>Назначен</th><th style="width:150px">Управление</th></tr></thead>
+                <tbody id="levelsTable"></tbody>
               </table>
             </div>
           </div>
+          <div class="mini-note" style="margin-top:12px">
+            Уровень доступа един для СКУД и домофонии: он определяет и какие двери открывает идентификатор, и на какие панели приходит вызов абонента. Расписание задаётся на уровень, а не на каждую дверь.
+          </div>
+        </div>
 
+        <div class="sub-pane" id="acc-ids">
           <div class="card">
-            <div class="card-h"><h3>Активные гостевые коды</h3></div>
+            <div class="card-h">
+              <h3>Идентификаторы абонентов и сотрудников</h3>
+              <div class="spacer"></div>
+              <span class="hint">выдача, замена и блокировка · бюро пропусков</span>
+              <button class="btn sm primary" onclick="issueIdent()">Выдать идентификатор</button>
+            </div>
             <div class="card-b flush">
               <table class="tbl">
-                <thead><tr><th>Код</th><th>Кому</th><th>Осталось</th></tr></thead>
-                <tbody id="guestTable"></tbody>
+                <thead><tr><th>Владелец</th><th>Тип</th><th>Номер</th><th>Уровень доступа</th><th>Состояние</th><th style="width:130px">Управление</th></tr></thead>
+                <tbody id="identsTable"></tbody>
               </table>
             </div>
+          </div>
+          <div class="mini-note" style="margin-top:12px">
+            Мобильное приложение — такой же идентификатор, как карта или брелок: у него тот же уровень доступа и та же блокировка. Блокировка действует немедленно на всех точках объекта и пишется в журнал событий.
           </div>
         </div>
       </section>
@@ -1714,6 +1877,9 @@ body.drawer-open .m-backdrop{display:block}
       <div class="side-tabs">
         <button class="on" id="tabAlarms" onclick="openSide('alarms')">Тревоги <span class="n alarm" id="sideAlarmN">3</span></button>
         <button id="tabEvents" onclick="openSide('events')">Лента событий <span class="n" id="sideEvN">live</span></button>
+        <button type="button" class="side-collapse" onclick="toggleSide()" title="Свернуть панель" aria-label="Свернуть панель">
+          <span class="material-symbols-outlined">right_panel_close</span>
+        </button>
         <button type="button" class="m-close" onclick="closeDrawers()" aria-label="Закрыть панель">
           <span class="material-symbols-outlined">close</span>
         </button>
@@ -1735,6 +1901,13 @@ body.drawer-open .m-backdrop{display:block}
         <div id="sideEvents"></div>
       </div>
     </aside>
+
+    <button type="button" class="side-handle" id="sideHandle" onclick="toggleSide()"
+            title="Показать панель тревог и событий">
+      <span class="material-symbols-outlined">notifications</span>
+      <span class="n alarm" id="handleAlarmN">3</span>
+      <span class="tx">Тревоги и события</span>
+    </button>
   </div>
 
   <!-- ======================= АРМ КОНСЬЕРЖА ======================= -->
@@ -1829,11 +2002,11 @@ body.drawer-open .m-backdrop{display:block}
     <button type="button" data-view="calls" onclick="go('calls')">
       <span class="material-symbols-outlined">call</span>Вызовы
     </button>
-    <button type="button" data-view="alarms" onclick="go('alarms')">
-      <span class="material-symbols-outlined">warning</span>Тревоги
-    </button>
     <button type="button" data-view="plan" onclick="go('plan')">
       <span class="material-symbols-outlined">map</span>Планы
+    </button>
+    <button type="button" data-view="log" onclick="go('log')">
+      <span class="material-symbols-outlined">receipt_long</span>Журнал
     </button>
     <button type="button" onclick="openRailDrawer()">
       <span class="material-symbols-outlined">menu</span>Ещё
@@ -1969,6 +2142,31 @@ body.drawer-open .m-backdrop{display:block}
       <tr><td><kbd>?</kbd></td><td>Эта справка</td></tr>
     </table>
     <div class="help-actions"><button type="button" class="btn primary" data-close="modalHotkeys">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="help-overlay" id="modalDocs" hidden>
+  <div class="help-card wide" role="dialog" aria-modal="true">
+    <h3>Документация</h3>
+    <p class="muted">Руководство оператора АРМ и сопроводительные документы поставки. В рабочей системе пункты ведут на портал документации ITV; в прототипе показан состав.</p>
+    <div class="doc">
+      <h4>Руководство оператора</h4>
+      <ol>
+        <li>Начало смены: вход, приём дежурства, проверка связи с объектом.</li>
+        <li>Оперативная обстановка: что показывают плитки и как из них попасть в карточку тревоги.</li>
+        <li>Вызовы: приём вызова с панели, переадресация, открытие двери из разговора.</li>
+        <li>Доступ: точки доступа, уровни доступа, выдача и блокировка идентификаторов.</li>
+        <li>Видеонаблюдение: раскладки, архив, экспорт фрагмента по событию.</li>
+        <li>Журнал событий: фильтры, поиск, выгрузка для управляющей компании.</li>
+      </ol>
+      <h4>Сопроводительные документы</h4>
+      <ol>
+        <li>Описание состава поставки и лицензий.</li>
+        <li>Регламент диспетчера УК — в этом же меню, отдельным пунктом.</li>
+        <li>Инструкция для жильцов по мобильному приложению.</li>
+      </ol>
+    </div>
+    <div class="help-actions"><button type="button" class="btn primary" data-close="modalDocs">Закрыть</button></div>
   </div>
 </div>
 
@@ -2118,24 +2316,52 @@ const hhmmss = d => pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSecon
 const hhmm = d => pad(d.getHours())+':'+pad(d.getMinutes());
 const ddmm = d => pad(d.getDate())+'.'+pad(d.getMonth()+1);
 
-/* ---------- Часы ---------- */
+/* ---------- Часы и формат представления даты (замечание 9) ---------- */
 const MONTHS=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 const DAYS=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+let dateFmt='long', timeFmt='24';
+try{
+  dateFmt=localStorage.getItem('mkd-date-fmt')||'long';
+  timeFmt=localStorage.getItem('mkd-time-fmt')||'24';
+}catch(e){}
+
+function clockTimeStr(d){
+  if(timeFmt==='12'){
+    const h=d.getHours();
+    return (h%12||12)+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())+' '+(h<12?'AM':'PM');
+  }
+  return hhmmss(d);
+}
+function clockDateStr(d){
+  if(dateFmt==='dmy') return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear();
+  if(dateFmt==='mdy') return pad(d.getMonth()+1)+'/'+pad(d.getDate())+'/'+d.getFullYear();
+  const day=DAYS[d.getDay()];
+  return day.charAt(0).toUpperCase()+day.slice(1)+', '+d.getDate()+' '+MONTHS[d.getMonth()];
+}
+function setDateFmt(f){ dateFmt=f; try{localStorage.setItem('mkd-date-fmt',f)}catch(e){} tickClock(); syncFmtMenu(); }
+function setTimeFmt(f){ timeFmt=f; try{localStorage.setItem('mkd-time-fmt',f)}catch(e){} tickClock(); syncFmtMenu(); }
+function syncFmtMenu(){
+  document.querySelectorAll('[data-datefmt]').forEach(b=>b.classList.toggle('on',b.dataset.datefmt===dateFmt));
+  document.querySelectorAll('[data-timefmt]').forEach(b=>b.classList.toggle('on',b.dataset.timefmt===timeFmt));
+}
 function tickClock(){
   const d=now();
-  document.getElementById('clockTime').textContent=hhmmss(d);
-  document.getElementById('clockDate').textContent=DAYS[d.getDay()]+', '+d.getDate()+' '+MONTHS[d.getMonth()];
+  document.getElementById('clockTime').textContent=clockTimeStr(d);
+  document.getElementById('clockDate').textContent=clockDateStr(d);
   ['camTime1','camTime2','camTime3'].forEach(id=>{const e=document.getElementById(id); if(e) e.textContent=hhmmss(d);});
 }
-setInterval(tickClock,1000); tickClock();
+setInterval(tickClock,1000); tickClock(); syncFmtMenu();
 
 /* ---------- Навигация ---------- */
 function go(v,opts){
   opts=opts||{};
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.getElementById('view-'+v).classList.add('on');
-  document.querySelectorAll('.nav-item').forEach(e=>e.classList.toggle('on', e.dataset.view===v));
-  document.querySelectorAll('#mNav button').forEach(e=>e.classList.toggle('on', e.dataset.view===v));
+  /* «Обработка тревоги» открывается из панели тревог и с обзорного экрана —
+     в меню первой версии отдельного раздела нет, подсвечиваем родительский */
+  const navKey = v==='alarms' ? 'dash' : v;
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.toggle('on', e.dataset.view===navKey));
+  document.querySelectorAll('#mNav button').forEach(e=>e.classList.toggle('on', e.dataset.view===navKey));
   document.getElementById('main').scrollTop=0;
   closeDrawers();
   if(v==='video'){
@@ -2190,10 +2416,169 @@ function setConfig(c,silent){
   document.getElementById('cfgExt').classList.toggle('on', c==='ext');
   document.getElementById('stVms').className = 'sd '+(c==='ext'?'ok':'off');
   document.getElementById('stVmsTxt').textContent = c==='ext' ? (OBJ.stat.vms||'подключён') : 'не подключён';
+  const hint=document.getElementById('cfgHint');
+  if(hint) hint.textContent = c==='ext'
+    ? 'Видеомодуль подключён: живое видео, архив, видеоаналитика и распознавание автономеров доступны. Разделы с пометкой [Р] видны.'
+    : 'Лицензии видеомодуля не требуются. Домофония, доступ и события работают; разделы с пометкой [Р] скрыты.';
   if(silent) return;
   toast(c==='ext'?'ok':'warn', c==='ext'?'Расширенная конфигурация':'Базовая конфигурация',
     c==='ext' ? 'Видеомодуль подключён: live, архив, аналитика, ACFA и LPR доступны'
               : 'Лицензии VMS не требуются. Функции [Р] скрыты, доступны базовые пути без видео');
+}
+
+/* ---------- Копирование контакта из меню «О системе» (замечание 1) ---------- */
+function copyText(txt,msg){
+  closeMenus();
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).catch(()=>{});
+  toast('ok',msg,txt);
+}
+
+/* =========================================================
+   Поиск по объекту (замечание 4)
+   Ищем только внутри выбранного объекта и показываем,
+   что именно найдено: абонент, панель, камера, дверь, событие.
+   ========================================================= */
+const SEARCH_KINDS=[
+  {k:'res',  t:'Абоненты и квартиры', ic:'home',      ex:'214, Смирнов, sip:214'},
+  {k:'panel',t:'Вызывные панели',     ic:'doorbell',  ex:'П2, подъезд 2'},
+  {k:'cam',  t:'Камеры',              ic:'videocam',  ex:'холл, калитка'},
+  {k:'door', t:'Точки доступа',       ic:'lock',      ex:'дверь, калитка, шлагбаум'},
+  {k:'ev',   t:'События за смену',    ic:'history',   ex:'открытие, вызов, тревога'}
+];
+function buildSearchIndex(){
+  const ix=[];
+  (OBJ.residents||[]).forEach(r=>ix.push({k:'res',b:'Кв. '+r.f+' · '+r.n,s:'SIP '+r.u+' · '+r.d,v:'residents'}));
+  (OBJ.panels||[]).forEach(p=>ix.push({k:'panel',b:p.n,s:p.m+' · '+p.a,v:'calls'}));
+  Object.keys(CAMERAS||{}).forEach(id=>ix.push({k:'cam',b:CAMERAS[id].name,s:CAMERAS[id].res,v:'video',cam:id}));
+  (OBJ.doors||[]).forEach(d=>ix.push({k:'door',b:d.n,s:d.dev+' · открытие: '+d.m,v:'access'}));
+  (EVENTS||[]).slice(0,60).forEach(e=>ix.push({k:'ev',b:e.ttl,s:e.t+' · '+e.d,v:'log'}));
+  return ix;
+}
+function searchHintHtml(){
+  return '<div class="sp-label">Что можно найти в объекте '+OBJ.name+' · '+OBJ.unit.toLowerCase()+'</div>'
+    + SEARCH_KINDS.map(k=>'<div class="sp-item"><span class="material-symbols-outlined">'+k.ic+'</span>'
+        +'<span class="bd"><b>'+k.t+'</b><span>например: '+k.ex+'</span></span></div>').join('')
+    + '<div class="sp-note">Поиск работает по выбранному объекту. Чтобы искать в другом доме — сначала переключите объект в левой панели. Вызов поиска с клавиатуры — Ctrl K.</div>';
+}
+function renderSearch(){
+  const inp=document.getElementById('globalSearch');
+  const pop=document.getElementById('searchPop');
+  if(!inp||!pop) return;
+  const q=inp.value.trim().toLowerCase();
+  if(!q){ pop.innerHTML=searchHintHtml(); return; }
+  const hits=buildSearchIndex().filter(i=>(i.b+' '+i.s).toLowerCase().includes(q));
+  if(!hits.length){
+    pop.innerHTML='<div class="sp-note">В объекте '+OBJ.name+' ничего не найдено по запросу «'+inp.value.trim()+'». '
+      +'Проверьте номер квартиры, имя абонента или название панели — поиск идёт только по текущему объекту.</div>';
+    return;
+  }
+  let html='';
+  SEARCH_KINDS.forEach(kind=>{
+    const part=hits.filter(h=>h.k===kind.k).slice(0,5);
+    if(!part.length) return;
+    const total=hits.filter(h=>h.k===kind.k).length;
+    html+='<div class="sp-label">'+kind.t+' · '+total+'</div>';
+    html+=part.map(h=>'<button type="button" class="sp-item" onclick="searchGo(\''+h.v+'\','+(h.cam?'\''+h.cam+'\'':'null')+')">'
+      +'<span class="material-symbols-outlined">'+kind.ic+'</span>'
+      +'<span class="bd"><b>'+h.b+'</b><span>'+h.s+'</span></span>'
+      +'<span class="go">открыть →</span></button>').join('');
+  });
+  pop.innerHTML=html;
+}
+function searchGo(view,cam){
+  closeSearch();
+  document.getElementById('globalSearch').value='';
+  if(cam && typeof openVideo==='function'){ openVideo(cam); return; }
+  go(view);
+}
+function openSearch(){
+  const pop=document.getElementById('searchPop');
+  if(!pop) return;
+  renderSearch();
+  pop.hidden=false;
+  document.getElementById('globalSearch').setAttribute('aria-expanded','true');
+}
+function closeSearch(){
+  const pop=document.getElementById('searchPop');
+  if(!pop) return;
+  pop.hidden=true;
+  document.getElementById('globalSearch').setAttribute('aria-expanded','false');
+}
+
+/* =========================================================
+   Уровни доступа и идентификаторы (замечание 12)
+   ========================================================= */
+function accessTab(t){
+  ['points','levels','ids'].forEach(k=>{
+    const p=document.getElementById('acc-'+k);
+    if(p) p.classList.toggle('on',k===t);
+  });
+  document.querySelectorAll('#accessTabs button').forEach((b,i)=>
+    b.classList.toggle('on', ['points','levels','ids'][i]===t));
+  const sub=document.getElementById('accessSub');
+  if(sub) sub.textContent = t==='levels'
+    ? 'Какие двери и в какое время открывает каждая группа абонентов и сотрудников'
+    : t==='ids'
+      ? 'Выдача, замена и блокировка карт, брелоков, кодов и мобильных приложений'
+      : 'Точки доступа, гостевые коды, служебные зоны';
+}
+
+const LEVELS=[
+  {n:'Жилец подъезда',        d:'Свой подъезд, калитка двора, лифтовой холл',       sc:'Круглосуточно',        w:'214 абонентов'},
+  {n:'Жилец с машино-местом', d:'Всё выше + въезд в паркинг и дверь паркинга −1',   sc:'Круглосуточно',        w:'58 абонентов'},
+  {n:'Сотрудник УК',          d:'Все подъезды, технические помещения, ИТП',         sc:'Пн–Пт 08:00–20:00',    w:'12 сотрудников'},
+  {n:'Клининг',               d:'Подъезды, мусорокамеры',                           sc:'Пн–Сб 07:00–11:00',    w:'4 сотрудника'},
+  {n:'Гость по приглашению',  d:'Подъезд, указанный в приглашении',                 sc:'На срок гостевого кода', w:'7 активных кодов'}
+];
+function renderLevels(){
+  const el=document.getElementById('levelsTable'); if(!el) return;
+  el.innerHTML=LEVELS.map(l=>
+    '<tr><td><b>'+l.n+'</b></td><td class="t-mut">'+l.d+'</td>'
+    +'<td><span class="chip mut">'+l.sc+'</span></td><td class="t-mut">'+l.w+'</td>'
+    +'<td><button class="btn sm ghost" onclick="toast(\'info\',\'Уровень доступа\',\''+l.n+' — состав точек и расписание открыты для редактирования\')">Изменить</button></td></tr>'
+  ).join('');
+}
+
+const IDENT_TYPES=['Мобильное приложение','Карта Mifare','Брелок','QR-код','PIN-код'];
+let IDENTS=[
+  {w:'Кв. 214 · Смирнов А.В.',   t:'Мобильное приложение', c:'sip:214@sp3',   l:'Жилец подъезда',        s:'ok'},
+  {w:'Кв. 214 · Смирнова Е.И.',  t:'Карта Mifare',         c:'04 A2 71 9C',   l:'Жилец подъезда',        s:'ok'},
+  {w:'Кв. 87 · Дорохов П.С.',    t:'Брелок',               c:'1F 55 02',      l:'Жилец с машино-местом', s:'ok'},
+  {w:'Кв. 87 · Дорохов П.С.',    t:'Мобильное приложение', c:'sip:87@sp3',    l:'Жилец с машино-местом', s:'ok'},
+  {w:'УК · Иванова М.П.',        t:'Карта Mifare',         c:'04 B8 13 20',   l:'Сотрудник УК',          s:'ok'},
+  {w:'Клининг · Петрова О.Н.',   t:'Брелок',               c:'1F 60 44',      l:'Клининг',               s:'warn'}
+];
+function renderIdents(){
+  const el=document.getElementById('identsTable'); if(!el) return;
+  el.innerHTML=IDENTS.map((d,i)=>
+    '<tr><td><b>'+d.w+'</b></td><td class="t-mut">'+d.t+'</td><td class="t-mono" style="font-size:11px">'+d.c+'</td>'
+    +'<td><span class="chip mut">'+d.l+'</span></td>'
+    +'<td>'+(d.s==='ok'
+        ? '<span class="chip ok"><span class="sd ok"></span>Действует</span>'
+        : d.s==='warn'
+          ? '<span class="chip warn"><span class="sd warn"></span>Истекает</span>'
+          : '<span class="chip alarm"><span class="sd alarm"></span>Заблокирован</span>')+'</td>'
+    +'<td>'+(d.s==='off'
+        ? '<button class="btn sm ghost" onclick="identToggle('+i+')">Разблокировать</button>'
+        : '<button class="btn sm ghost" onclick="identToggle('+i+')">Блокировать</button>')+'</td></tr>'
+  ).join('');
+}
+function identToggle(i){
+  const d=IDENTS[i]; if(!d) return;
+  d.s = d.s==='off' ? 'ok' : 'off';
+  renderIdents();
+  toast(d.s==='off'?'warn':'ok', d.s==='off'?'Идентификатор заблокирован':'Идентификатор восстановлен',
+    d.w+' · '+d.t+' — изменение действует на всех точках объекта, запись ушла в журнал событий');
+  pushEvent('acc', d.s==='off'?'Идентификатор заблокирован':'Идентификатор восстановлен', d.w+' · '+d.t);
+}
+function issueIdent(){
+  const t=IDENT_TYPES[Math.floor(Math.random()*3)];
+  const rec={w:'Кв. 156 · новый абонент', t:t, c:t==='Мобильное приложение'?'sip:156@'+OBJ.id:'04 '+Math.random().toString(16).slice(2,4).toUpperCase()+' 2C 71',
+             l:'Жилец подъезда', s:'ok'};
+  IDENTS.unshift(rec);
+  renderIdents();
+  toast('ok','Идентификатор выдан',rec.w+' · '+rec.t+' · уровень «'+rec.l+'»');
+  pushEvent('acc','Выдан идентификатор',rec.w+' · '+rec.t);
 }
 
 /* ---------- Тосты ---------- */
@@ -3209,8 +3594,11 @@ function renderAlarms(){
   }).join('') || '<tr><td colspan="5" class="empty">Очередь пуста</td></tr>';
 
   const n=ALARMS.length;
-  ['alarmDot','navAlarms','sideAlarmN','kpiAlarms'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=n});
-  document.getElementById('alarmDot').style.display = n?'block':'none';
+  ['navAlarms','sideAlarmN','kpiAlarms','handleAlarmN'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=n});
+  const handleN=document.getElementById('handleAlarmN');
+  if(handleN) handleN.classList.toggle('zero',!n);
+  const navA=document.getElementById('navAlarms');
+  if(navA) navA.style.display = n?'':'none';
   document.getElementById('cntFire').textContent = ALARMS.filter(a=>a.lvl==='fire').length;
   renderAlarmCard();
 }
@@ -3625,12 +4013,23 @@ function renderContacts(){
   document.getElementById('evacTitle').textContent=OBJ.evac.title;
   document.getElementById('evacSub').textContent='План, привязанный к карточке объекта. '+OBJ.evac.sub;
 }
+/* Краткая сводка конфигурации объекта в списке выбора (замечание 3) */
+function objConfigLine(o){
+  const sip=(o.kpi&&o.kpi.sipAll)||'—';
+  const on=(o.kpi&&o.kpi.sipOn);
+  return (o.config==='ext'?'Расширенная поставка':'Базовая поставка')
+    +' · SIP-аккаунтов '+sip+(on!=null?' (в сети '+on+')':'')
+    +' · вызывных панелей '+((o.panels||[]).length)
+    +' · камер '+(Object.keys(o.cameras||{}).length)
+    +' · точек доступа '+((o.doors||[]).length);
+}
 function renderObjectList(){
   document.getElementById('objList').innerHTML=OBJECTS.map(o=>
     '<button type="button" class="obj-item'+(o.id===OBJ.id?' on':'')+'" onclick="pickObject(\''+o.id+'\')">'
     +'<span class="ic"><span class="material-symbols-outlined">apartment</span></span>'
     +'<span class="bd"><b>'+o.name+' · '+o.unit.toLowerCase()+'</b>'
     +'<span class="ad">'+o.addr+' · '+o.facts+'</span>'
+    +'<span class="cfg">'+objConfigLine(o)+'</span>'
     +'<span class="st">'+o.chips.map(c=>'<span class="chip '+c[0]+'">'+c[1]+'</span>').join('')+'</span></span></button>').join('');
 }
 function openObjects(){
@@ -3668,7 +4067,6 @@ function applyObject(id){
   document.getElementById('videoSub').textContent='Подключённый видеомодуль · '+(OBJ.stat.vms||'—');
 
   const full=OBJ.name+' · '+OBJ.unit.toLowerCase();
-  document.getElementById('topObjName').textContent=full;
   document.getElementById('railObjName').textContent=OBJ.name;
   document.getElementById('railObjSub').textContent=OBJ.unit+' · '+OBJ.addr.split(',').slice(1).join(',').trim();
   document.querySelector('.obj-btn').title='Объект: '+full;
@@ -3688,6 +4086,8 @@ function applyObject(id){
   renderPark();
   renderPanels();
   renderResidents();
+  renderLevels();
+  renderIdents();
   renderDashCams();
   renderPlan(currentPlan);
   renderVideoWall();
@@ -3812,7 +4212,7 @@ function onHotkey(e){
   const tag=(e.target&&e.target.tagName||'').toLowerCase();
   const typing=tag==='input'||tag==='textarea'||tag==='select';
   if(e.key==='Escape'){
-    closeCall(); closeModals(); closeMenus(); closeDrawers();
+    closeCall(); closeModals(); closeMenus(); closeDrawers(); closeSearch();
     return;
   }
   if(e.key==='?' && !e.ctrlKey && !typing){ e.preventDefault(); showModal('modalHotkeys'); return; }
@@ -3904,6 +4304,22 @@ function bindSplitter(id,key,sign){
 }
 
 document.getElementById('themeToggle').addEventListener('click',()=>applyTheme(themeMode==='light'?'dark':'light'));
+
+/* Формат даты и времени в шапке (замечание 9) */
+document.querySelectorAll('[data-datefmt]').forEach(b=>
+  b.addEventListener('click',()=>{closeMenus();setDateFmt(b.dataset.datefmt)}));
+document.querySelectorAll('[data-timefmt]').forEach(b=>
+  b.addEventListener('click',()=>{closeMenus();setTimeFmt(b.dataset.timefmt)}));
+
+/* Поиск по объекту: подсказка при фокусе, результаты по типам (замечание 4) */
+(function(){
+  const inp=document.getElementById('globalSearch');
+  const pop=document.getElementById('searchPop');
+  if(!inp||!pop) return;
+  inp.addEventListener('focus',openSearch);
+  inp.addEventListener('input',()=>{ renderSearch(); pop.hidden=false; });
+  document.addEventListener('click',e=>{ if(!e.target.closest('#searchWrap')) closeSearch(); });
+})();
 document.getElementById('hotkeysBtn').addEventListener('click',()=>{closeMenus();showModal('modalHotkeys')});
 document.getElementById('roleBtn').addEventListener('click',()=>{closeMenus();setRole(role==='concierge'?'dispatcher':'concierge')});
 document.getElementById('breakBtn').addEventListener('click',()=>{closeMenus();toggleBreak()});

@@ -1,0 +1,408 @@
+/* ============================================================================
+   bridge.css — приведение АРМ оператора МКД к визуальному семейству ONE PSIM.
+
+   Подключается ПОСЛЕ собственных стилей прототипа (они живут в <style> внутри
+   index.html). Разметка, JS и адаптив не меняются.
+
+   Источник правил: ONE.PSIM.PrototypeKit — AGENTS.md и docs/RESTYLE-RULES.md
+   (§0–§4). Ссылки вида «§2.8» ниже — на этот документ.
+
+   Порядок импорта задан D-040: сначала словарь токенов, затем нативные
+   контролы форм, которые из этих токенов собраны.
+   ============================================================================ */
+
+@import "theme/one-psim.css";
+@import "theme/native.css";
+
+/* ============================================================================
+   §1. Маппинг переменных прототипа на словарь ONE PSIM
+
+   Прототип уже держит все цвета в слое переменных с переключением по
+   [data-theme] — тем же атрибутом, что и one-psim.css. Поэтому почти всё
+   достаточно объявить один раз: bridge идёт последним, и его :root побеждает
+   и светлый, и тёмный блок прототипа по порядку при равной специфичности.
+   Роль определялась по потреблению переменной, а не по её имени (§0.3).
+   ============================================================================ */
+
+:root {
+  /* Шрифт */
+  --font: var(--one-font-ui);
+
+  /* Поверхности */
+  --bg: var(--one-canvas);
+  --panel: var(--one-surface);
+  --panel-2: var(--one-surface-muted);
+  --tree-bg: var(--one-surface-muted);   /* левое меню и правая панель */
+  --hover: var(--one-control-hover);
+  --overlay: var(--one-scrim);
+
+  /* Границы: --stroke разделяет регионы, --stroke-2 — рамка контрола */
+  --stroke: var(--one-surface-subtle);
+  --stroke-2: var(--one-border);
+
+  /* Текст */
+  --text: var(--one-fg);
+  --muted: var(--one-fg-muted);
+  --faint: var(--one-fg-subtle);
+
+  /* Accent */
+  --accent: var(--one-accent);
+  --accent-hover: var(--one-primary-hover);  /* §2.8: hover primary светлее rest */
+  --accent-dim: var(--one-accent-soft);
+  --accent-ring: var(--one-focus-halo);
+  --on-accent: var(--one-accent-on);
+
+  /* Цвета статусов в тексте и индикаторах (§1) */
+  --ok: var(--one-success-icon);
+  --warn: var(--one-warning);
+  --crit: var(--one-danger);
+  --info: var(--one-info);
+  --fire: var(--one-danger);
+
+  /* Статусные плашки — тройки DS. Рамки у MessageBar в ONE PSIM нет,
+     поэтому *-border приравнены к подложке (решение агента, см. README). */
+  --danger-bg: var(--one-danger-bg);
+  --danger-border: var(--one-danger-bg);
+  --danger-text: var(--one-danger-text);
+  --ok-bg: var(--one-success-bg);
+  --ok-border: var(--one-success-bg);
+  --ok-text: var(--one-success-text);
+  --duty-bg: var(--one-info-bg);
+  --duty-border: var(--one-info-bg);
+  --duty-text: var(--one-info-text);
+  --break-bg: var(--one-warning-bg);
+  --break-border: var(--one-warning-bg);
+  --break-text: var(--one-warning-text);
+
+  /* Поля ввода */
+  --input-bg: var(--one-editor-bg);
+  --input-text: var(--one-fg);
+
+  /* Полосы прокрутки */
+  --scroll: var(--one-border);
+  --scroll-hover: var(--one-border-strong);
+
+  /* Планы объекта — графика на тех же поверхностях */
+  --map-bg: var(--one-surface-muted);
+  --map-floor: var(--one-surface);
+  --map-room: var(--one-surface-subtle);
+  --map-room-2: var(--one-control-bg);
+  --map-label: var(--one-fg-muted);
+
+  /* Радиусы (§1) */
+  --radius: var(--one-radius-window);
+  --radius-container: var(--one-radius-container);
+  --radius-sm: var(--one-radius-container);
+
+  /* Тень */
+  --shadow: var(--one-shadow);
+
+  /* Метка расширенной конфигурации [Р] — принадлежность без семантической
+     роли, значит палитра, а не feedback-тройка (§2.2, D-009). Оттенок выбран
+     не совпадающим со статусными на тех же экранах (§2.2a′, D-039):
+     warning уже оранжевый, поэтому purple. */
+  --ext: var(--one-palette-purple);
+}
+
+/* Граница между регионами в тёмной теме — --one-border, а не surface-subtle
+   (D-024): иначе шапка, сплиттеры и края панелей в Dark не читаются. */
+[data-theme="dark"] {
+  --stroke: var(--one-border);
+}
+
+/* ============================================================================
+   §2. Правила, которые переменные не выражают
+   ============================================================================ */
+
+/* ---- §2.6 Фокус: кольцо у всего, кроме полей ввода ------------------------ */
+:focus-visible {
+  outline: 2px solid var(--one-focus-ring);
+  outline-offset: 2px;
+}
+.splitter:focus-visible { outline: 2px solid var(--one-focus-ring); }
+
+/* ---- §2.6 Поля ввода: лестница TextField, фокус — halo, а не кольцо ------- */
+.search-wrapper input,
+.searchbox input,
+.field input,
+textarea {
+  border-width: 1px;                         /* §2.5: рамки контролов 1px */
+  border-color: var(--one-editor-border);
+  background-color: var(--one-editor-bg);
+  color: var(--one-fg);
+}
+.search-wrapper input::placeholder,
+.searchbox input::placeholder { color: var(--one-fg-placeholder); }
+
+.search-wrapper input:hover:not(:focus),
+.searchbox input:hover:not(:focus) {
+  background-color: var(--one-editor-hover);
+  border-color: var(--one-editor-border-hover);
+}
+.search-wrapper input:focus,
+.searchbox input:focus,
+.search-wrapper input:focus-visible,
+.searchbox input:focus-visible {
+  outline: none;
+  background-color: var(--one-editor-focus);
+  border-color: var(--one-editor-border-focus);
+  box-shadow: 0 0 0 2px var(--one-focus-halo);
+}
+.search-wrapper input:disabled,
+.searchbox input:disabled {
+  background-color: var(--one-editor-disabled);
+  border-color: var(--one-border);
+  color: var(--one-fg-disabled);
+}
+
+/* ---- §2.9 Единственный <select> прототипа --------------------------------
+   Он стоит на классе .btn с инлайновым `background:` — шорткат затирает
+   стрелку, которую native.css кладёт в background-image (§2.6, последний
+   абзац). Возвращаем стрелку и фон точечно; !important нужен, чтобы перебить
+   инлайновый стиль, менять разметку нельзя. */
+select.btn {
+  background-color: var(--one-control-bg) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238C8C8C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.5rem center !important;
+  background-size: 1rem !important;
+  border: 1px solid var(--one-border);
+  color: var(--one-fg);
+}
+select.btn:hover { background-color: var(--one-control-hover) !important; }
+
+/* ---- §2.8 Кнопки: лестницы из дизайн-системы ------------------------------ */
+
+/* subtle / icon-only: без заливки, hover control-hover, подпись не меняется */
+.btn:hover        { background: var(--one-control-hover); color: var(--one-fg); }
+.btn:active       { background: var(--one-control-pressed); }
+.btn[disabled]    { opacity: 1; color: var(--one-fg-disabled); background: transparent; }
+.icon-btn:hover:not(:disabled) { background: var(--one-control-hover); color: var(--one-fg); }
+.icon-btn:active:not(:disabled){ background: var(--one-control-pressed); }
+
+/* primary */
+.btn.primary        { background: var(--one-accent); color: var(--one-accent-on); }
+.btn.primary:hover  { background: var(--one-primary-hover); color: var(--one-accent-on); }
+.btn.primary:active { background: var(--one-primary-pressed); color: var(--one-accent-on); }
+.btn.primary[disabled] { background: var(--one-control-disabled); color: var(--one-fg-disabled); }
+
+/* outline: рамка 1px, на hover темнеет рамка, подпись не меняется (§2.5, §2.8) */
+.btn.outline        { border: 1px solid var(--one-border); color: var(--one-fg); background: transparent; }
+.btn.outline:hover  { background: var(--one-control-hover); border-color: var(--one-border); color: var(--one-fg); }
+.btn.outline:active { background: var(--one-control-pressed); }
+
+/* Кнопки на статусных плашках (.danger, .ok) остаются тинтованными —
+   решение вынесено владельцу, см. README. Общее правило ховера .btn выше
+   до них дотягивается, поэтому гасим его явно (§2.8, «самая частая утечка»). */
+.btn.danger,
+.btn.danger:hover  { color: var(--danger-text); }
+.btn.danger:hover  { background: color-mix(in srgb, var(--one-danger-bg) 70%, var(--one-surface)); }
+.btn.ok,
+.btn.ok:hover      { color: var(--ok-text); }
+.btn.ok:hover      { background: color-mix(in srgb, var(--one-success-bg) 70%, var(--one-surface)); }
+
+/* ---- §2.4 + §2.8 Переключатели = ToggleButton -----------------------------
+   Светло-голубой заливки с синей подписью в ONE PSIM нет. Включённый сегмент
+   и нажатая кнопка-переключатель берут лестницу primary, глиф — accent-on
+   (D-018, жёсткое правило). */
+.seg button.on,
+.seg button.active,
+.seg button.on.ext,
+.icon-btn.on,
+.layout-btn.on,
+.c-nav button.on,
+.m-nav button.on {
+  background: var(--one-accent);
+  color: var(--one-accent-on);
+}
+.seg button.on:hover,
+.seg button.active:hover,
+.icon-btn.on:hover,
+.layout-btn.on:hover,
+.c-nav button.on:hover,
+.m-nav button.on:hover {
+  background: var(--one-primary-hover);
+  color: var(--one-accent-on);
+}
+.seg button.on:active,
+.icon-btn.on:active,
+.layout-btn.on:active,
+.c-nav button.on:active,
+.m-nav button.on:active {
+  background: var(--one-primary-pressed);
+  color: var(--one-accent-on);
+}
+/* невыбранный сегмент — subtle */
+.seg { background: var(--one-control-bg); }
+.seg button:hover:not(.on):not(.active) { background: var(--one-control-hover); color: var(--one-fg); }
+.layout-btn:hover:not(.on) { background: var(--one-control-hover); color: var(--one-fg); }
+.layout-bar { background: var(--one-control-bg); }
+
+/* Счётчик на icon-кнопке — статусная плашка, не собственный цвет */
+.icon-btn .dot { background: var(--one-danger); color: var(--one-accent-on); }
+
+/* ---- §2.3 + D-031 Боковая навигация ---------------------------------------
+   Текущий пункт боковой навигации — исключение DS: подпись, глиф и индикатор
+   берут nav-selected (лестница MuiTab). Заливка — selected-soft.
+   Заодно уходит #fff в подписи, который в светлой теме был белым по белому. */
+.nav-item:hover { background: var(--one-nav-hover); color: var(--one-fg); }
+.nav-item.on {
+  background: var(--one-accent-soft);
+  color: var(--one-nav-selected-text);
+}
+.nav-item.on:hover { background: var(--one-accent-soft-hover); }
+.nav-item.on::before { background: var(--one-selected-indicator); }
+.nav-item .cnt       { background: var(--one-control-bg); color: var(--one-fg-muted); }
+.nav-item .cnt.alarm { background: var(--one-danger-bg); color: var(--one-danger-text); }
+.nav-item .cnt.live  { background: var(--one-success-bg); color: var(--one-success-text); }
+
+/* Вкладки правой панели — тот же случай D-031 */
+.side-tabs button:hover { color: var(--one-fg); background: var(--one-nav-hover); }
+.side-tabs button.on {
+  color: var(--one-nav-selected-text);
+  border-bottom-color: var(--one-selected-indicator);
+  background: transparent;
+}
+.side-tabs .n       { background: var(--one-control-bg); color: var(--one-fg-muted); }
+.side-tabs .n.alarm { background: var(--one-danger-bg); color: var(--one-danger-text); }
+.side-handle .n     { background: var(--one-danger-bg); color: var(--one-danger-text); }
+
+/* ---- §2.3 Выделение строк, карточек и деревьев — фоном --------------------- */
+.alarm-item.on {
+  box-shadow: none;
+  background: var(--one-accent-soft);
+}
+.alarm-item:hover { background: var(--one-control-hover); }
+.ev:hover         { background: var(--one-control-hover); }
+.tree .nd:hover   { background: var(--one-control-hover); }
+.tree .nd.on      { background: var(--one-accent-soft); }
+.obj-item:hover   { border-color: var(--one-border-strong); background: var(--one-control-hover); }
+.obj-item.on {
+  background: var(--one-accent-soft);
+  border-color: var(--one-selected-indicator);
+  box-shadow: none;                       /* кольцо фокуса не обозначает выбор */
+}
+.obj-btn:hover { border-color: var(--one-border-strong); background: var(--one-control-hover); }
+.menu-item:hover { background: var(--one-control-hover); }
+.sp-item:hover   { background: var(--one-control-hover); }
+.menu-item.on    { background: var(--one-accent-soft); box-shadow: inset 3px 0 0 0 var(--one-selected-indicator); }
+.menu-item.on:hover { background: var(--one-accent-soft-hover); }
+.menu-item.on::after { color: var(--one-fg); }
+
+/* ---- §2.10 Строки таблиц с кнопками — половинный hover --------------------- */
+table.tbl td        { border-bottom-color: var(--one-table-row-divider); }
+table.tbl th        { border-bottom-color: var(--one-surface-subtle); background: var(--one-surface-muted); }
+table.tbl tbody tr:hover { background: color-mix(in srgb, var(--one-control-hover) 50%, var(--one-surface)); }
+table.tbl tbody tr.sel   { background: var(--one-accent-soft); }
+.doc-table tbody tr:hover { background: color-mix(in srgb, var(--one-control-hover) 50%, var(--one-surface)); }
+
+/* ---- §1 + §2.2a Чипы и бейджи --------------------------------------------
+   Статусы — тройки DS. Рамки у MessageBar нет, поэтому у статусных чипов она
+   прозрачная. Категории (ext, violet) — палитра по рецепту тинты §2.2a:
+   подложка ≈16 % (Light) / ≈30 % (Dark) поверх surface, текст — оттенок,
+   смешанный наполовину с fg. */
+.chip.ok    { background: var(--one-success-bg); color: var(--one-success-text); border-color: transparent; }
+.chip.warn  { background: var(--one-warning-bg); color: var(--one-warning-text); border-color: transparent; }
+.chip.alarm,
+.chip.fire  { background: var(--one-danger-bg);  color: var(--one-danger-text);  border-color: transparent; }
+.chip.info  { background: var(--one-info-bg);    color: var(--one-info-text);    border-color: transparent; }
+.chip.mut   { background: var(--one-control-bg); color: var(--one-fg-muted);     border-color: transparent; }
+.chip.ext {
+  background: color-mix(in srgb, var(--one-palette-purple) 16%, var(--one-surface));
+  color: color-mix(in srgb, var(--one-palette-purple) 50%, var(--one-fg));
+  border-color: transparent;
+}
+.chip.violet {
+  background: color-mix(in srgb, var(--one-palette-magenta) 16%, var(--one-surface));
+  color: color-mix(in srgb, var(--one-palette-magenta) 50%, var(--one-fg));
+  border-color: transparent;
+}
+/* В Dark подложка плотнее (≈30 %), поэтому текст подмешивается к fg сильнее:
+   при 50 % выходило 5.5:1, при 75 % — 8.0:1 (цель §2.2a — не ниже 7:1).
+   Рецепт это позволяет: «не менее чем наполовину с fg». */
+[data-theme="dark"] .chip.ext {
+  background: color-mix(in srgb, var(--one-palette-purple) 30%, var(--one-surface));
+  color: color-mix(in srgb, var(--one-palette-purple) 25%, var(--one-fg));
+}
+[data-theme="dark"] .chip.violet {
+  background: color-mix(in srgb, var(--one-palette-magenta) 30%, var(--one-surface));
+  color: color-mix(in srgb, var(--one-palette-magenta) 25%, var(--one-fg));
+}
+
+/* Метка [Р] в меню — тот же тинтованный бейдж из палитры (§2.2a).
+   Заодно уходит оранжевая рамка rgba(201,138,43,…), оставшаяся от старой темы. */
+.tag-ext {
+  background: color-mix(in srgb, var(--one-palette-purple) 16%, var(--one-surface));
+  color: color-mix(in srgb, var(--one-palette-purple) 50%, var(--one-fg));
+  border-color: transparent;
+}
+[data-theme="dark"] .tag-ext {
+  background: color-mix(in srgb, var(--one-palette-purple) 30%, var(--one-surface));
+  color: color-mix(in srgb, var(--one-palette-purple) 25%, var(--one-fg));
+}
+/* Заглушка «доступно в расширенной конфигурации» лежит на тёмном scrim
+   в обеих темах, поэтому ступень всегда тёмная */
+.ext-lock .in .ic {
+  background: color-mix(in srgb, var(--one-palette-purple) 26%, transparent);
+  border-color: color-mix(in srgb, var(--one-palette-purple) 45%, transparent);
+  color: color-mix(in srgb, var(--one-palette-purple) 25%, #F6F6F6);
+}
+
+/* Точки состояния: серая = выключено, остальные уже на статусных переменных */
+.sd.off { background: var(--one-fg-disabled); }
+
+/* ---- §2.13 Собственный switch прототипа (.sw-t) ---------------------------
+   Включённое положение у MuiSwitch — трек accent, бегунок accent-on;
+   в прототипе было зелёным. */
+.sw-t          { background: var(--one-switch-off-track); border: 1px solid var(--one-switch-off-border); }
+.sw-t i        { background: var(--one-switch-off-thumb); }
+.sw-t.on       { background: var(--one-accent); border-color: var(--one-accent); }
+.sw-t.on i     { background: var(--one-accent-on); }
+
+/* ---- §2.2b Заголовки — типографическими ролями, не капсом ------------------ */
+.card-h h3 {
+  font: var(--one-type-heading-sm);
+  letter-spacing: var(--one-type-heading-sm-tracking);
+  text-transform: none;
+  color: var(--one-fg);
+}
+.help-card h3,
+.modal h3 {
+  font: var(--one-type-heading-md);
+  letter-spacing: var(--one-type-heading-md-tracking);
+  text-transform: none;
+  color: var(--one-fg);
+}
+/* Групповые подписи в попапах — роль overline, она в DS есть */
+.menu-label,
+.sp-label {
+  font: var(--one-type-overline);
+  letter-spacing: var(--one-type-overline-tracking);
+  color: var(--one-fg-muted);
+}
+
+/* ---- §2.5 Рамки 1px ------------------------------------------------------- */
+.fchip        { border-width: 1px; border-color: var(--one-border); color: var(--one-fg-muted); }
+.fchip:hover  { border-color: var(--one-border-strong); color: var(--one-fg); }
+.fchip.on     { background: var(--one-control-bg); color: var(--one-fg); border-color: var(--one-border-strong); }
+
+/* ---- Знак приложения в шапке (§1, D-023) ----------------------------------
+   ONE-sign в fg-subtle, а не accent-заливка. Размер оставлен прототипу:
+   он соотнесён со своим заголовком и высотой шапки. */
+.brand-mark {
+  background: var(--one-fg-subtle);
+  clip-path: none;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34.6406 40'%3E%3Cpath d='M34.6406 10V30L17.3203 40L0 30V10L17.3203 0L34.6406 10ZM3 11.7314V28.2676L17.3203 36.5361L31.6406 28.2676V11.7314L17.3203 3.46289L3 11.7314Z'/%3E%3C/svg%3E");
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34.6406 40'%3E%3Cpath d='M34.6406 10V30L17.3203 40L0 30V10L17.3203 0L34.6406 10ZM3 11.7314V28.2676L17.3203 36.5361L31.6406 28.2676V11.7314L17.3203 3.46289L3 11.7314Z'/%3E%3C/svg%3E");
+  aspect-ratio: 34.6406 / 40;
+  height: 20px;
+  width: auto;
+  flex: 0 0 auto;
+}
+.about-head .brand-mark { height: 24px; }
+
+/* ---- Прочие точечные утечки цвета ----------------------------------------- */
+.splitter::after { background: var(--one-accent); }
+.vtile:hover, .cam:hover { border-color: var(--one-border-strong); }
+.theme-btn:hover .theme-icon { color: var(--one-warning-icon); }
+.side-handle:hover { border-color: var(--one-border-strong); }
