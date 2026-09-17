@@ -294,6 +294,9 @@ table.tbl td        { border-bottom-color: var(--one-table-row-divider); }
 table.tbl th        { border-bottom-color: var(--one-surface-subtle); background: var(--one-surface-muted); }
 table.tbl tbody tr:hover { background: color-mix(in srgb, var(--one-control-hover) 50%, var(--one-surface)); }
 table.tbl tbody tr.sel   { background: var(--one-accent-soft); }
+/* Стрелка сортировки — это индикатор, а не заливка: берём accent-indicator,
+   он читается на приглушённом фоне шапки в обеих темах. */
+table.tbl th.sortable[data-dir]::after { color: var(--one-accent-indicator); }
 .doc-table tbody tr:hover { background: color-mix(in srgb, var(--one-control-hover) 50%, var(--one-surface)); }
 
 /* ---- §1 + §2.2a Чипы и бейджи --------------------------------------------

@@ -506,6 +506,15 @@ table.tbl th{
 table.tbl td{padding:9px 12px;border-bottom:1px solid rgba(38,48,63,.6);vertical-align:middle}
 table.tbl tbody tr{transition:background .12s}
 table.tbl tbody tr:hover{background:rgba(61,139,253,.05)}
+
+/* Сортировка двойным щелчком по заголовку */
+table.tbl th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none}
+table.tbl th.sortable::after{content:"\2195";margin-left:5px;font-size:10px;opacity:.25}
+table.tbl th.sortable:hover{color:var(--txt-2)}
+table.tbl th.sortable:hover::after{opacity:.6}
+table.tbl th.sortable[data-dir]{color:var(--txt-2)}
+table.tbl th.sortable[data-dir="asc"]::after{content:"\2191";opacity:1;color:var(--accent)}
+table.tbl th.sortable[data-dir="desc"]::after{content:"\2193";opacity:1;color:var(--accent)}
 table.tbl tbody tr.sel{background:rgba(61,139,253,.1)}
 .t-mono{font:12px/1.4 var(--mono);color:var(--txt-2)}
 .t-mut{color:var(--txt-3)}
@@ -1602,7 +1611,7 @@ body.drawer-open .m-backdrop{display:block}
             <div class="card">
               <div class="card-h"><h3>Точки доступа объекта</h3><div class="spacer"></div><span class="hint">открытие вне звонка: REST unlock → драйвер панели</span></div>
               <div class="card-b flush">
-                <table class="tbl">
+                <table class="tbl" id="tblDoors" data-sortable>
                   <thead><tr><th>Точка доступа</th><th>Устройство</th><th>Способ открытия</th><th>Состояние</th><th style="width:210px">Управление</th></tr></thead>
                   <tbody id="doorsTable"></tbody>
                 </table>
@@ -1614,7 +1623,7 @@ body.drawer-open .m-backdrop{display:block}
                 <button class="btn sm primary" onclick="toast('ok','Гостевой код создан','PIN 4821 · действует 4 часа · 1 проход · подъезд 2')">Выдать код</button>
               </div>
               <div class="card-b flush">
-                <table class="tbl">
+                <table class="tbl" id="tblGuests" data-sortable>
                   <thead><tr><th>Код</th><th>Кому</th><th>Осталось</th></tr></thead>
                   <tbody id="guestTable"></tbody>
                 </table>
@@ -1632,7 +1641,7 @@ body.drawer-open .m-backdrop{display:block}
               <button class="btn sm primary" onclick="toast('info','Конструктор уровня','Выберите точки доступа и расписание, затем назначьте уровень абонентам или сотрудникам')">Создать уровень</button>
             </div>
             <div class="card-b flush">
-              <table class="tbl">
+              <table class="tbl" id="tblLevels" data-sortable>
                 <thead><tr><th>Уровень</th><th>Точки доступа</th><th>Расписание</th><th>Назначен</th><th style="width:150px">Управление</th></tr></thead>
                 <tbody id="levelsTable"></tbody>
               </table>
@@ -1652,7 +1661,7 @@ body.drawer-open .m-backdrop{display:block}
               <button class="btn sm primary" onclick="issueIdent()">Выдать идентификатор</button>
             </div>
             <div class="card-b flush">
-              <table class="tbl">
+              <table class="tbl" id="tblIdents" data-sortable>
                 <thead><tr><th>Владелец</th><th>Тип</th><th>Номер</th><th>Уровень доступа</th><th>Состояние</th><th style="width:130px">Управление</th></tr></thead>
                 <tbody id="identsTable"></tbody>
               </table>
@@ -1858,7 +1867,7 @@ body.drawer-open .m-backdrop{display:block}
 
         <div class="card">
           <div class="card-b flush">
-            <table class="tbl">
+            <table class="tbl" id="tblResidents" data-sortable>
               <thead><tr><th>Квартира</th><th>Абонент</th><th>SIP-URI</th><th>Устройства (push)</th><th>Права</th><th>Состояние</th><th style="width:150px"></th></tr></thead>
               <tbody id="residentsTable"></tbody>
             </table>
@@ -2537,6 +2546,7 @@ function renderLevels(){
     +'<td><span class="chip mut">'+l.sc+'</span></td><td class="t-mut">'+l.w+'</td>'
     +'<td><button class="btn sm ghost" onclick="toast(\'info\',\'Уровень доступа\',\''+l.n+' — состав точек и расписание открыты для редактирования\')">Изменить</button></td></tr>'
   ).join('');
+  applySort('tblLevels');
 }
 
 const IDENT_TYPES=['Мобильное приложение','Карта Mifare','Брелок','QR-код','PIN-код'];
@@ -2562,6 +2572,7 @@ function renderIdents(){
         ? '<button class="btn sm ghost" onclick="identToggle('+i+')">Разблокировать</button>'
         : '<button class="btn sm ghost" onclick="identToggle('+i+')">Блокировать</button>')+'</td></tr>'
   ).join('');
+  applySort('tblIdents');
 }
 function identToggle(i){
   const d=IDENTS[i]; if(!d) return;
@@ -2579,6 +2590,67 @@ function issueIdent(){
   renderIdents();
   toast('ok','Идентификатор выдан',rec.w+' · '+rec.t+' · уровень «'+rec.l+'»');
   pushEvent('acc','Выдан идентификатор',rec.w+' · '+rec.t);
+}
+
+/* =========================================================
+   Сортировка таблиц двойным щелчком по заголовку.
+   Первый двойной щелчок — по возрастанию, следующий — по убыванию,
+   дальше по кругу. Колонки с кнопками не сортируются.
+   ========================================================= */
+const SORT_SKIP=['','управление','действия'];
+const sortState={};                       /* id таблицы → {col, dir} */
+
+/* Ключ сравнения. Время и дату разбираем явно, остальное сравниваем
+   естественным порядком, чтобы «Кв. 87» шла перед «Кв. 214». */
+function sortKey(raw){
+  const t=(raw||'').replace(/\s+/g,' ').trim();
+  let m=t.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if(m) return [0,(+m[1])*3600+(+m[2])*60+(+(m[3]||0)),''];
+  m=t.match(/^(\d{1,2})\.(\d{1,2})(?:\.(\d{4}))?$/);
+  if(m) return [0,(+(m[3]||0))*10000+(+m[2])*100+(+m[1]),''];
+  return [1,0,t];
+}
+function sortCmp(a,b){
+  if(a[0]!==b[0]) return a[0]-b[0];
+  if(a[1]!==b[1]) return a[1]-b[1];
+  return a[2].localeCompare(b[2],'ru',{numeric:true,sensitivity:'base'});
+}
+
+function applySort(tbl){
+  if(typeof tbl==='string') tbl=document.getElementById(tbl);
+  if(!tbl) return;
+  const st=sortState[tbl.id]; if(!st) return;
+  const body=tbl.tBodies[0]; if(!body) return;
+  const rows=[...body.rows];
+  const data=rows.filter(r=>r.cells.length>st.col);   /* строки-заглушки (colspan) оставляем внизу */
+  const rest=rows.filter(r=>r.cells.length<=st.col);
+  /* data-sort у ячейки важнее текста: так «9 мин» и «1 сутки» сравниваются по смыслу */
+  const val=td=>td.dataset.sort!==undefined?td.dataset.sort:td.textContent;
+  data.sort((a,b)=>sortCmp(sortKey(val(a.cells[st.col])),sortKey(val(b.cells[st.col]))));
+  if(st.dir==='desc') data.reverse();
+  data.concat(rest).forEach(r=>body.appendChild(r));
+  tbl.querySelectorAll('thead th').forEach(th=>{
+    if(th.cellIndex===st.col && th.classList.contains('sortable')) th.dataset.dir=st.dir;
+    else delete th.dataset.dir;
+  });
+}
+function applySorts(){ document.querySelectorAll('table[data-sortable]').forEach(applySort); }
+
+function initSortable(){
+  document.querySelectorAll('table[data-sortable]').forEach(tbl=>{
+    tbl.querySelectorAll('thead th').forEach(th=>{
+      if(SORT_SKIP.includes(th.textContent.trim().toLowerCase())) return;
+      th.classList.add('sortable');
+      th.title='Двойной щелчок — сортировка: по возрастанию, затем по убыванию';
+    });
+    tbl.addEventListener('dblclick',e=>{
+      const th=e.target.closest('th.sortable');
+      if(!th || !tbl.contains(th)) return;
+      const cur=sortState[tbl.id];
+      sortState[tbl.id]={col:th.cellIndex, dir:(cur && cur.col===th.cellIndex && cur.dir==='asc')?'desc':'asc'};
+      applySort(tbl);
+    });
+  });
 }
 
 /* ---------- Тосты ---------- */
@@ -3673,6 +3745,14 @@ function renderLog(q){
 renderLog();
 
 /* ---------- Точки доступа ---------- */
+/* «3 ч 12 м», «1 сутки», «9 мин» → минуты, чтобы столбец «Осталось» сортировался по сроку */
+function minutesLeft(s){
+  const t=(s||'').toLowerCase(); let m=0,x;
+  if(x=t.match(/(\d+)\s*сут/))        m+=(+x[1])*1440;
+  if(x=t.match(/(\d+)\s*ч/))          m+=(+x[1])*60;
+  if(x=t.match(/(\d+)\s*м(?:ин)?(?![а-яё])/)) m+=(+x[1]);
+  return m;
+}
 function renderDoors(){
   document.getElementById('doorsTable').innerHTML=(OBJ.doors||[]).map(d=>
     '<tr><td><b>'+d.n+'</b></td><td class="t-mut">'+d.dev+'</td><td><span class="chip mut">'+d.m+'</span></td>'
@@ -3682,8 +3762,9 @@ function renderDoors(){
     +videoBtn(d.obj)+'</td></tr>').join('');
   document.getElementById('guestTable').innerHTML=(OBJ.guests||[]).map(g=>
     '<tr><td class="t-mono">'+g.c+'</td><td>'+g.w+'<div class="t-mut" style="font-size:11px">'+g.sub+'</div></td>'
-    +'<td><span class="chip '+g.s+'">'+g.left+'</span></td></tr>').join('')
+    +'<td data-sort="'+minutesLeft(g.left)+'"><span class="chip '+g.s+'">'+g.left+'</span></td></tr>').join('')
     || '<tr><td colspan="3" class="empty">Активных кодов нет</td></tr>';
+  applySort('tblDoors'); applySort('tblGuests');
 }
 
 function actor(){
@@ -3806,6 +3887,7 @@ function renderResidents(){
   document.getElementById('resOnline').textContent=s.online||'—';
   document.getElementById('resOffline').textContent=s.offline||'—';
   document.getElementById('resPush').textContent=s.push||'—';
+  applySort('tblResidents');
 }
 
 /* ---------- Карточка устройства на плане ---------- */
@@ -4349,6 +4431,7 @@ document.querySelectorAll('.help-overlay').forEach(ov=>{
 });
 
 restoreLayout();
+initSortable();
 bindSplitter('splitRail','rail',1);
 bindSplitter('splitSide','side',-1);
 try{
