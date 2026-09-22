@@ -229,6 +229,21 @@ button{cursor:pointer;color:inherit;background:none;border:none}
 
 .top-right{display:flex;align-items:center;gap:8px;margin-left:auto}
 
+/* Переключатель языка: тот же вес, что у кнопки темы рядом */
+.lang{
+  display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 8px 0 6px;
+  border:1px solid var(--stroke-2);border-radius:8px;
+  background:var(--panel-2);color:var(--muted);cursor:pointer;
+}
+.lang:hover{border-color:var(--accent);color:var(--text)}
+.lang .material-symbols-outlined{font-size:19px}
+.lang select{
+  border:0;padding:0;height:auto;min-width:0;background:transparent;color:var(--text);
+  font-size:13px;font-weight:500;cursor:pointer;
+}
+.lang select:focus{outline:none}
+.lang:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
+
 .seg{display:flex;background:var(--panel-2);border-radius:var(--radius-sm);padding:2px}
 .seg button{padding:5px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;transition:.15s}
 .seg button:hover:not(.on):not(.active){color:var(--text)}
@@ -928,7 +943,7 @@ body.drawer-open .m-backdrop{display:block}
   .topbar{flex-wrap:nowrap;gap:6px;padding:8px 10px}
   .brand{min-width:0;padding-right:0;border-right:0}
   .brand .names{display:none}
-  #toggleRail,#toggleSideBtn,.theme-btn{display:none}
+  #toggleRail,#toggleSideBtn,.theme-btn,.lang{display:none}
   #mBurger{display:inline-flex}
   .m-close,.side-tabs .m-close{display:inline-flex;align-items:center;justify-content:center;flex:0 0 40px;width:40px;padding:0;border-bottom:2px solid transparent;color:var(--faint)}
   .mobile-only{display:flex}
@@ -1084,6 +1099,14 @@ body.drawer-open .m-backdrop{display:block}
     </div>
 
     <div class="top-right">
+      <label class="lang" for="langSelect">
+        <span class="material-symbols-outlined" aria-hidden="true">language</span>
+        <select id="langSelect" data-i18n-skip aria-label="Язык интерфейса" title="Язык интерфейса">
+          <option value="ru">Русский</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+
       <button type="button" class="icon-btn theme-btn" id="themeToggle" title="Тёмная тема" aria-label="Тёмная тема" aria-pressed="false">
         <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
           <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
@@ -1900,12 +1923,12 @@ body.drawer-open .m-backdrop{display:block}
 
       <div class="side-pane" id="pane-events">
         <div class="side-filter">
-          <button class="fchip on" onclick="sideFilter(this,'all')">Все</button>
-          <button class="fchip" onclick="sideFilter(this,'sip')">SIP</button>
-          <button class="fchip" onclick="sideFilter(this,'acc')">Доступ</button>
-          <button class="fchip" onclick="sideFilter(this,'fire')">ОПС</button>
-          <button class="fchip" onclick="sideFilter(this,'scada')">SCADA</button>
-          <button class="fchip" onclick="sideFilter(this,'park')">Паркинг</button>
+          <button class="fchip on" data-t="all" onclick="sideFilter(this,'all')">Все</button>
+          <button class="fchip" data-t="sip" onclick="sideFilter(this,'sip')">SIP</button>
+          <button class="fchip" data-t="acc" onclick="sideFilter(this,'acc')">Доступ</button>
+          <button class="fchip" data-t="fire" onclick="sideFilter(this,'fire')">ОПС</button>
+          <button class="fchip" data-t="scada" onclick="sideFilter(this,'scada')">SCADA</button>
+          <button class="fchip" data-t="park" onclick="sideFilter(this,'park')">Паркинг</button>
         </div>
         <div id="sideEvents"></div>
       </div>
@@ -2314,7 +2337,197 @@ body.drawer-open .m-backdrop{display:block}
 
 <div class="toasts" id="toasts"></div>
 
+<script src="i18n-en.js"></script>
 <script>
+/* =========================================================
+   Язык интерфейса — по той же схеме, что в Axxon Incident Manager.
+   Ключ словаря — русская строка из разметки и скрипта, значение — перевод.
+   Русский остаётся исходником: чего нет в словаре, остаётся по-русски.
+   Словарь лежит в i18n-en.js и подключается перед этим скриптом.
+   ========================================================= */
+
+const LANGS=[
+  {id:'ru',label:'Русский', locale:'ru-RU'},
+  {id:'en',label:'English', locale:'en-GB'}
+];
+const CYRILLIC=/[\u0400-\u04FF]/;
+let LANG='ru';
+
+function dictionary(){ return LANG==='ru' ? null : (window.MKD_DICT||{})[LANG]||null; }
+
+/* Сначала ищем строку целиком. Прототип собирает подписи из кусков, поэтому
+   дальше пробуем по частям: « · » разделяет поля, «: » — ярлык и значение. */
+function t(ru){
+  const d=dictionary();
+  if(!d || typeof ru!=='string' || !CYRILLIC.test(ru)) return ru;
+  let hit=lookup(d,ru);
+  if(hit===null) hit=pairSplit(d,ru);
+  if(hit!==null) return hit;
+  if(!/ · |: /.test(ru)) return ru;
+  return ru.split(/( · |: )/).map(part=>{
+    if(part===' · '||part===': ') return part;
+    let p=lookup(d,part);
+    if(p===null) p=pairSplit(d,part);
+    return p===null ? part : p;
+  }).join('');
+}
+/* Часть подписей склеивается через toLowerCase(), поэтому если точного ключа
+   нет — пробуем тот же ключ с заглавной и возвращаем перевод со строчной. */
+let CI_INDEX=null, CI_LANG=null;
+function ciIndex(d){
+  if(CI_LANG===LANG) return CI_INDEX;
+  CI_INDEX={};
+  Object.keys(d).forEach(k=>{ const lk=k.toLowerCase(); if(CI_INDEX[lk]===undefined) CI_INDEX[lk]=d[k]; });
+  CI_LANG=LANG;
+  return CI_INDEX;
+}
+function exact(d,s){
+  if(d[s]!==undefined) return d[s];
+  const v=ciIndex(d)[s.toLowerCase()];
+  if(v===undefined) return null;
+  /* «корпус 1» пришёл из toLowerCase() — перевод тоже отдаём со строчной */
+  return (s===s.toLowerCase() && s!==s.toUpperCase()) ? v.charAt(0).toLowerCase()+v.slice(1) : v;
+}
+/* К тексту часто приклеены числа и знаки: «42 / 60 занято», «1. Подтвердить»,
+   «, заявка техспециалисту.». Отделяем их и переводим русскую сердцевину. */
+function lookup(d,s){
+  let v=exact(d,s);
+  if(v!==null) return v;
+  /* Ведущие разделители склейки: «· белый список», «, push жильцам подъезда.» */
+  const lead=s.replace(/^[\s·—,;./|]+/,'');
+  if(lead!==s){
+    v=exact(d,lead);
+    if(v!==null) return s.slice(0,s.length-lead.length)+v;
+  }
+  const m=s.match(/^([^\u0400-\u04FF]*)([\u0400-\u04FF][\s\S]*[\u0400-\u04FF]|[\u0400-\u04FF])([^\u0400-\u04FF]*)$/);
+  if(!m || (!m[1] && !m[3])) return null;
+  const pre=m[1], core=m[2], post=m[3];
+  v=exact(d,core+post); if(v!==null) return pre+v;
+  v=exact(d,pre+core);  if(v!==null) return v+post;
+  v=exact(d,core);      if(v!==null) return pre+v+post;
+  return null;
+}
+/* Подпись вида «<известное начало> <известный хвост>»: «входная дверь
+   удерживается открытой» = «входная дверь» + «удерживается открытой».
+   Обе половины должны быть в словаре — иначе не склеиваем. */
+function pairSplit(d,s){
+  const w=s.split(' ');
+  for(let i=w.length-1;i>0;i--){
+    const head=exact(d,w.slice(0,i).join(' '));
+    if(head===null) continue;
+    const tail=exact(d,w.slice(i).join(' '));
+    if(tail!==null) return head+' '+tail;
+  }
+  return null;
+}
+
+/* Разметку прототип собирает строками, поэтому переводим значение до вставки
+   в DOM, а не обходим дерево после: порядок сортировки и чтение textContent
+   в коде остаются согласованными с тем, что видит оператор. */
+function tHtml(html){
+  if(!dictionary() || typeof html!=='string' || !CYRILLIC.test(html)) return html;
+  const out=html.replace(/(title|placeholder|aria-label)="([^"]*)"/g,
+    (m,attr,val)=>CYRILLIC.test(val) ? attr+'="'+t(val).replace(/"/g,'&quot;')+'"' : m);
+  return ('>'+out+'<').replace(/>([^<>]+)</g,(m,s)=>{
+    if(!CYRILLIC.test(s)) return m;
+    return '>'+s.match(/^\s*/)[0]+t(s.trim())+s.match(/\s*$/)[0]+'<';
+  }).slice(1,-1);
+}
+
+/* Точки входа текста в DOM. Патчим их один раз, чтобы не править вручную
+   полторы сотни мест сборки разметки в прототипе. */
+(function hookDom(){
+  const html=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
+  Object.defineProperty(Element.prototype,'innerHTML',{configurable:true,
+    get(){ return html.get.call(this) },
+    set(v){ html.set.call(this, tHtml(v)) }});
+
+  const text=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');
+  Object.defineProperty(Node.prototype,'textContent',{configurable:true,
+    get(){ return text.get.call(this) },
+    set(v){ text.set.call(this, typeof v==='string' ? t(v) : v) }});
+
+  const title=Object.getOwnPropertyDescriptor(HTMLElement.prototype,'title');
+  Object.defineProperty(HTMLElement.prototype,'title',{configurable:true,
+    get(){ return title.get.call(this) },
+    set(v){ title.set.call(this, typeof v==='string' ? t(v) : v) }});
+
+  const setAttr=Element.prototype.setAttribute;
+  const I18N=['title','placeholder','aria-label'];
+  Element.prototype.setAttribute=function(name,value){
+    return setAttr.call(this, name, I18N.includes(name) ? t(value) : value);
+  };
+})();
+
+/* =========================================================
+   Статичные тексты разметки.
+   Русский текст в index.html — он же ключ словаря. Оригиналы снимаются один
+   раз до первой отрисовки, поэтому язык можно переключать сколько угодно.
+   ========================================================= */
+
+const STATIC={text:[],attr:[],html:[],title:''};
+
+function collectStatic(){
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>
+    STATIC.html.push({el:el, ru:el.innerHTML.trim()}));
+  document.querySelectorAll('*').forEach(el=>
+    ['title','placeholder','aria-label'].forEach(attr=>{
+      const v=el.getAttribute(attr);
+      if(v && CYRILLIC.test(v)) STATIC.attr.push({el:el, attr:attr, ru:v.trim()});
+    }));
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{
+    acceptNode(node){
+      if(!CYRILLIC.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+      for(let p=node.parentElement;p;p=p.parentElement){
+        /* Названия языков в переключателе всегда на своём языке */
+        if(p.hasAttribute('data-i18n-html')||p.hasAttribute('data-i18n-skip')) return NodeFilter.FILTER_REJECT;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  for(let n=walker.nextNode();n;n=walker.nextNode()){
+    const raw=n.nodeValue;
+    STATIC.text.push({node:n, ru:raw.trim(), pre:raw.match(/^\s*/)[0], post:raw.match(/\s*$/)[0]});
+  }
+  STATIC.title=document.title;
+}
+
+function applyStatic(){
+  STATIC.html.forEach(i=>i.el.innerHTML=t(i.ru));
+  STATIC.attr.forEach(i=>i.el.setAttribute(i.attr,i.ru));
+  STATIC.text.forEach(i=>i.node.nodeValue=i.pre+t(i.ru)+i.post);
+  document.title=t(STATIC.title);
+}
+
+function applyLang(id){
+  LANG=LANGS.some(l=>l.id===id)?id:'ru';
+  document.documentElement.lang=LANG;
+  try{localStorage.setItem('mkd-lang',LANG)}catch(e){}
+  const sel=document.getElementById('langSelect');
+  if(sel && sel.value!==LANG) sel.value=LANG;
+  applyStatic();
+  applyTheme(themeMode);
+  setDateFmt(dateFmt);
+  applyObject(OBJ.id);
+  /* Плагины и сценарии не зависят от объекта и рисуются один раз при старте —
+     при смене языка их надо перерисовать отдельно. */
+  renderPlugins();
+  renderRules();
+  applySortHints();
+  tickClock();
+}
+
+function initLang(){
+  const sel=document.getElementById('langSelect');
+  sel.addEventListener('change',e=>applyLang(e.target.value));
+  let saved='ru';
+  try{ saved=localStorage.getItem('mkd-lang')||'ru' }catch(e){}
+  if(saved!=='ru') applyLang(saved); else sel.value='ru';
+}
+
+/* Снимок делаем до первой отрисовки, пока в разметке только исходный русский */
+collectStatic();
+
 /* =========================================================
    Данные-заглушки и логика прототипа
    ========================================================= */
@@ -2344,8 +2557,8 @@ function clockTimeStr(d){
 function clockDateStr(d){
   if(dateFmt==='dmy') return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear();
   if(dateFmt==='mdy') return pad(d.getMonth()+1)+'/'+pad(d.getDate())+'/'+d.getFullYear();
-  const day=DAYS[d.getDay()];
-  return day.charAt(0).toUpperCase()+day.slice(1)+', '+d.getDate()+' '+MONTHS[d.getMonth()];
+  const day=t(DAYS[d.getDay()]);
+  return day.charAt(0).toUpperCase()+day.slice(1)+', '+d.getDate()+' '+t(MONTHS[d.getMonth()]);
 }
 function setDateFmt(f){ dateFmt=f; try{localStorage.setItem('mkd-date-fmt',f)}catch(e){} tickClock(); syncFmtMenu(); }
 function setTimeFmt(f){ timeFmt=f; try{localStorage.setItem('mkd-time-fmt',f)}catch(e){} tickClock(); syncFmtMenu(); }
@@ -2475,7 +2688,10 @@ function renderSearch(){
   if(!inp||!pop) return;
   const q=inp.value.trim().toLowerCase();
   if(!q){ pop.innerHTML=searchHintHtml(); return; }
-  const hits=buildSearchIndex().filter(i=>(i.b+' '+i.s).toLowerCase().includes(q));
+  /* Данные объекта остаются русскими, а оператор ищет на языке интерфейса —
+     поэтому сверяем запрос и с исходником, и с переводом. */
+  const hits=buildSearchIndex().filter(i=>
+    (i.b+' '+i.s+' '+t(i.b)+' '+t(i.s)).toLowerCase().includes(q));
   if(!hits.length){
     pop.innerHTML='<div class="sp-note">В объекте '+OBJ.name+' ничего не найдено по запросу «'+inp.value.trim()+'». '
       +'Проверьте номер квартиры, имя абонента или название панели — поиск идёт только по текущему объекту.</div>';
@@ -2544,7 +2760,7 @@ function renderLevels(){
   el.innerHTML=LEVELS.map(l=>
     '<tr><td><b>'+l.n+'</b></td><td class="t-mut">'+l.d+'</td>'
     +'<td><span class="chip mut">'+l.sc+'</span></td><td class="t-mut">'+l.w+'</td>'
-    +'<td><button class="btn sm ghost" onclick="toast(\'info\',\'Уровень доступа\',\''+l.n+' — состав точек и расписание открыты для редактирования\')">Изменить</button></td></tr>'
+    +'<td><button class="btn sm ghost" onclick="toast(\'info\',\'Уровень доступа\',\''+t(l.n)+' — '+t('состав точек и расписание открыты для редактирования')+'\')">Изменить</button></td></tr>'
   ).join('');
   applySort('tblLevels');
 }
@@ -2598,6 +2814,7 @@ function issueIdent(){
    дальше по кругу. Колонки с кнопками не сортируются.
    ========================================================= */
 const SORT_SKIP=['','управление','действия'];
+const SORT_HINT='Двойной щелчок — сортировка: по возрастанию, затем по убыванию';
 const sortState={};                       /* id таблицы → {col, dir} */
 
 /* Ключ сравнения. Время и дату разбираем явно, остальное сравниваем
@@ -2635,13 +2852,18 @@ function applySort(tbl){
   });
 }
 function applySorts(){ document.querySelectorAll('table[data-sortable]').forEach(applySort); }
+/* Подсказку вешает скрипт, а не разметка, поэтому при смене языка её надо
+   проставить заново — снимок статики её не видел. */
+function applySortHints(){
+  document.querySelectorAll('table[data-sortable] th.sortable').forEach(th=>th.title=SORT_HINT);
+}
 
 function initSortable(){
   document.querySelectorAll('table[data-sortable]').forEach(tbl=>{
     tbl.querySelectorAll('thead th').forEach(th=>{
       if(SORT_SKIP.includes(th.textContent.trim().toLowerCase())) return;
       th.classList.add('sortable');
-      th.title='Двойной щелчок — сортировка: по возрастанию, затем по убыванию';
+      th.title=SORT_HINT;
     });
     tbl.addEventListener('dblclick',e=>{
       const th=e.target.closest('th.sortable');
@@ -3599,7 +3821,7 @@ function renderHistory(){
     const chip = h.r==='ok'?'<span class="chip ok">'+h.rt+'</span>' : h.r==='miss'?'<span class="chip warn">'+h.rt+'</span>':'<span class="chip mut">'+h.rt+'</span>';
     return '<tr><td class="t-mono">'+ddmm(now())+' '+h.t+'</td><td><b>'+h.p+'</b></td><td>'+h.f+'</td><td class="t-mut">'+h.d+'</td><td>'+chip+'</td><td class="t-mono">'+h.len+'</td>'
       +'<td><button class="btn sm ghost ext-hide" onclick="openLinkedVideo(\''+(h.obj||'panel-call')+'\')">Видео [Р]</button>'
-      +'<button class="btn sm ghost basic-only" onclick="toast(\'info\',\'Событие\',\'Метка времени '+h.t+', идентификатор панели — без видеоссылки\')">Событие</button></td></tr>';
+      +'<button class="btn sm ghost basic-only" onclick="toast(\'info\',\'Событие\',\''+t('Метка времени')+' '+h.t+', '+t('идентификатор панели — без видеоссылки')+'\')">Событие</button></td></tr>';
   }).join('') || '<tr><td colspan="7" class="empty">История пуста</td></tr>';
 }
 
@@ -3731,7 +3953,8 @@ let logQuery='';
 function renderLog(q){
   if(q!==undefined) logQuery=q.toLowerCase();
   let list = logF==='all'?EVENTS:EVENTS.filter(e=>e.ty===logF);
-  if(logQuery) list=list.filter(e=>(e.ttl+' '+e.d+' '+e.src).toLowerCase().includes(logQuery));
+  if(logQuery) list=list.filter(e=>
+    (e.ttl+' '+e.d+' '+e.src+' '+t(e.ttl)+' '+t(e.d)+' '+t(e.src)).toLowerCase().includes(logQuery));
   document.getElementById('logTable').innerHTML = list.map(e=>{
     const m=EV_META[e.ty];
     const act = (e.ty==='fire' ? '<button class="btn sm ok" onclick="toast(\'ok\',\'Подтверждено\',\''+e.ttl+'\')">Подтвердить</button> ' : '')
@@ -3844,12 +4067,15 @@ const PLUGINS=[
   {n:'VMS-коннектор',d:'Видеомодуль (Интеллект X)',p:'RTSP + расширенный API',v:'1.0.3',c:'24',s:'ext',st:'Расширенная [Р]'},
   {n:'Push-шлюз',d:'APNS / FCM',p:'HTTP/2',v:'1.2.5',c:'312',s:'ok',st:'Работает'}
 ];
-document.getElementById('pluginsTable').innerHTML=PLUGINS.map(p=>{
-  const chip=p.s==='ok'?'<span class="chip ok">'+p.st+'</span>':'<span class="chip ext">'+p.st+'</span>';
-  return '<tr'+(p.s==='ext'?' class="ext-hide"':'')+'><td><b>'+p.n+'</b></td><td class="t-mut">'+p.d+'</td><td><span class="chip mut">'+p.p+'</span></td>'
-    +'<td class="t-mono">'+p.v+'</td><td class="t-mono">'+p.c+'</td><td>'+chip+'</td>'
-    +'<td><button class="btn sm ghost">Настроить</button></td></tr>';
-}).join('');
+function renderPlugins(){
+  document.getElementById('pluginsTable').innerHTML=PLUGINS.map(p=>{
+    const chip=p.s==='ok'?'<span class="chip ok">'+p.st+'</span>':'<span class="chip ext">'+p.st+'</span>';
+    return '<tr'+(p.s==='ext'?' class="ext-hide"':'')+'><td><b>'+p.n+'</b></td><td class="t-mut">'+p.d+'</td><td><span class="chip mut">'+p.p+'</span></td>'
+      +'<td class="t-mono">'+p.v+'</td><td class="t-mono">'+p.c+'</td><td>'+chip+'</td>'
+      +'<td><button class="btn sm ghost">Настроить</button></td></tr>';
+  }).join('');
+}
+renderPlugins();
 
 function renderPanels(){
   document.getElementById('panelsTable').innerHTML=(OBJ.panels||[]).map(p=>
@@ -3868,12 +4094,15 @@ const RULES=[
   {on:false,ext:false,if:'Авария насоса Н1',ifd:'Тег PS-01 = «авария» дольше 10 с',then:'Запустить резервный насос Н2',thend:'Команда на контроллер · заявка в диспетчерскую · уведомление техспециалисту'},
   {on:true,ext:false,if:'Панель офлайн более 10 минут',ifd:'Отсутствие REGISTER от SIP-аккаунта панели',then:'Создать заявку и уведомить техспециалиста',thend:'Заявка в диспетчерскую · Telegram техспециалисту'}
 ];
-document.getElementById('rulesList').innerHTML=RULES.map((r,i)=>
-  '<div class="rule'+(r.ext?' ext-hide':'')+'">'
-  +'<div class="part if"><div class="k">Если</div><div class="v">'+r.if+(r.ext?' <span class="chip ext">Р</span>':'')+'<div class="sub">'+r.ifd+'</div></div></div>'
-  +'<div class="part"><div class="k">То</div><div class="v">'+r.then+'<div class="sub">'+r.thend+'</div></div></div>'
-  +'<div class="ctl"><div class="sw-t'+(r.on?' on':'')+'" onclick="this.classList.toggle(\'on\');toast(\'info\',\'Сценарий\',\''+r.if+' — состояние изменено\')"><i></i></div>'
-  +'<button class="btn sm ghost">Изменить</button></div></div>').join('');
+function renderRules(){
+  document.getElementById('rulesList').innerHTML=RULES.map((r,i)=>
+    '<div class="rule'+(r.ext?' ext-hide':'')+'">'
+    +'<div class="part if"><div class="k">Если</div><div class="v">'+r.if+(r.ext?' <span class="chip ext">Р</span>':'')+'<div class="sub">'+r.ifd+'</div></div></div>'
+    +'<div class="part"><div class="k">То</div><div class="v">'+r.then+'<div class="sub">'+r.thend+'</div></div></div>'
+    +'<div class="ctl"><div class="sw-t'+(r.on?' on':'')+'" onclick="this.classList.toggle(\'on\');toast(\'info\',\'Сценарий\',\''+r.if+' — состояние изменено\')"><i></i></div>'
+    +'<button class="btn sm ghost">Изменить</button></div></div>').join('');
+}
+renderRules();
 
 /* ---------- Жильцы ---------- */
 function renderResidents(){
@@ -4143,7 +4372,7 @@ function applyObject(id){
 
   sideF='all'; logF='all'; logQuery='';
   document.querySelectorAll('#pane-events .fchip, #view-log .fchip')
-    .forEach(b=>b.classList.toggle('on', b.dataset.t==='all'||b.textContent.trim()==='Все'));
+    .forEach(b=>b.classList.toggle('on', b.dataset.t==='all'));
   const logSearch=document.querySelector('#view-log .searchbox input');
   if(logSearch) logSearch.value='';
   document.getElementById('videoSub').textContent='Подключённый видеомодуль · '+(OBJ.stat.vms||'—');
@@ -4471,6 +4700,7 @@ window.addEventListener('resize',()=>{
 
 applyObject(OBJECTS[0].id);
 go('dash');
+initLang();
 </script>
 </body>
 </html>
